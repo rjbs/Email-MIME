@@ -1,8 +1,7 @@
 package Email::MIME::Modifier;
-# $Id: Modifier.pm,v 1.5 2004/12/23 22:58:49 cwest Exp $
 
 use vars qw[$VERSION];
-$VERSION = '1.42';
+$VERSION = '1.43';
 
 use Email::MIME;
 
@@ -316,8 +315,8 @@ sub walk_parts {
 sub _compose_content_type {
     my ($self, $ct_header) = @_;
     my $ct = join '/', @{$ct_header}{qw[discrete composite]};
-    while ( my ($attr, $val) = each %{$ct_header->{attributes}} ) {
-        $ct .= qq[; $attr="$val"];
+    for my $attr (sort keys %{$ct_header->{attributes}}) {
+        $ct .= qq[; $attr="$ct_header->{attributes}{$attr}"];
     }
     $self->header_set('Content-Type' => $ct);
     $self->{ct} = $ct_header;
