@@ -1,0 +1,11 @@
+Changes
+lib/Email/MIME/Modifier.pm
+Makefile.PL
+MANIFEST			This list of files
+META.yml
+README
+t/content_id.t
+t/ct_attrs.t
+t/disposition.t
+t/encoding.t
+t/parts.t

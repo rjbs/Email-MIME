@@ -1,0 +1,24 @@
+1.42    2004-12-23
+
+  - Automatically create Content-ID headers where they don't already
+    exist, for part children. This helps people tasked with the
+    horrible affliction of sending HTML email with embedded images.
+
+1.41    2004-12-23
+
+  - Enhanced detection for converting from single to multipart, and
+    back.
+
+1.3    2004-10-04
+
+  - New methods parts_add() and walk_parts().
+  - No prereq on Test::Deep for testing (ADAMK).
+
+1.2    2004-07-09
+
+  - boundary_set() now repackages children MIME parts so the object
+    stays in sync.
+
+1.1    2004-07-05
+
+  - Initial version.

@@ -1,0 +1,124 @@
+NAME
+    Email::MIME::Modifier - Modify Email::MIME Objects Easily
+
+SYNOPSIS
+      use Email::MIME;
+      use Email::MIME::Modifier;
+      my $email = Email::MIME->new( join "", <> );
+
+      remove_attachments($email);
+
+      sub remove_attachments {
+          my $email = shift;
+          my @keep;
+          foreach my $part ( $email->parts ) {
+              push @keep, $part
+                unless $part->header('Content-Disposition') =~ /^attachment/;
+              remove_attachments($part)
+                if $part->content_type =~ /^(?:multipart|message)/;
+          }
+          $email->parts_set( \@keep );
+      }
+
+DESCRIPTION
+    Provides a number of useful methods for manipulating MIME messages.
+
+    These method are declared in the "Email::MIME" namespace, and are used
+    with "Email::MIME" objects.
+
+  Methods
+    content_type_set
+          $email->content_type_set( 'text/html' );
+
+        Change the content type. All "Content-Type" header attributes will
+        remain in tact.
+
+    charset_set
+    name_set
+    format_set
+    boundary_set
+          $email->charset_set( 'utf8' );
+          $email->name_set( 'some_filename.txt' );
+          $email->format_set( 'flowed' );
+          $email->boundary_set( undef ); # remove the boundary
+
+        These four methods modify common "Content-Type" attributes. If set
+        to "undef", the attribute is removed. All other "Content-Type"
+        header information is preserved when modifying an attribute.
+
+    encoding_set
+          $email->encoding_set( 'base64' );
+          $email->encoding_set( 'quoted-printable' );
+          $email->encoding_set( '8bit' );
+
+        Convert the message body and alter the "Content-Transfer-Encoding"
+        header using this method. Your message body, the output of the
+        "body()" method, will remain the same. The raw body, output with the
+        "body_raw()" method, will be changed to reflect the new encoding.
+
+    body_set
+          $email->body_set( $unencoded_body_string );
+
+        This method will encode the new body you send using the encoding
+        specified in the "Content-Transfer-Encoding" header, then set the
+        body to the new encoded body.
+
+        This method overrides the default "body_set()" method.
+
+    disposition_set
+          $email->disposition_set( 'attachment' );
+
+        Alter the "Content-Disposition" of a message. All header attributes
+        will remain in tact.
+
+    filename_set
+          $email->filename_set( 'boo.pdf' );
+
+        Sets the filename attribute in the "Content-Disposition" header. All
+        other header information is preserved when setting this attribute.
+
+    parts_set
+          $email->parts_set( \@new_parts );
+
+        Replaces the parts for an object. Accepts a reference to a list of
+        "Email::MIME" objects, representing the new parts. If this message
+        was originally a single part, the "Content-Type" header will be
+        changed to "multipart/mixed", and given a new boundary attribute.
+
+    parts_add
+          $email->parts_add( \@more_parts );
+
+        Adds MIME parts onto the current MIME part. This is a simple
+        extension of "parts_set" to make our lives easier. It accepts an
+        array reference of additional parts.
+
+    walk_parts
+          $email->walk_parts(sub {
+              my $part = @_;
+              return if $part->parts > 1; # multipart
+      
+              if ( $part->content_type =~ m[text/html] ) {
+                  my $body = $part->body;
+                  $body =~ s/<link [^>]+>//; # simple filter example
+                  $part->body_set( $body );
+              }
+          });
+
+        Walks through all the MIME parts in a message and applies a callback
+        to each. Accepts a code reference as its only argument. The code
+        reference will be passed a single argument, the current MIME part
+        within the top-level MIME object. All changes will be applied in
+        place.
+
+SEE ALSO
+    Email::Simple, Email::MIME, Email::MIME::Encodings,
+    Email::MIME::ContentType, perl.
+
+AUTHOR
+    Casey West, <casey@geeknest.com>.
+
+COPYRIGHT
+      Copyright (c) 2004 Casey West.  All rights reserved.
+      This module is free software; you can redistribute it and/or modify it
+      under the same terms as Perl itself.
+
