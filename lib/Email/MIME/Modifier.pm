@@ -239,12 +239,15 @@ sub parts_set {
         $body .= "$self->{mycrlf}--$bound--$self->{mycrlf}";
         @{$ct_header}{qw[discrete composite]} = qw[multipart mixed]
           unless grep { $ct_header->{discrete} eq $_ } qw[multipart message];
-    } else { # setup singlepart
+    } elsif (@$parts == 1) { # setup singlepart
         $body .= $parts->[0]->body;
         @{$ct_header}{qw[discrete composite]} = 
           @{
             parse_content_type($parts->[0]->header('Content-Type'))
            }{qw[discrete composite]};
+        $self->encoding_set(
+          $parts->[0]->header('Content-Transfer-Encoding')
+        );
         delete $ct_header->{attributes}->{boundary};
     }
 

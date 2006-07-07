@@ -1,6 +1,7 @@
 1.43    2006-07-04
 
   - reliable ordering of content-type attributes (bug 9206)
+  - improve handling of one-part messages
   - plan all tests
 
 1.42    2004-12-23
