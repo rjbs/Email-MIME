@@ -1,9 +1,8 @@
 package Email::MIME::Creator;
-# $Id: Creator.pm,v 1.4 2004/12/24 00:12:49 cwest Exp $
 use strict;
 
 use vars qw[$VERSION];
-$VERSION = '1.41';
+$VERSION = '1.45';
 
 use base q[Email::Simple::Creator];
 use Email::MIME;
@@ -11,14 +10,16 @@ use Email::MIME;
 sub _construct_part {
     my ($class, $body) = @_;
 
-    my $content_type =   ($body =~ /\0/)
+    my $is_binary = $body =~ /[\x00\x80-\xFF]/;
+
+    my $content_type =   $is_binary
                        ? 'application/x-binary'
                        : 'text/plain';
     
     Email::MIME->create(
         attributes => {
             content_type => $content_type,
-            encoding     => 'base64', # be safe
+            encoding     => ($is_binary ? 'base64' : ''), # be safe
         },
         body => $body,
     );

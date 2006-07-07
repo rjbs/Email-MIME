@@ -1,3 +1,8 @@
+1.45    2006-07-06
+
+  - better detection of non-7bit parts
+  - don't base64-encode 7bit parts
+
 1.41    2004-12-23
 
   - Parts can now be automatically created from non-reference strings
