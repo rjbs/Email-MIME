@@ -6,7 +6,7 @@ WriteMakefile (
                NAME          => 'Email::MIME::Creator',
                PREREQ_PM     => {
                                  'Email::MIME' => '1.82',
-                                 'Email::MIME::Modifier' => '1.42',
+                                 'Email::MIME::Modifier' => '1.43',
                                  'Email::Simple' => '1.92',
                                  'Email::Simple::Creator' => '1.4',
                                  'Test::More' => '0.47',
