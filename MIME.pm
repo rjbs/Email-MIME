@@ -6,7 +6,7 @@ require 5.006;
 use strict;
 use Carp;
 use warnings;
-our $VERSION = '1.82';
+our $VERSION = '1.85';
 
 sub new {
     my $self = shift->SUPER::new(@_);
@@ -25,7 +25,10 @@ sub as_string {
 sub parts {
     my $self = shift;
     if (!$self->{parts}) { $self->fill_parts }
-    return @{$self->{parts}}
+
+    my @parts = @{$self->{parts}};
+       @parts = $self unless @parts;
+    return @parts;
 }
 
 sub fill_parts {
@@ -57,7 +60,7 @@ sub body {
 
 sub parts_single_part {
     my $self = shift;
-    $self->{parts} = [ $self ];
+    $self->{parts} = [ ];
     return $self;
 }
 

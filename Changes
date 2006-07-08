@@ -1,5 +1,10 @@
 Revision history for Perl extension Email::MIME.
 
+1.85    2006-07-07
+
+  - avoid memory leak due to circular references
+    (bug 7007, starter patch from MARCB)
+
 1.81    2004-10-29
 
   - Fix bug in headers, now returns list in list context.
