@@ -7,5 +7,5 @@ README
 t/auto_create.t
 t/multipart.t
 t/pod.t
-t/pod-coveage.t
+t/pod-coverage.t
 t/singlepart.t
