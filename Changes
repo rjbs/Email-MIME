@@ -1,9 +1,10 @@
 Revision history for Perl extension Email::MIME.
 
-1.85    2006-07-12
+1.85    2006-07-13
 
   - avoid memory leak due to circular references
     (bug 7007, starter patch from MARCB)
+  - pod tests
 
 1.81    2004-10-29
 
