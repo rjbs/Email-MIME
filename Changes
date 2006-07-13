@@ -1,4 +1,4 @@
-1.43    2006-07-04
+1.43    2006-07-13
 
   - reliable ordering of content-type attributes (bug 9206)
   - improve handling of one-part messages

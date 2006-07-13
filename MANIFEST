@@ -9,3 +9,5 @@ t/ct_attrs.t
 t/disposition.t
 t/encoding.t
 t/parts.t
+t/pod.t
+t/pod-coverage.t
