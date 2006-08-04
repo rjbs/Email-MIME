@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 use Email::MIME::Creator;
-use Test::More tests => 2;
+use Test::More tests => 5;
 
 my @inner = (
   Email::MIME->create(
@@ -25,7 +25,7 @@ my @inner = (
   ),
 );
 
-my $outer = Email::MIME->create(
+my @outer = Email::MIME->create(
   attributes => {
     content_type => "multipart/alternative",
     disposition  => "attachment",
@@ -39,7 +39,7 @@ my $parts = Email::MIME->create(
     content_type => 'multipart/alternative',
     disposition  => 'attachment',
   },
-  parts => [ $outer ],
+  parts => [ @outer ],
 );
 ;
 my $email = Email::MIME->create(
@@ -59,3 +59,8 @@ like(
   qr/GOODBYE THERE/,
   "deeply nested content still found in stringified message",
 );
+
+is(scalar($email->parts),1,'main contains 1 part');
+is(scalar(($email->parts)[0]->parts),1,'outer contains 1 part');
+is(scalar((($email->parts)[0]->parts)[0]->parts),2,'inner contains 2 parts');
+
