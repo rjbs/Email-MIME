@@ -1,7 +1,7 @@
 package Email::MIME::Modifier;
 
 use vars qw[$VERSION];
-$VERSION = '1.43';
+$VERSION = '1.440';
 
 use Email::MIME;
 

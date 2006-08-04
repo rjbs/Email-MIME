@@ -1,3 +1,7 @@
+1.440   2006-08-04
+
+  - don't make a singepart message if told to make a multipart
+
 1.43    2006-07-13
 
   - reliable ordering of content-type attributes (bug 9206)
