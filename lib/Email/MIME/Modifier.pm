@@ -216,10 +216,10 @@ sub filename_set {
 
   $email->parts_set( \@new_parts );
 
-Replaces the parts for an object. Accepts a reference to a list of C<Email::MIME>
-objects, representing the new parts. If this message was originally a single
-part, the C<Content-Type> header will be changed to C<multipart/mixed>, and given
-a new boundary attribute.
+Replaces the parts for an object. Accepts a reference to a list of
+C<Email::MIME> objects, representing the new parts. If this message was
+originally a single part, the C<Content-Type> header will be changed to
+C<multipart/mixed>, and given a new boundary attribute.
 
 =cut
 
@@ -229,7 +229,8 @@ sub parts_set {
 
     my $ct_header = parse_content_type($self->header('Content-Type'));
 
-    if ( @{$parts} > 1 ) { # setup multipart
+    if (@{$parts} > 1 or $ct_header->{discrete} eq 'multipart') {
+        # setup multipart
         $ct_header->{attributes}->{boundary} ||= Email::MessageID->new->user;
         my $bound = $ct_header->{attributes}->{boundary};
         foreach my $part ( @{$parts} ) {
