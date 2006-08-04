@@ -1,3 +1,7 @@
+1.451   2006-08-04
+
+  - require Email::MIME::Modifier 1.440 to avoid bug
+
 1.45    2006-07-06
 
   - better detection of non-7bit parts
