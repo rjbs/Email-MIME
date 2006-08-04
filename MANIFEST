@@ -6,6 +6,7 @@ META.yml
 README
 t/auto_create.t
 t/multipart.t
+t/nested-parts.t
 t/pod.t
 t/pod-coverage.t
 t/singlepart.t
