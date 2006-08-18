@@ -80,11 +80,10 @@ sub parts_multipart {
     delete $self->{body};
 
     # This might be a hack
-    $self->{body} = shift @bits if $bits[0] !~ /.*:.*/;
-
+    $self->{body } = shift @bits if $bits[0] !~ /.*:.*/;
     $self->{parts} = [ map { (ref $self)->new($_) } @bits ];
-    return @{$self->{parts}};
 
+    return @{$self->{parts}};
 }
 
 sub force_decode_hook { 0 }

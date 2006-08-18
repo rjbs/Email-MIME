@@ -8,7 +8,7 @@ MIME::Words.\n\n";
 }
 WriteMakefile(
     'NAME'		=> 'Email::MIME',
-    'VERSION_FROM'	=> 'MIME.pm', # finds $VERSION
+    'VERSION_FROM'	=> 'lib/Email/MIME.pm', # finds $VERSION
     'PREREQ_PM'		=> {
                                  'Email::MIME::ContentType' => '1.0',
                                  'Email::MIME::Encodings' => '1.3',
