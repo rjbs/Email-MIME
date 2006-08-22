@@ -1,0 +1,44 @@
+From: example@example.com
+To: example2@example.com
+Subject: Test attachment
+Date: Fri, 4 Aug 2006 18:52:34 -0400
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="1154731954.d55bF4462.2751";
+ charset="us-ascii"
+
+
+--1154731954.d55bF4462.2751
+Date: Fri, 4 Aug 2006 18:52:34 -0400
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="1154731954.AEE1f1.2751";
+ charset="us-ascii"
+Content-Disposition: attachment
+
+
+--1154731954.AEE1f1.2751
+Date: Fri, 4 Aug 2006 18:52:34 -0400
+MIME-Version: 1.0
+Content-Type: multipart/alternative; boundary="1154731954.6De5C320.2751";
+ charset="US-ASCII"
+Content-Disposition: attachment
+
+
+--1154731954.6De5C320.2751
+Date: Fri, 4 Aug 2006 18:52:34 -0400
+MIME-Version: 1.0
+Content-Type: text/plain; charset="US-ASCII"
+Content-Disposition: attachment
+
+HELLO THERE!
+--1154731954.6De5C320.2751
+Date: Fri, 4 Aug 2006 18:52:34 -0400
+MIME-Version: 1.0
+Content-Type: text/plain; charset="US-ASCII"
+Content-Disposition: attachment
+
+HELLO THERE!
+--1154731954.6De5C320.2751--
+
+--1154731954.AEE1f1.2751--
+
+--1154731954.d55bF4462.2751--
