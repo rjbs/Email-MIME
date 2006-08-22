@@ -5,7 +5,7 @@ if (eval {require Encode}) {
 # Header decoding tests.
 
 use Email::MIME;
-open IN, "t/joejob" or die $!;
+open IN, "t/Mail/joejob" or die $!;
 undef $/;
 my $string = <IN>;
 my $obj = Email::MIME->new($string);

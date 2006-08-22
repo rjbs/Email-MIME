@@ -6,7 +6,7 @@ use_ok("Email::MIME");
 
 my $txt_ext = join '|', MIME::Types->new->type('text/plain')->extensions;
 
-open IN, "t/mail-2" or die $!;
+open IN, "t/Mail/mail-2" or die $!;
 undef $/;
 my $string = <IN>;
 my $obj = Email::MIME->new($string);

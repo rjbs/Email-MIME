@@ -2,7 +2,7 @@
 use Email::MIME::Encodings;
 use Test::More 'no_plan';
 use_ok("Email::MIME");
-open IN, "t/mail-1" or die $!;
+open IN, "t/Mail/mail-1" or die $!;
 undef $/;
 my $string = <IN>;
 my $obj = Email::MIME->new($string);
@@ -13,7 +13,7 @@ my $body = $part->body;
 
 is($body, Email::MIME::Encodings::decode(base64 => $obj->body_raw),
     "Internally consistent");
-open(GIF, "t/att-1.gif") or die $!;
+open(GIF, "t/Mail/att-1.gif") or die $!;
 my $gif = <GIF>;
 is($body, $gif, "Externally consistent");
 is($obj->filename, "1.gif", "Filename is correct");
