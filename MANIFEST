@@ -1,8 +1,8 @@
 Changes
+lib/Email/MIME.pm
 Makefile.PL
 MANIFEST			This list of files
 META.yml
-lib/Email/MIME.pm
 README
 t/1.t
 t/2.t
@@ -14,4 +14,3 @@ t/Mail/mail-1
 t/Mail/mail-2
 t/Mail/nested-parts
 t/pod.t
-t/pod-coverage.t

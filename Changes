@@ -1,9 +1,8 @@
 Revision history for Perl extension Email::MIME.
 
-1.XX    200X-XX-XX
+1.851   2006-08-22
 
-  - Added a test for nested MIME parts
-  - Moved test email files into the t/Mail subdirectory
+  - test coverage and layout improvements by SSORICHE
 
 1.85    2006-07-13
 
