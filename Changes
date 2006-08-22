@@ -1,5 +1,10 @@
 Revision history for Perl extension Email::MIME.
 
+1.XX    200X-XX-XX
+
+  - Added a test for nested MIME parts
+  - Moved test email files into the t/Mail subdirectory
+
 1.85    2006-07-13
 
   - avoid memory leak due to circular references
