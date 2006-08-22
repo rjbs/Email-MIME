@@ -7,9 +7,11 @@ README
 t/1.t
 t/2.t
 t/3.t
-t/att-1.gif
-t/joejob
-t/mail-1
-t/mail-2
+t/nested-parts.t
+t/Mail/att-1.gif
+t/Mail/joejob
+t/Mail/mail-1
+t/Mail/mail-2
+t/Mail/nested-parts
 t/pod.t
 t/pod-coverage.t
