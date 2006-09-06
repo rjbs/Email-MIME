@@ -1,5 +1,9 @@
 Revision history for Perl extension Email::MIME.
 
+1.852   2006-09-05
+
+  - avoid some warnings with undef headers or bodies
+
 1.851   2006-08-22
 
   - test coverage and layout improvements by SSORICHE

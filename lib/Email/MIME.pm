@@ -6,7 +6,7 @@ require 5.006;
 use strict;
 use Carp;
 use warnings;
-our $VERSION = '1.851';
+our $VERSION = '1.852';
 
 sub new {
     my $self = shift->SUPER::new(@_);
@@ -76,11 +76,11 @@ sub parts_multipart {
     $self->{body_raw} = $self->SUPER::body;
     # rfc1521 7.2.1
     my ($body, $epilogue) = split /^--\Q$boundary\E--\s*$/sm, $self->body_raw, 2;
-    my @bits = split /^--\Q$boundary\E\s*$/sm, $body;
+    my @bits = split /^--\Q$boundary\E\s*$/sm, ($body||'');
     delete $self->{body};
 
     # This might be a hack
-    $self->{body } = shift @bits if $bits[0] !~ /.*:.*/;
+    $self->{body} = shift @bits if ($bits[0]||'') !~ /.*:.*/;
     $self->{parts} = [ map { (ref $self)->new($_) } @bits ];
 
     return @{$self->{parts}};
