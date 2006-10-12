@@ -6,7 +6,7 @@ require 5.006;
 use strict;
 use Carp;
 use warnings;
-our $VERSION = '1.852';
+our $VERSION = '1.853';
 
 sub new {
     my $self = shift->SUPER::new(@_);
@@ -88,7 +88,7 @@ sub parts_multipart {
 
 sub force_decode_hook { 0 }
 sub decode_hook { return $_[1] }
-sub content_type { shift->header("Content-type"); }
+sub content_type { scalar shift->header("Content-type"); }
 sub header {
     my $self   = shift;
     my @header = $self->SUPER::header(@_);
@@ -123,7 +123,7 @@ sub filename {
     my ($self, $force) = @_;
     return $gcache{$self} if exists $gcache{$self};
     
-    my $dis = $self->header("Content-Disposition");
+    my $dis = $self->header("Content-Disposition") || '';
     my $attrs = $dis =~ s/^.*?;// 
          ? Email::MIME::ContentType::_parse_attributes($dis) : {};
     my $name = $attrs->{filename}

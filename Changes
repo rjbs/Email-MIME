@@ -1,5 +1,10 @@
 Revision history for Perl extension Email::MIME.
 
+1.853   2006-11-12
+
+  - always call header in scalar context when getting content type (thanks,
+    JESSE)
+
 1.852   2006-09-05
 
   - avoid some warnings with undef headers or bodies
