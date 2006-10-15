@@ -1,5 +1,8 @@
 Revision history for Perl extension Email::MIME.
 
+1.854   2006-11-12
+  - fix as_string to work with latest Email::Simple
+
 1.853   2006-11-12
 
   - always call header in scalar context when getting content type (thanks,

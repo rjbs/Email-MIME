@@ -6,7 +6,7 @@ require 5.006;
 use strict;
 use Carp;
 use warnings;
-our $VERSION = '1.853';
+our $VERSION = '1.854';
 
 sub new {
     my $self = shift->SUPER::new(@_);
@@ -17,9 +17,9 @@ sub new {
 
 sub as_string {
     my $self = shift;
-    return $self->_headers_as_string.(
-      $self->{mycrlf} || "\n"
-    ).$self->body_raw;
+    return $self->__head->as_string
+         . ($self->{mycrlf} || "\n")
+         . $self->body_raw;
 }
 
 sub parts {

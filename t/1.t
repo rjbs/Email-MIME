@@ -25,3 +25,9 @@ ok $header, 'got back a header in scalar context';
 ok !ref($header), 'header in scalar context is not ref';
 
 is scalar(@headers), 3, 'got all three back in list context';
+
+# This test would be stupider if it hadn't broken in a release.
+# There are to many reliances on Email::Simple guts, at this point.
+#   -- rjbs, 2006-10-15
+eval { $obj->as_string };
+ok(!$@, "we can stringify");
