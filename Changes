@@ -1,5 +1,6 @@
 Revision history for Perl extension Email::MIME.
 
+1.855   2006-11-19
 1.854   2006-11-12
   - fix as_string to work with latest Email::Simple
 

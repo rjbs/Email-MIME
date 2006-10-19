@@ -6,7 +6,7 @@ require 5.006;
 use strict;
 use Carp;
 use warnings;
-our $VERSION = '1.854';
+our $VERSION = '1.855';
 
 sub new {
     my $self = shift->SUPER::new(@_);
