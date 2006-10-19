@@ -1,0 +1,67 @@
+NAME
+    Email::MIME - Easy MIME message parsing.
+
+SYNOPSIS
+      use Email::MIME;
+      my $parsed = Email::MIME->new($message);
+
+      my Email::MIME @parts = $parsed->parts;
+      my $decoded = $parsed->body;
+      my $non_decoded = $parsed->body_raw;
+
+      my $content_type = $parsed->content_type;
+
+DESCRIPTION
+    This is an extension of the Email::Simple module, to handle MIME encoded
+    messages. It takes a message as a string, splits it up into its
+    constituent parts, and allows you access to various parts of the
+    message. Headers are decoded from MIME encoding.
+
+NOTE
+    This is an alpha release, designed to stimulate discussion on the API,
+    which may change in future releases. Please send me comments about any
+    features you think "Email::MIME" should have. Note that I expect most
+    things to be driven by subclassing and mix-ins.
+
+METHODS
+    Please see Email::Simple for the base set of methods. It won't take very
+    long. Added to that, you have:
+
+  parts
+    This returns a set of "Email::MIME" objects reflecting the parts of the
+    message. If it's a single-part message, you get the original object
+    back.
+
+  body
+    This decodes and returns the body of the object. For top-level objects
+    in multi-part messages, this is highly likely to be something like "This
+    is a multi-part message in MIME format."
+
+  body_raw
+    This returns the body of the object, but doesn't decode the transfer
+    encoding.
+
+  content_type
+    This is a shortcut for access to the content type header.
+
+  filename
+    This provides the suggested filename for the attachment part. Normally
+    it will return the filename from the headers, but if "filename" is
+    passed a true parameter, it will generate an appropriate "stable"
+    filename if one is not found in the MIME headers.
+
+AUTHOR
+    Casey West, "casey@geeknest.com"
+
+    Simon Cozens, "simon@cpan.org" (retired)
+
+    You may distribute this module under the terms of the Artistic or GPL
+    licenses.
+
+THANKS
+    This module was generously sponsored by Best Practical
+    (http://www.bestpractical.com/) and Pete Sergeant.
+
+SEE ALSO
+    Email::Simple.
+
