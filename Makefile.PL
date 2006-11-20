@@ -4,6 +4,7 @@ WriteMakefile (
   AUTHOR        => 'Casey West <casey@geeknest.com>',
   ABSTRACT      => "Email::MIME constructor for starting anew",
   NAME          => 'Email::MIME::Creator',
+  (eval { ExtUtils::MakeMaker->VERSION(6.21) } ? (LICENSE => 'perl') : ()),
   PREREQ_PM     => {
     'Email::MIME'            => '1.82',
     'Email::MIME::Modifier'  => '1.440', # allow forced multipart

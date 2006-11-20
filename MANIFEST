@@ -10,3 +10,4 @@ t/nested-parts.t
 t/pod.t
 t/pod-coverage.t
 t/singlepart.t
+LICENSE
