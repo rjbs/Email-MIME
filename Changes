@@ -1,0 +1,59 @@
+Revision history for Perl extension Email::MIME.
+
+1.856   2006-11-27
+  - reduce the extent to which Email::MIME touches Email::Simple guts
+  - improve documentation a bit
+  - improve packaging
+
+1.855   2006-11-19
+1.854   2006-11-12
+  - fix as_string to work with latest Email::Simple
+
+1.853   2006-11-12
+
+  - always call header in scalar context when getting content type (thanks,
+    JESSE)
+
+1.852   2006-09-05
+
+  - avoid some warnings with undef headers or bodies
+
+1.851   2006-08-22
+
+  - test coverage and layout improvements by SSORICHE
+
+1.85    2006-07-13
+
+  - avoid memory leak due to circular references
+    (bug 7007, starter patch from MARCB)
+  - pod tests
+
+1.81    2004-10-29
+
+  - Fix bug in headers, now returns list in list context.
+  - Dependency updates.
+  - Author change.
+
+1.8   Wed Aug 25 10:47:15 BST 2004
+    - Split filename and invent_filename to separate methods, for the
+      Stripper
+
+1.6   Sun Jul  4 21:15:07 BST 2004
+    - Another fix by Casey - this time, don't decode on as_string
+
+1.5   Thu Jul  1 18:38:06 BST 2004
+    - That didn't actually fix the bug at all.
+
+1.4   Thu Jul  1 18:35:32 BST 2004
+    - Only parse attributes if there are some!
+
+1.3   Mon Apr  5 17:25:03 BST 2004
+    - Bug found by Joshua Hoblitt, fixed by Richard Clamp
+
+1.2   Fri Apr  2 09:50:34 BST 2004
+    - Test fix from Richard Clamp
+
+0.01  Thu Apr 10 13:38:09 2003
+	- original version; created by h2xs 1.2 with options
+		-AX -n Email::MIME
+
