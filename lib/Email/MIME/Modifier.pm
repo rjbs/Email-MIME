@@ -1,7 +1,7 @@
 package Email::MIME::Modifier;
 
 use vars qw[$VERSION];
-$VERSION = '1.440';
+$VERSION = '1.441';
 
 use Email::MIME;
 
@@ -15,6 +15,12 @@ use Email::MessageID;
 =head1 NAME
 
 Email::MIME::Modifier - Modify Email::MIME Objects Easily
+
+=head1 VERSION
+
+version 1.441
+
+  $Id$
 
 =head1 SYNOPSIS
 
@@ -370,6 +376,12 @@ __END__
 
 L<Email::Simple>, L<Email::MIME>, L<Email::MIME::Encodings>,
 L<Email::MIME::ContentType>, L<perl>.
+
+=head1 PERL EMAIL PROJECT
+
+This module is maintained by the Perl Email Project
+
+L<http://emailproject.perl.org/wiki/Email::MIME>
 
 =head1 AUTHOR
 
