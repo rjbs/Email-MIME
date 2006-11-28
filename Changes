@@ -1,5 +1,8 @@
 Revision history for Perl extension Email::MIME.
 
+1.857   2006-11-27
+  - further severing of Email::MIME from ::Simple's guts
+
 1.856   2006-11-27
   - reduce the extent to which Email::MIME touches Email::Simple guts
   - improve documentation a bit

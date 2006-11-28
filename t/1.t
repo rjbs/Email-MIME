@@ -11,8 +11,12 @@ my ($part) = $obj->parts;
 isa_ok($part, "Email::MIME");
 my $body = $part->body;
 
-is($body, Email::MIME::Encodings::decode(base64 => $obj->body_raw),
-    "Internally consistent");
+is(
+  $body,
+  Email::MIME::Encodings::decode(base64 => $obj->body_raw),
+  "Internally consistent"
+);
+
 open(GIF, "t/Mail/att-1.gif") or die $!;
 my $gif = <GIF>;
 is($body, $gif, "Externally consistent");
