@@ -6,6 +6,19 @@ require 5.006;
 use strict;
 use Carp;
 use warnings;
+
+=head1 NAME
+
+Email::MIME - Easy MIME message parsing.
+
+=head1 VERSION
+
+version 1.856
+
+ $Id$
+
+=cut
+
 our $VERSION = '1.856';
 
 sub new {
@@ -18,13 +31,15 @@ sub new {
 sub as_string {
     my $self = shift;
     return $self->__head->as_string
-         . ($self->{mycrlf} || "\n")
+         . ($self->{mycrlf} || "\n") # XXX: replace with ->crlf
          . $self->body_raw;
 }
 
 sub parts {
     my $self = shift;
-    if (!$self->{parts}) { $self->fill_parts }
+    if (!$self->{parts}) {
+      $self->fill_parts;
+    }
 
     my @parts = @{$self->{parts}};
        @parts = $self unless @parts;
@@ -33,8 +48,10 @@ sub parts {
 
 sub fill_parts {
     my $self = shift;
-    if ($self->{ct}{discrete} eq "multipart" 
-        or $self->{ct}{discrete} eq "message") {
+    if (
+        $self->{ct}{discrete} eq "multipart" 
+        or $self->{ct}{discrete} eq "message"
+    ) {
         $self->parts_multipart;
     } else {
         $self->parts_single_part;
@@ -44,7 +61,7 @@ sub fill_parts {
 
 sub body {
     my $self = shift;
-    my $body = $self->SUPER::body;
+    my $body = $self->{body};
     my $cte = $self->header("Content-Transfer-Encoding");
     return $body unless $cte;
     if (!$self->force_decode_hook and $cte =~ /^7bit|8bit|binary/i) {
@@ -75,12 +92,15 @@ sub parts_multipart {
 
     $self->{body_raw} = $self->SUPER::body;
     # rfc1521 7.2.1
-    my ($body, $epilogue) = split /^--\Q$boundary\E--\s*$/sm, $self->body_raw, 2;
+    my ($body, $epilogue)
+      = split /^--\Q$boundary\E--\s*$/sm, $self->body_raw, 2;
+
     my @bits = split /^--\Q$boundary\E\s*$/sm, ($body||'');
     delete $self->{body};
 
-    # This might be a hack
-    $self->body_set(shift @bits) if ($bits[0]||'') !~ /.*:.*/;
+    # This is a horrible hack, although it's debateable whether it was better
+    # or worse when it was $self->{body} = shift @bits ... -- rjbs, 2006-11-27
+    $self->SUPER::body_set(shift @bits) if ($bits[0]||'') !~ /.*:.*/;
     $self->{parts} = [ map { (ref $self)->new($_) } @bits ];
 
     return @{$self->{parts}};
@@ -148,10 +168,6 @@ sub invent_filename {
 1;
 
 __END__
-
-=head1 NAME
-
-Email::MIME - Easy MIME message parsing.
 
 =head1 SYNOPSIS
 
@@ -239,6 +255,22 @@ For example:
     + text/plain
     + text/html
 
+=head1 TODO
+
+All of the Email::MIME-specific guts should move to a single entry on the
+object's guts.  This will require changes to both Email::MIME and
+L<Email::MIME::Modifier>, sadly.
+
+=head1 SEE ALSO
+
+L<Email::Simple>, L<Email::MIME::Modifier>, L<Email::MIME:Creator>.
+
+=head1 PERL EMAIL PROJECT
+
+This module is maintained by the Perl Email Project
+
+L<http://emailproject.perl.org/wiki/Email::MIME>
+
 =head1 AUTHOR
 
 Casey West, C<casey@geeknest.com>
@@ -252,9 +284,5 @@ licenses.
 
 This module was generously sponsored by Best Practical
 (http://www.bestpractical.com/) and Pete Sergeant.
-
-=head1 SEE ALSO
-
-L<Email::Simple>.
 
 =cut
