@@ -338,7 +338,12 @@ sub _reset_cids {
     if ( $self->parts > 1 ) {
         if ( $ct_header->{composite} eq 'alternative' ) {
             my %cids;
-            $cids{$_->header('Content-ID')}++ for $self->parts;
+            for my $part ($self->parts) {
+              my $cid = defined $part->header('Content-ID')
+                      ? $part->header('Content-ID')
+                      : '';
+              $cids{ $cid }++
+            }
             return if keys(%cids) == 1;
 
             my $cid = $self->_get_cid;
