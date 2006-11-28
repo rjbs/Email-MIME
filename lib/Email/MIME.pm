@@ -6,7 +6,7 @@ require 5.006;
 use strict;
 use Carp;
 use warnings;
-our $VERSION = '1.855';
+our $VERSION = '1.856';
 
 sub new {
     my $self = shift->SUPER::new(@_);
@@ -44,7 +44,7 @@ sub fill_parts {
 
 sub body {
     my $self = shift;
-    my $body = $self->{body};
+    my $body = $self->SUPER::body;
     my $cte = $self->header("Content-Transfer-Encoding");
     return $body unless $cte;
     if (!$self->force_decode_hook and $cte =~ /^7bit|8bit|binary/i) {
@@ -80,7 +80,7 @@ sub parts_multipart {
     delete $self->{body};
 
     # This might be a hack
-    $self->{body} = shift @bits if ($bits[0]||'') !~ /.*:.*/;
+    $self->body_set(shift @bits) if ($bits[0]||'') !~ /.*:.*/;
     $self->{parts} = [ map { (ref $self)->new($_) } @bits ];
 
     return @{$self->{parts}};
@@ -148,7 +148,6 @@ sub invent_filename {
 1;
 
 __END__
-# Below is stub documentation for your module. You better edit it!
 
 =head1 NAME
 
@@ -201,6 +200,16 @@ is a multi-part message in MIME format."
 This returns the body of the object, but doesn't decode the transfer
 encoding.
 
+=head2 decode_hook
+
+This method is called before the L<Email::MIME::Encodings> C<decode> method, to
+decode the body of non-binary messages (or binary messages, if the
+C<force_decode_hook> method returns true).  By default, this method does
+nothing, but subclasses may define behavior.
+
+This method could be used to implement the decryption of content in secure
+email, for example.
+
 =head2 content_type
 
 This is a shortcut for access to the content type header.
@@ -211,6 +220,24 @@ This provides the suggested filename for the attachment part. Normally
 it will return the filename from the headers, but if C<filename> is
 passed a true parameter, it will generate an appropriate "stable"
 filename if one is not found in the MIME headers.
+
+=head2 invent_filename
+
+  my $filename = Email::MIME->invent_filename($content_type);
+
+This routine is used by C<filename> to generate filenames for attached files.
+It will attempt to choose a reasonable extension, falling back to F<dat>.
+
+=head2 debug_structure
+
+  my $description = $email->debug_structure;
+
+This method returns a string that describes the structure of the MIME entity.
+For example:
+
+  + multipart/alternative; boundary="=_NextPart_2"; charset="BIG-5"
+    + text/plain
+    + text/html
 
 =head1 AUTHOR
 

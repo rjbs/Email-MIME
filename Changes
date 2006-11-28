@@ -1,5 +1,8 @@
 Revision history for Perl extension Email::MIME.
 
+1.856   2006-11-27
+  - reduce the extent to which Email::MIME touches Email::Simple guts
+
 1.855   2006-11-19
 1.854   2006-11-12
   - fix as_string to work with latest Email::Simple
