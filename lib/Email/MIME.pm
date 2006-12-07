@@ -174,7 +174,7 @@ __END__
   use Email::MIME;
   my $parsed = Email::MIME->new($message);
 
-  my Email::MIME @parts = $parsed->parts;
+  my @parts = $parsed->parts; # These will be Email::MIME objects, too.
   my $decoded = $parsed->body;
   my $non_decoded = $parsed->body_raw;
 
