@@ -10,7 +10,9 @@ open IN, "t/Mail/mail-2" or die $!;
 undef $/;
 my $string = <IN>;
 my $obj = Email::MIME->new($string);
+
 isa_ok($obj, "Email::MIME");
+
 is($obj->debug_structure,<<EOF);
 + multipart/related; boundary="----=_NextPart_000_0001_01C3D13C.8846CC50"
      + multipart/alternative; boundary="----=_NextPart_001_0002_01C3D13C.884B8740"

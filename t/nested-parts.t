@@ -13,7 +13,7 @@ my $incoming = do { local $/; <IN>; };
 my $msg = Email::MIME->new($incoming);
 isa_ok($msg => 'Email::MIME');
 
-is(scalar($msg->parts), 1,'outter part');
+is(scalar($msg->parts), 1,'outer part');
 
 my @outer_parts = $msg->parts;
 is(scalar($outer_parts[0]->parts), 1,'middle part');
