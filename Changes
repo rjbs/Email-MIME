@@ -1,5 +1,11 @@
 Revision history for Perl extension Email::MIME.
 
+1.858   2007-02-09
+  - fixed laxity which allowed leading newlines in parts passed to 'new' for
+    instantiation; this only broke when used with Email::Simple 1.998
+  - Shout out to all my former co-workers from General Cinemas unit 858!
+    This version is for you.
+
 1.857   2006-11-27
   - further severing of Email::MIME from ::Simple's guts
 

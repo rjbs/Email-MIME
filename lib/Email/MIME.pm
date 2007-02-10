@@ -13,13 +13,13 @@ Email::MIME - Easy MIME message parsing.
 
 =head1 VERSION
 
-version 1.857
+version 1.858
 
  $Id$
 
 =cut
 
-our $VERSION = '1.857';
+our $VERSION = '1.858';
 
 sub new {
     my $self = shift->SUPER::new(@_);
@@ -37,9 +37,8 @@ sub as_string {
 
 sub parts {
     my $self = shift;
-    if (!$self->{parts}) {
-      $self->fill_parts;
-    }
+
+    $self->fill_parts unless $self->{parts};
 
     my @parts = @{$self->{parts}};
        @parts = $self unless @parts;
@@ -91,17 +90,29 @@ sub parts_multipart {
     return $self->parts_single_part unless $boundary;
 
     $self->{body_raw} = $self->SUPER::body;
+
     # rfc1521 7.2.1
     my ($body, $epilogue)
       = split /^--\Q$boundary\E--\s*$/sm, $self->body_raw, 2;
 
     my @bits = split /^--\Q$boundary\E\s*$/sm, ($body||'');
+
     $self->SUPER::body_set(undef);
 
     # This is a horrible hack, although it's debateable whether it was better
     # or worse when it was $self->{body} = shift @bits ... -- rjbs, 2006-11-27
     $self->SUPER::body_set(shift @bits) if ($bits[0]||'') !~ /.*:.*/;
-    $self->{parts} = [ map { (ref $self)->new($_) } @bits ];
+
+    my $bits = @bits;
+
+    my @parts;
+    for my $bit (@bits) {
+      $bit =~ s/\A[\n\r]+//smg;
+      my $email = (ref $self)->new($bit);
+      push @parts, $email;
+    }
+
+    $self->{parts} = \@parts;
 
     return @{$self->{parts}};
 }
