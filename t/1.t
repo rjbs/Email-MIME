@@ -34,4 +34,4 @@ is scalar(@headers), 3, 'got all three back in list context';
 # There are to many reliances on Email::Simple guts, at this point.
 #   -- rjbs, 2006-10-15
 eval { $obj->as_string };
-ok(!$@, "we can stringify");
+is($@, '', "we can stringify without dying");
