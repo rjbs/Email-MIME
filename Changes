@@ -2,6 +2,7 @@ Revision history for Perl extension Email::MIME.
 
 1.859   2007-??-??
         minor test improvements
+        add "subparts" method
 
 1.858   2007-02-09
         fixed laxity which allowed leading newlines in parts passed to 'new'

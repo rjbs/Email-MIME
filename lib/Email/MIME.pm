@@ -45,6 +45,14 @@ sub parts {
     return @parts;
 }
 
+sub subparts {
+  my ($self) = @_;
+
+  $self->fill_parts unless $self->{parts};
+  my @parts = @{$self->{parts}};
+  return @parts;
+}
+
 sub fill_parts {
     my $self = shift;
     if (
@@ -212,9 +220,17 @@ very long. Added to that, you have:
 
 =head2 parts
 
-This returns a set of C<Email::MIME> objects reflecting the parts of the
-message. If it's a single-part message, you get the original object
-back.
+This returns a list of C<Email::MIME> objects reflecting the parts of the
+message. If it's a single-part message, you get the original object back.
+
+In scalar context, this method returns the number of parts.
+
+=head2 subparts
+
+This returns a list of C<Email::MIME> objects reflecting the parts of the
+message.  If it's a single-part message, this method returns an empty list.
+
+In scalar context, this method returns the number of subparts.
 
 =head2 body
 
