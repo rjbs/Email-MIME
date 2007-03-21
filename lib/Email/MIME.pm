@@ -1,11 +1,13 @@
+use 5.006;
+use strict;
+use warnings;
+
 package Email::MIME;
-use base 'Email::Simple';
+use base qw(Email::Simple);
+
 use Email::MIME::ContentType;
 use Email::MIME::Encodings;
-require 5.006;
-use strict;
 use Carp;
-use warnings;
 
 =head1 NAME
 
@@ -13,175 +15,177 @@ Email::MIME - Easy MIME message parsing.
 
 =head1 VERSION
 
-version 1.858
+version 1.859
 
  $Id$
 
 =cut
 
-our $VERSION = '1.858';
+our $VERSION = '1.859';
 
 sub new {
-    my $self = shift->SUPER::new(@_);
-    $self->{ct} = parse_content_type($self->content_type);
-    $self->parts;
-    return $self;
+  my $self = shift->SUPER::new(@_);
+  $self->{ct} = parse_content_type($self->content_type);
+  $self->parts;
+  return $self;
 }
 
 sub as_string {
-    my $self = shift;
-    return $self->__head->as_string
-         . ($self->{mycrlf} || "\n") # XXX: replace with ->crlf
-         . $self->body_raw;
+  my $self = shift;
+  return $self->__head->as_string
+    . ($self->{mycrlf} || "\n")  # XXX: replace with ->crlf
+    . $self->body_raw;
 }
 
 sub parts {
-    my $self = shift;
+  my $self = shift;
 
-    $self->fill_parts unless $self->{parts};
+  $self->fill_parts unless $self->{parts};
 
-    my @parts = @{$self->{parts}};
-       @parts = $self unless @parts;
-    return @parts;
+  my @parts = @{ $self->{parts} };
+  @parts = $self unless @parts;
+  return @parts;
 }
 
 sub subparts {
   my ($self) = @_;
 
   $self->fill_parts unless $self->{parts};
-  my @parts = @{$self->{parts}};
+  my @parts = @{ $self->{parts} };
   return @parts;
 }
 
 sub fill_parts {
-    my $self = shift;
-    if (
-        $self->{ct}{discrete} eq "multipart" 
-        or $self->{ct}{discrete} eq "message"
-    ) {
-        $self->parts_multipart;
-    } else {
-        $self->parts_single_part;
-    }
-    return $self;
+  my $self = shift;
+  if ( $self->{ct}{discrete} eq "multipart"
+    or $self->{ct}{discrete} eq "message")
+  {
+    $self->parts_multipart;
+  } else {
+    $self->parts_single_part;
+  }
+  return $self;
 }
 
 sub body {
-    my $self = shift;
-    my $body = $self->SUPER::body;
-    my $cte = $self->header("Content-Transfer-Encoding");
-    return $body unless $cte;
-    if (!$self->force_decode_hook and $cte =~ /^7bit|8bit|binary/i) {
-        return $body;
-    }
-
-    $body = $self->decode_hook($body) if $self->can("decode_hook");
-    # For S/MIME, etc.
-
-    $body = Email::MIME::Encodings::decode( $cte, $body );
+  my $self = shift;
+  my $body = $self->SUPER::body;
+  my $cte  = $self->header("Content-Transfer-Encoding");
+  return $body unless $cte;
+  if (!$self->force_decode_hook and $cte =~ /^7bit|8bit|binary/i) {
     return $body;
+  }
+
+  $body = $self->decode_hook($body) if $self->can("decode_hook");
+
+  # For S/MIME, etc.
+
+  $body = Email::MIME::Encodings::decode($cte, $body);
+  return $body;
 }
 
 sub parts_single_part {
-    my $self = shift;
-    $self->{parts} = [ ];
-    return $self;
+  my $self = shift;
+  $self->{parts} = [];
+  return $self;
 }
 
 sub body_raw {
-    return $_[0]->{body_raw} || $_[0]->SUPER::body;
+  return $_[0]->{body_raw} || $_[0]->SUPER::body;
 }
 
 sub parts_multipart {
-    my $self = shift;
-    my $boundary = $self->{ct}->{attributes}->{boundary};
-    return $self->parts_single_part unless $boundary;
+  my $self     = shift;
+  my $boundary = $self->{ct}->{attributes}->{boundary};
+  return $self->parts_single_part unless $boundary;
 
-    $self->{body_raw} = $self->SUPER::body;
+  $self->{body_raw} = $self->SUPER::body;
 
-    # rfc1521 7.2.1
-    my ($body, $epilogue)
-      = split /^--\Q$boundary\E--\s*$/sm, $self->body_raw, 2;
+  # rfc1521 7.2.1
+  my ($body, $epilogue) = split /^--\Q$boundary\E--\s*$/sm, $self->body_raw, 2;
 
-    my @bits = split /^--\Q$boundary\E\s*$/sm, ($body||'');
+  my @bits = split /^--\Q$boundary\E\s*$/sm, ($body || '');
 
-    $self->SUPER::body_set(undef);
+  $self->SUPER::body_set(undef);
 
-    # This is a horrible hack, although it's debateable whether it was better
-    # or worse when it was $self->{body} = shift @bits ... -- rjbs, 2006-11-27
-    $self->SUPER::body_set(shift @bits) if ($bits[0]||'') !~ /.*:.*/;
+  # This is a horrible hack, although it's debateable whether it was better
+  # or worse when it was $self->{body} = shift @bits ... -- rjbs, 2006-11-27
+  $self->SUPER::body_set(shift @bits) if ($bits[0] || '') !~ /.*:.*/;
 
-    my $bits = @bits;
+  my $bits = @bits;
 
-    my @parts;
-    for my $bit (@bits) {
-      $bit =~ s/\A[\n\r]+//smg;
-      my $email = (ref $self)->new($bit);
-      push @parts, $email;
-    }
+  my @parts;
+  for my $bit (@bits) {
+    $bit =~ s/\A[\n\r]+//smg;
+    my $email = (ref $self)->new($bit);
+    push @parts, $email;
+  }
 
-    $self->{parts} = \@parts;
+  $self->{parts} = \@parts;
 
-    return @{$self->{parts}};
+  return @{ $self->{parts} };
 }
 
 sub force_decode_hook { 0 }
-sub decode_hook { return $_[1] }
-sub content_type { scalar shift->header("Content-type"); }
-sub header {
-    my $self   = shift;
-    my @header = $self->SUPER::header(@_);
-    foreach my $header ( @header ) {
-        next unless $header =~ /=\?/;
-        $header = $self->_header_decode($header);
-    }
-    return wantarray ? (@header) : $header[0];
-}
-*_header_decode =   eval { require Encode }
-                  ? \&_header_decode_encode
-                  : do {
-                         require MIME::Words;
-                         \&_header_decode_mimewords;
-                       };
+sub decode_hook       { return $_[1] }
+sub content_type      { scalar shift->header("Content-type"); }
 
-sub _header_decode_encode    { Encode::decode("MIME-Header", $_[1]) }
+sub header {
+  my $self   = shift;
+  my @header = $self->SUPER::header(@_);
+  foreach my $header (@header) {
+    next unless $header =~ /=\?/;
+    $header = $self->_header_decode($header);
+  }
+  return wantarray ? (@header) : $header[0];
+}
+*_header_decode =
+  eval { require Encode }
+  ? \&_header_decode_encode
+  : do {
+  require MIME::Words;
+  \&_header_decode_mimewords;
+  };
+
+sub _header_decode_encode { Encode::decode("MIME-Header", $_[1]) }
 sub _header_decode_mimewords { MIME::Words::decode_mimewords($_[1]) }
 
 sub debug_structure {
-    my ($self, $level) = @_;
-    $level ||= 0;
-    my $rv = " "x(5*$level);
-    $rv .= "+ ".$self->content_type."\n";
-    my @parts = $self->parts;
-    if (@parts > 1) { $rv .= $_->debug_structure($level +1) for @parts; }
-    return $rv;
+  my ($self, $level) = @_;
+  $level ||= 0;
+  my $rv = " " x (5 * $level);
+  $rv .= "+ " . $self->content_type . "\n";
+  my @parts = $self->parts;
+  if (@parts > 1) { $rv .= $_->debug_structure($level + 1) for @parts; }
+  return $rv;
 }
 
 my %gcache;
+
 sub filename {
-    my ($self, $force) = @_;
-    return $gcache{$self} if exists $gcache{$self};
-    
-    my $dis = $self->header("Content-Disposition") || '';
-    my $attrs = $dis =~ s/^.*?;// 
-         ? Email::MIME::ContentType::_parse_attributes($dis) : {};
-    my $name = $attrs->{filename}
-                || $self->{ct}{attributes}{name};
-    return $name if $name or !$force;
-    return $gcache{$self} = 
-        $self->invent_filename($self->{ct}->{discrete} ."/".
-                               $self->{ct}->{composite});
+  my ($self, $force) = @_;
+  return $gcache{$self} if exists $gcache{$self};
+
+  my $dis = $self->header("Content-Disposition") || '';
+  my $attrs = $dis =~ s/^.*?;//
+    ? Email::MIME::ContentType::_parse_attributes($dis)
+    : {};
+  my $name = $attrs->{filename}
+    || $self->{ct}{attributes}{name};
+  return $name if $name or !$force;
+  return $gcache{$self} = $self->invent_filename(
+    $self->{ct}->{discrete} . "/" . $self->{ct}->{composite});
 }
 
 my $gname = 0;
 
 sub invent_filename {
-    my ($self, $ct) = @_;
-    require MIME::Types;
-    my $type = MIME::Types->new->type($ct);
-    my $ext = $type && (($type->extensions)[0]);
-    $ext ||= "dat";
-    return "attachment-$$-".$gname++.".$ext";
+  my ($self, $ct) = @_;
+  require MIME::Types;
+  my $type = MIME::Types->new->type($ct);
+  my $ext = $type && (($type->extensions)[0]);
+  $ext ||= "dat";
+  return "attachment-$$-" . $gname++ . ".$ext";
 }
 
 1;

@@ -1,7 +1,12 @@
+#!perl -T
 # vim:ft=perl
+use strict;
+use warnings;
+
+use Test::More 'no_plan';
 use Email::MIME::Encodings;
 use MIME::Types;
-use Test::More 'no_plan';
+
 use_ok("Email::MIME");
 
 my $txt_ext = join '|', MIME::Types->new->type('text/plain')->extensions;
