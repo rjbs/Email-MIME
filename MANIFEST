@@ -2,7 +2,6 @@ Changes
 lib/Email/MIME/Creator.pm
 Makefile.PL
 MANIFEST			This list of files
-META.yml
 README
 t/auto_create.t
 t/multipart.t
