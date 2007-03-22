@@ -1,24 +1,22 @@
-1.451   2006-08-04
+1.452   2007-03-22
+        packaging improvements
 
-  - require Email::MIME::Modifier 1.440 to avoid bug
+1.451   2006-08-04
+        require Email::MIME::Modifier 1.440 to avoid bug
 
 1.45    2006-07-06
-
-  - better detection of non-7bit parts
-  - don't base64-encode 7bit parts
+        better detection of non-7bit parts
+        don't base64-encode 7bit parts
 
 1.41    2004-12-23
+        Parts can now be automatically created from non-reference strings when
+        calling create(), using parts => [], for generating multi-part
+        messages. Parts default to 'text/plain' unless they appear to be
+        binary, then they're 'application/x-binary'.
 
-  - Parts can now be automatically created from non-reference strings
-    when calling create(), using parts => [], for generating multi-part
-    messages. Parts default to 'text/plain' unless they appear to be
-    binary, then they're 'application/x-binary'.
+1.3     2004-09-25
+        Minor documentation nits.
+        Makefile.PL dependency fixes.
 
-1.3    2004-09-25
-
-  - Minor documentation nits.
-  - Makefile.PL dependency fixes.
-
-1.1    2004-07-05
-
-  - Initial version.
+1.1     2004-07-05
+        Initial version.

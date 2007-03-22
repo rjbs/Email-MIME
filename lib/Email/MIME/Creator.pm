@@ -2,27 +2,27 @@ package Email::MIME::Creator;
 use strict;
 
 use vars qw[$VERSION];
-$VERSION = '1.451';
+$VERSION = '1.452';
 
 use base q[Email::Simple::Creator];
 use Email::MIME;
 
 sub _construct_part {
-    my ($class, $body) = @_;
+  my ($class, $body) = @_;
 
-    my $is_binary = $body =~ /[\x00\x80-\xFF]/;
+  my $is_binary = $body =~ /[\x00\x80-\xFF]/;
 
-    my $content_type =   $is_binary
-                       ? 'application/x-binary'
-                       : 'text/plain';
-    
-    Email::MIME->create(
-        attributes => {
-            content_type => $content_type,
-            encoding     => ($is_binary ? 'base64' : ''), # be safe
-        },
-        body => $body,
-    );
+  my $content_type = $is_binary
+    ? 'application/x-binary'
+    : 'text/plain';
+
+  Email::MIME->create(
+    attributes => {
+      content_type => $content_type,
+      encoding     => ($is_binary ? 'base64' : ''),  # be safe
+    },
+    body => $body,
+  );
 }
 
 package Email::MIME;
@@ -34,46 +34,46 @@ $CREATOR = 'Email::MIME::Creator';
 use Email::MIME::Modifier;
 
 sub create {
-    my ($class, %args) = @_;
+  my ($class, %args) = @_;
 
-    my $header = '';
-    my %headers;
-    if ( exists $args{header} ) {
-        my @headers = @{ $args{header} };
-        pop @headers if @headers % 2 == 1;
-        while ( my ($key, $value) = splice @headers, 0, 2 ) {
-            $headers{$key} = 1;
-            $CREATOR->_add_to_header(\$header, $key, $value);
-        }
+  my $header = '';
+  my %headers;
+  if (exists $args{header}) {
+    my @headers = @{ $args{header} };
+    pop @headers if @headers % 2 == 1;
+    while (my ($key, $value) = splice @headers, 0, 2) {
+      $headers{$key} = 1;
+      $CREATOR->_add_to_header(\$header, $key, $value);
     }
-    $CREATOR->_add_to_header(\$header,
-      Date => $CREATOR->_date_header
-    ) unless exists $headers{Date};
-    $CREATOR->_add_to_header(\$header,
-      'MIME-Version' => '1.0',
-    );
+  }
+  $CREATOR->_add_to_header(\$header, Date => $CREATOR->_date_header)
+    unless exists $headers{Date};
+  $CREATOR->_add_to_header(\$header, 'MIME-Version' => '1.0',);
 
-    my $email = $class->new($header);
+  my $email = $class->new($header);
 
-    my %attrs = $args{attributes} ? %{$args{attributes}} : ();
-    foreach ( qw[content_type charset name format boundary
-                 encoding
-                 disposition filename] ) {
-        my $set = "$_\_set";
-        $email->$set( $attrs{$_} ) if exists $attrs{$_};
+  my %attrs = $args{attributes} ? %{ $args{attributes} } : ();
+  foreach (
+    qw[content_type charset name format boundary
+    encoding
+    disposition filename]
+    )
+  {
+    my $set = "$_\_set";
+    $email->$set($attrs{$_}) if exists $attrs{$_};
+  }
+
+  if ($args{parts} && @{ $args{parts} }) {
+    foreach my $part (@{ $args{parts} }) {
+      $part = $CREATOR->_construct_part($part)
+        unless ref($part);
     }
+    $email->parts_set($args{parts});
+  } elsif (exists $args{body}) {
+    $email->body_set($args{body});
+  }
 
-    if ( $args{parts} && @{$args{parts}} ) {
-       foreach my $part ( @{$args{parts}} ) {
-           $part = $CREATOR->_construct_part($part)
-             unless ref($part);
-       }
-       $email->parts_set( $args{parts} );
-    } elsif ( exists $args{body} ) {
-       $email->body_set( $args{body} );
-    }
-    
-    $email;
+  $email;
 }
 
 1;
@@ -199,6 +199,12 @@ L<Email::MIME::Modifier>,
 L<Email::Simple::Creator>,
 C<IO::All> or C<File::Slurp> (for file slurping to create parts from strings),
 L<perl>.
+
+=head1 PERL EMAIL PROJECT
+
+This module is maintained by the Perl Email Project.
+
+L<http://emailproject.perl.org/wiki/Email::MIME::Creator>
 
 =head1 AUTHOR
 
