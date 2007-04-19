@@ -14,7 +14,7 @@ my $email = Email::MIME->create(
     parts => [
         q[Part one],
         q[Part two],
-        get_perl_exe(),
+        generate_binary_data(),
     ],
 );
 
@@ -30,9 +30,7 @@ like $parts[1]->body, qr/Part two/;
 
 like $parts[2]->content_type, qr/binary/, 'third part is binary';
 
-sub get_perl_exe {
-    open PERL, "< $Config{perlpath}" or die $!;
-    my $perl = do { local $/; <PERL> };
-    close PERL;
-    return $perl;
+sub generate_binary_data {
+  my $string = join '', map { chr } 1 .. 255;
+  return $string;
 }
