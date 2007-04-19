@@ -1,3 +1,7 @@
+1.453   2007-04-19
+        fix a bizarre test that broke on some OSes (at least some Win32's)
+        thanks to "chris" for the report!
+
 1.452   2007-03-22
         packaging improvements
 
