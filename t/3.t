@@ -1,4 +1,5 @@
 use Test::More;
+
 if (eval {require Encode}) {
    plan tests => 3;
 } else {Test::More->import(skip_all =>"Unicode support not there on this platform"); }

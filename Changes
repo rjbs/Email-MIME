@@ -1,5 +1,9 @@
 Revision history for Perl extension Email::MIME.
 
+1.860   2007-07-13
+        tentative tweak to tests and C-T-E handling for charset
+        probably needs more research, testing, and fixing
+
 1.859   2007-03-20
         minor test improvements
         add "subparts" method
