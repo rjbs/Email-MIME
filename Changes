@@ -1,3 +1,6 @@
+1.454   2007-07-14
+        fix some spurious "Date" headers in badly-written tests
+
 1.453   2007-04-19
         fix a bizarre test that broke on some OSes (at least some Win32's)
         thanks to "chris" for the report!

@@ -2,19 +2,15 @@ use Test::More qw[no_plan];
 use strict;
 $^W = 1;
 
+use Carp; $SIG{__WARN__} = sub { Carp::cluck @_ };
+
 use_ok 'Email::MIME::Creator';
 
 my $hi    = Email::MIME->create(body => "Hi");
 my $hello = Email::MIME->create(body => "Hello");
 my $howdy = Email::MIME->create(body => "Howdy");
 
-$_->header_set(Date => undef)
-  for $hi, $hello, $howdy;
-
 my $all_his = Email::MIME->create(
-    header => [
-      Date => undef,
-    ],
     attributes => {
       content_type => 'multipart/alternative',
     },
@@ -24,9 +20,6 @@ my $all_his = Email::MIME->create(
 is scalar($all_his->parts), 3, 'three parts';
 
 my $email = Email::MIME->create(
-    header => [
-      Date => undef,
-    ],
     parts => [
         Email::MIME->create(
           attributes => {

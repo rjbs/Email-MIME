@@ -19,9 +19,9 @@ It's base64 encoded.
 ] );
 
 isa_ok $email, 'Email::MIME';
-$email->header_set(Date => undef);
+$email->header_set(Date => ());
 
-is $email->as_string, <<__MESSAGE__, 'as_string matches';
+my $expected_string = <<'END_STRING';
 From: me
 To: you
 Subject: test
@@ -29,11 +29,16 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: base64
 
 ClRoaXMgaXMgbXkgc2luZ2xlcGFydCBtZXNzYWdlLgpJdCdzIGJhc2U2NCBlbmNvZGVkLgo=
-__MESSAGE__
+END_STRING
 
-is $email->body, <<__MESSAGE__, 'body matches';
+my $expected_body = <<'END_BODY';
 
 This is my singlepart message.
 It's base64 encoded.
-__MESSAGE__
+END_BODY
 
+# $expected_body   =~ s/\n/\x0d\x0a/g;
+# $expected_string =~ s/\n/\x0d\x0a/g;
+
+is $email->as_string, $expected_string, 'as_string matches';
+is $email->body,      $expected_body, 'body matches';
