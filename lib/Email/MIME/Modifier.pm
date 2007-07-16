@@ -1,12 +1,14 @@
+use strict;
+## no critic warnings
+
 package Email::MIME::Modifier;
 
 use vars qw[$VERSION];
-$VERSION = '1.441';
+$VERSION = '1.442';
 
 use Email::MIME;
 
 package Email::MIME;
-use strict;
 
 use Email::MIME::ContentType;
 use Email::MIME::Encodings;
@@ -18,7 +20,7 @@ Email::MIME::Modifier - Modify Email::MIME Objects Easily
 
 =head1 VERSION
 
-version 1.441
+version 1.442
 
   $Id$
 
@@ -91,19 +93,23 @@ information is preserved when modifying an attribute.
 
 =cut
 
-foreach my $attr ( qw[charset name format] ) {
-    no strict 'refs';
-    *{"$attr\_set"} = sub {
-        my ($self, $value) = @_;
-        my $ct_header = parse_content_type( $self->header('Content-Type') );
-        if ( $value ) {
-            $ct_header->{attributes}->{$attr} = $value;
-        } else {
-            delete $ct_header->{attributes}->{$attr};
-        }
-        $self->_compose_content_type( $ct_header );
-        return $value;
-    };
+BEGIN {
+  foreach my $attr ( qw[charset name format] ) {
+      my $code = sub {
+          my ($self, $value) = @_;
+          my $ct_header = parse_content_type( $self->header('Content-Type') );
+          if ( $value ) {
+              $ct_header->{attributes}->{$attr} = $value;
+          } else {
+              delete $ct_header->{attributes}->{$attr};
+          }
+          $self->_compose_content_type( $ct_header );
+          return $value;
+      };
+
+      no strict 'refs'; ## no critic strict
+      *{"$attr\_set"} = $code;
+  }
 }
 
 sub boundary_set {
@@ -157,11 +163,28 @@ This method overrides the default C<body_set()> method.
 
 sub body_set {
     my ($self, $body) = @_;
+    my $body_ref;
+
+    if (ref $body) {
+      $body_ref = $body;
+      $body = $$body_ref;
+    } else {
+      $body_ref = \$body;
+    }
     my $enc = $self->header('Content-Transfer-Encoding');
-    $body = Email::MIME::Encodings::encode( $enc, $body )
-       unless !$enc || $enc =~ /^(?:7bit|8bit|binary)$/i;
+
+    # XXX: This is a disgusting hack and needs to be fixed, probably by a
+    # clearer definition and reengineering of Simple construction.  The bug
+    # this fixes is an indirect result of the previous behavior in which all
+    # Simple subclasses were free to alter the guts of the Email::Simple
+    # object. -- rjbs, 2007-07-16
+    unless (((caller(1))[3]||'') eq 'Email::Simple::new') {
+      $body = Email::MIME::Encodings::encode( $enc, $body )
+        unless !$enc || $enc =~ /^(?:7bit|8bit|binary)$/i;
+    }
+
     $self->{body_raw} = $body;
-    $self->SUPER::body_set( $body );
+    $self->SUPER::body_set( $body_ref );
 }
 
 =pod
@@ -231,7 +254,7 @@ C<multipart/mixed>, and given a new boundary attribute.
 
 sub parts_set {
     my ($self, $parts) = @_;
-    my $body  = '';
+    my $body  = q{};
 
     my $ct_header = parse_content_type($self->header('Content-Type'));
 
@@ -324,7 +347,7 @@ sub walk_parts {
 
 sub _compose_content_type {
     my ($self, $ct_header) = @_;
-    my $ct = join '/', @{$ct_header}{qw[discrete composite]};
+    my $ct = join q{/}, @{$ct_header}{qw[discrete composite]};
     for my $attr (sort keys %{$ct_header->{attributes}}) {
         $ct .= qq[; $attr="$ct_header->{attributes}{$attr}"];
     }
@@ -347,7 +370,7 @@ sub _reset_cids {
             for my $part ($self->parts) {
               my $cid = defined $part->header('Content-ID')
                       ? $part->header('Content-ID')
-                      : '';
+                      : q{};
               $cids{ $cid }++
             }
             return if keys(%cids) == 1;

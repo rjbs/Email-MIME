@@ -1,34 +1,36 @@
-1.440   2006-08-04
+1.442     2006-08-04
+          correct body_set behavior to handle refs
+          reformat changelog to standard PEP format
+          completely horrible fix to prevent re-encoding of encoded text during
+          creation
 
-  - don't make a singepart message if told to make a multipart
+1.441     2006-11-28
+          avoid warnings on part counting
 
-1.43    2006-07-13
+1.440     2006-08-04
+          don't make a singepart message if told to make a multipart
 
-  - reliable ordering of content-type attributes (bug 9206)
-  - improve handling of one-part messages
-  - plan all tests
+1.43      2006-07-13
+          reliable ordering of content-type attributes (bug 9206)
+          improve handling of one-part messages
+          plan all tests
 
-1.42    2004-12-23
+1.42      2004-12-23
+          Automatically create Content-ID headers where they don't already
+          exist, for part children. This helps people tasked with the
+          horrible affliction of sending HTML email with embedded images.
 
-  - Automatically create Content-ID headers where they don't already
-    exist, for part children. This helps people tasked with the
-    horrible affliction of sending HTML email with embedded images.
+1.41      2004-12-23
+          Enhanced detection for converting from single to multipart, and
+          back.
 
-1.41    2004-12-23
+1.3       2004-10-04
+          New methods parts_add() and walk_parts().
+          No prereq on Test::Deep for testing (ADAMK).
 
-  - Enhanced detection for converting from single to multipart, and
-    back.
+1.2       2004-07-09
+          boundary_set() now repackages children MIME parts so the object
+          stays in sync.
 
-1.3    2004-10-04
-
-  - New methods parts_add() and walk_parts().
-  - No prereq on Test::Deep for testing (ADAMK).
-
-1.2    2004-07-09
-
-  - boundary_set() now repackages children MIME parts so the object
-    stays in sync.
-
-1.1    2004-07-05
-
-  - Initial version.
+1.1       2004-07-05
+          Initial version.
