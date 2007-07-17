@@ -21,7 +21,7 @@ version 1.860
 
 =cut
 
-our $VERSION = '1.860';
+our $VERSION = '1.861';
 
 sub new {
   my $self = shift->SUPER::new(@_);

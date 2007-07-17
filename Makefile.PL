@@ -1,5 +1,8 @@
 use ExtUtils::MakeMaker;
 
+# see t/perl-minver.t
+use 5.006;
+
 my @encode_deps;
 if ($]< 5.00703) {
   print "Email::MIME requires either Encode or MIME::Words to decode
