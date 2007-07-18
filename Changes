@@ -1,4 +1,7 @@
-1.442     2006-08-04
+1.443     2007-??
+          add test for the stupid parts_set($one_part) cases
+
+1.442     2007-07-??
           correct body_set behavior to handle refs
           reformat changelog to standard PEP format
           completely horrible fix to prevent re-encoding of encoded text during

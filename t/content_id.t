@@ -1,4 +1,4 @@
-use Test::More tests => 15;
+use Test::More tests => 19;
 use strict;
 $^W = 1;
 
@@ -50,3 +50,14 @@ is scalar(@email2_cids), 2, 'two content ids';
 ok $_, "$_ defined" for @email2_cids;
 is $email2_cids[0], $email2_cids[1], 'the same';
 
+$email2->content_type_set('multipart/alternative');
+$email2->parts_set([map Email::MIME->new("Header: Foo\n\n$_"), $parts[0]]);
+
+is scalar($email2->parts), 1, 'one part';
+like $email2->content_type, qr[multipart/alternative], 'proper content_type';
+
+$email2->content_type_set('text/plain');
+$email2->parts_set([map Email::MIME->new("Header: Foo\n\n$_"), $parts[0]]);
+
+is scalar($email2->parts), 1, 'one part';
+like $email2->content_type, qr[text/plain], 'proper content_type';
