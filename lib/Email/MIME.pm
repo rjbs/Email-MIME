@@ -15,7 +15,7 @@ Email::MIME - Easy MIME message parsing.
 
 =head1 VERSION
 
-version 1.860
+version 1.861
 
  $Id$
 

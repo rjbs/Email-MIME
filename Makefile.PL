@@ -20,7 +20,7 @@ WriteMakefile(
   PREREQ_PM => {
     'Email::MIME::ContentType' => '1.011',
     'Email::MIME::Encodings'   => '1.3',
-    'Email::Simple' => '1.995',
+    'Email::Simple' => '2.003',
     'MIME::Types'   => '1.13',
     'Test::More'    => '0.47',
     @encode_deps,
