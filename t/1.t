@@ -27,6 +27,7 @@ is(
 );
 
 open(GIF, "t/Mail/att-1.gif") or die $!;
+binmode GIF;
 my $gif = do { local $/; <GIF> };
 is($body, $gif, "Externally consistent");
 is($email->filename, "1.gif", "Filename is correct");
