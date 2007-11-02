@@ -3,7 +3,6 @@ use strict;
 $^W = 1;
 
 use_ok 'Email::MIME::Creator';
-use Config;
 
 my $email = Email::MIME->create(
     header => [
