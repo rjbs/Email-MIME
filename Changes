@@ -1,6 +1,6 @@
 Revision history for Perl extension Email::MIME.
 
-1.861   2007-XX-XX
+1.861   2007-11-05
         added perl-minver.t -- Email::MIME requires perl >= 5.006
         we now require Email::Simple 2.003
 
