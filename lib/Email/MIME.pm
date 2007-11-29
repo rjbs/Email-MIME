@@ -295,7 +295,7 @@ L<Email::MIME::Modifier>, sadly.
 
 =head1 SEE ALSO
 
-L<Email::Simple>, L<Email::MIME::Modifier>, L<Email::MIME:Creator>.
+L<Email::Simple>, L<Email::MIME::Modifier>, L<Email::MIME::Creator>.
 
 =head1 PERL EMAIL PROJECT
 
