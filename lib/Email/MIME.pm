@@ -98,7 +98,8 @@ sub body_raw {
 sub parts_multipart {
   my $self     = shift;
   my $boundary = $self->{ct}->{attributes}->{boundary};
-  return $self->parts_single_part unless $boundary;
+  return $self->parts_single_part
+    unless $boundary and $self->body_raw =~ /^[\n\r]/sm;
 
   $self->{body_raw} = $self->SUPER::body;
 
