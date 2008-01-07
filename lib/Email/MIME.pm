@@ -98,8 +98,14 @@ sub body_raw {
 sub parts_multipart {
   my $self     = shift;
   my $boundary = $self->{ct}->{attributes}->{boundary};
+
+  # Take a message, join all its lines together.  Now try to Email::MIME->new
+  # it with 1.861 or earlier.  Death!  It tries to recurse endlessly on the
+  # body, because every time it splits on boundary it gets itself. Obviously
+  # that means it's a bogus message, but a mangled result (or exception) is
+  # better than endless recursion. -- rjbs, 2008-01-07
   return $self->parts_single_part
-    unless $boundary and $self->body_raw =~ /^[\n\r]/sm;
+    unless $boundary and $self->body_raw =~ /^--\Q$boundary\E\s*$/sm;
 
   $self->{body_raw} = $self->SUPER::body;
 
@@ -110,8 +116,10 @@ sub parts_multipart {
 
   $self->SUPER::body_set(undef);
 
-  # This is a horrible hack, although it's debateable whether it was better
-  # or worse when it was $self->{body} = shift @bits ... -- rjbs, 2006-11-27
+  # If there are no headers in the potential MIME part, it's just part of the
+  # body.  This is a horrible hack, although it's debateable whether it was
+  # better or worse when it was $self->{body} = shift @bits ... -- rjbs,
+  # 2006-11-27
   $self->SUPER::body_set(shift @bits) if ($bits[0] || '') !~ /.*:.*/;
 
   my $bits = @bits;
