@@ -3,10 +3,12 @@ use strict;
 use warnings;
 
 package Email::MIME;
+use Email::Simple 2.004;
 use base qw(Email::Simple);
 
 use Email::MIME::ContentType;
 use Email::MIME::Encodings;
+use Email::MIME::Header;
 use Carp;
 
 =head1 NAME
@@ -140,26 +142,6 @@ sub force_decode_hook { 0 }
 sub decode_hook       { return $_[1] }
 sub content_type      { scalar shift->header("Content-type"); }
 
-sub header {
-  my $self   = shift;
-  my @header = $self->SUPER::header(@_);
-  foreach my $header (@header) {
-    next unless $header =~ /=\?/;
-    $header = $self->_header_decode($header);
-  }
-  return wantarray ? (@header) : $header[0];
-}
-*_header_decode =
-  eval { require Encode }
-  ? \&_header_decode_encode
-  : do {
-  require MIME::Words;
-  \&_header_decode_mimewords;
-  };
-
-sub _header_decode_encode { Encode::decode("MIME-Header", $_[1]) }
-sub _header_decode_mimewords { MIME::Words::decode_mimewords($_[1]) }
-
 sub debug_structure {
   my ($self, $level) = @_;
   $level ||= 0;
@@ -197,6 +179,8 @@ sub invent_filename {
   $ext ||= "dat";
   return "attachment-$$-" . $gname++ . ".$ext";
 }
+
+sub default_header_class { 'Email::MIME::Header' }
 
 1;
 

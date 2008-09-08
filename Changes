@@ -1,5 +1,11 @@
 Revision history for Perl extension Email::MIME.
 
+1.862   2008-09-08
+        always require Encode, never MIME::Words; this means that using
+          Email::MIME on pre-5.008 will be difficult, if not impossible
+        if a header can't be decoded, fall back to the raw header
+        move decoding methods to Email::MIME::Header, add header_raw
+
 1.861   2007-11-05
         added perl-minver.t -- Email::MIME requires perl >= 5.006
         we now require Email::Simple 2.003
