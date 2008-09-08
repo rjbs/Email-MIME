@@ -22,7 +22,7 @@ changes:
 
 =item * stringification uses C<header_raw> rather than C<header>
 
-=back 4
+=back
 
 =cut
 

@@ -26,5 +26,3 @@ is(
   '15.\\x570b\\x7acb\\x5927\\x5b78\\x5bc4\\x4f86\\x7684??',
   "Decoded header",
 );
-
-diag $obj->as_string;
