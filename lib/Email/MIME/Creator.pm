@@ -219,9 +219,9 @@ This module is maintained by the Perl Email Project.
 
 L<http://emailproject.perl.org/wiki/Email::MIME::Creator>
 
-=head1 AUTHOR
+=head1 ORIGINAL AUTHOR
 
-Casey West, <F<casey@geeknest.com>>.
+B<Do not send bug reports to>: Casey West, <F<casey@geeknest.com>>.
 
 =head1 COPYRIGHT
 

@@ -1,7 +1,7 @@
 use ExtUtils::MakeMaker;
 
 WriteMakefile (
-  AUTHOR        => 'Casey West <casey@geeknest.com>',
+  AUTHOR        => 'Ricardo SIGNES <rjbs@cpan.org>',
   ABSTRACT      => "Email::MIME constructor for starting anew",
   NAME          => 'Email::MIME::Creator',
   (eval { ExtUtils::MakeMaker->VERSION(6.21) } ? (LICENSE => 'perl') : ()),
@@ -13,4 +13,12 @@ WriteMakefile (
     'Test::More'             => '0.47',
   },
   VERSION_FROM  => 'lib/Email/MIME/Creator.pm',
+  (eval { ExtUtils::MakeMaker->VERSION(6.46) }
+    ? (META_MERGE => {
+        resources => {
+          Repository => 'http://github.com/rjbs/email-mime-creator'
+        }
+      })
+    : ()
+  ),
 );
