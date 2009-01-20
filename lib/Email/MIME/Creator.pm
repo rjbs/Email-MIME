@@ -50,9 +50,22 @@ sub create {
     unless exists $headers{Date};
   $CREATOR->_add_to_header(\$header, 'MIME-Version' => '1.0',);
 
+  my %attrs = $args{attributes} ? %{ $args{attributes} } : ();
+
+  # XXX: This is awful... but if we don't do this, then Email::MIME->new will
+  # end up calling parse_content_type($self->content_type) which will mean
+  # parse_content_type(undef) which, for some reason, returns the default.
+  # It's really sort of mind-boggling.  Anyway, the default ends up being
+  # q{text/plain; charset="us-ascii"} so that if content_type is in the
+  # attributes, but not charset, then charset isn't changedand you up with
+  # something that's q{image/jpeg; charset="us-ascii"} and you look like a
+  # moron. -- rjbs, 2009-01-20
+  if ($attrs{type}) {
+    $CREATOR->_add_to_header(\$header, 'Content-Type' => 'text/plain',);
+  }
+
   my $email = $class->new($header);
 
-  my %attrs = $args{attributes} ? %{ $args{attributes} } : ();
   foreach (
     qw[content_type charset name format boundary
     encoding
