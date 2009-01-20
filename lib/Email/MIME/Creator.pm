@@ -60,7 +60,7 @@ sub create {
   # attributes, but not charset, then charset isn't changedand you up with
   # something that's q{image/jpeg; charset="us-ascii"} and you look like a
   # moron. -- rjbs, 2009-01-20
-  if ($attrs{type}) {
+  if (grep {exists $attrs{$_}} qw(content_type charset name format boundary)) {
     $CREATOR->_add_to_header(\$header, 'Content-Type' => 'text/plain',);
   }
 
