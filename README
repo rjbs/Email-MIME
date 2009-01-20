@@ -1,116 +1,13 @@
-NAME
-    Email::MIME::Creator - Email::MIME constructor for starting anew.
+README for Email-MIME-Creator 1.455
 
-SYNOPSIS
-      use Email::MIME::Creator;
-      use IO::All;
+This is a library to allow the creation of MIME messages from Perl data.
 
-      # multipart message
-      my @parts = (
-          Email::MIME->create(
-              attributes => {
-                  filename     => "report.pdf",
-                  content_type => "application/pdf",
-                  encoding     => "quoted-printable",
-                  name         => "2004-financials.pdf",
-              },
-              body => io( "2004-financials.pdf" )->all,
-          ),
-          Email::MIME->create(
-              attributes => {
-                  content_type => "text/plain",
-                  disposition  => "attachment",
-                  charset      => "US-ASCII",
-              },
-              body => "Hello there!",
-          ),
-      );
+Consult its POD for more information.
 
-      my $email = Email::MIME->create(
-          header => [ From => 'casey@geeknest.com' ],
-          parts  => [ @parts ],
-      );
+To install:
 
-      # nesting parts
-      $email->parts_set(
-          [
-            $email->parts,
-            Email::MIME->create( parts => [ @parts ] ),
-          ],
-      );
-  
-      # standard modifications
-      $email->header_set( 'X-PoweredBy' => 'RT v3.0'      );
-      $email->header_set( To            => rcpts()        );
-      $email->header_set( Cc            => aux_rcpts()    );
-      $email->header_set( Bcc           => sekrit_rcpts() );
-
-      # more advanced
-      $_->encoding_set( 'base64' ) for $email->parts;
-  
-      # Quick multipart creation
-      my $quicky = Email::MIME->create(
-          header => [
-              From => 'my@address',
-              To   => 'your@address',
-          ],
-          parts => [
-              q[This is part one],
-              q[This is part two],
-              q[These could be binary too],
-          ],
-      );
-  
-      print $email->as_string;
-  
-      *rcpts = *aux_rcpts = *sekrit_rcpts = sub { 'you@example.com' };
-
-DESCRIPTION
-  Methods
-    create
-           my $single = Email::MIME->create(
-             header     => [ ... ],
-             attributes => { ... },
-             body       => '...',
-           );
-  
-           my $multi = Email::MIME->create(
-             header     => [ ... ],
-             attributes => { ... },
-             parts      => [ ... ],
-           );
-
-         This method creates a new MIME part. The "header" parameter is a
-         lis of headers to include in the message. "attributes" is a hash of
-         MIME attributes to assign to the part, and may override portions of
-         the header set in the "header" parameter.
-
-         The "parts" parameter is a list reference containing "Email::MIME"
-         objects. Elements of the "parts" list can also be a non-reference
-         string of data. In that case, an "Email::MIME" object will be
-         created for you. Simple checks will determine if the part is binary
-         or not, and all parts created in this fashion are encoded with
-         "base64", just in case.
-
-         "parts" takes precedence over "body", which will set this part's
-         body if assigned. So, multi part messages shold use the "parts"
-         parameter and single part messages should use "body".
-
-         Back to "attributes". The hash keys correspond directly to methods
-         or modifying a message from "Email::MIME::Modifier". The allowed
-         keys are: content_type, charset, name, format, boundary, encoding,
-         disposition, and filename. They will be mapped to "$attr\_set" for
-         message modification.
-
-SEE ALSO
-    Email::MIME, Email::MIME::Modifier, Email::Simple::Creator, "IO::All" or
-    "File::Slurp" (for file slurping to create parts from strings), perl.
-
-AUTHOR
-    Casey West, <casey@geeknest.com>.
-
-COPYRIGHT
-      Copyright (c) 2004 Casey West.  All rights reserved.
-      This module is free software; you can redistribute it and/or modify it
-      under the same terms as Perl itself.
+  perl Makefile.PL
+  make
+  make test
+  sudo make install
 

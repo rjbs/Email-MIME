@@ -1,3 +1,9 @@
+Revision history for Email-MIME-Creator
+
+1.455   2009-01-20
+        fix a horrendous bug that would let you end up with:
+        Content-Type: image/jpeg; charset="utf-8"
+
 1.454   2007-07-14
         fix some spurious "Date" headers in badly-written tests
 
