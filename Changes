@@ -1,6 +1,7 @@
 Revision history for Perl extension Email::MIME.
 
-1.862   2008-09-08
+1.862   2009-01-22
+        add repository location metadata
         always require Encode, never MIME::Words; this means that using
           Email::MIME on pre-5.008 will be difficult, if not impossible
         if a header can't be decoded, fall back to the raw header

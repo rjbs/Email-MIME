@@ -15,4 +15,12 @@ WriteMakefile(
     'MIME::Types'   => '1.13',
     'Test::More'    => '0.47',
   },
+  (eval { ExtUtils::MakeMaker->VERSION(6.46) }
+    ? (META_MERGE => {
+        resources => {
+          Repository => 'http://github.com/rjbs/email-mime'
+        }
+      })
+    : ()
+  ),
 );

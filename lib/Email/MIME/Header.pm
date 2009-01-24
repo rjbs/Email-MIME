@@ -3,6 +3,8 @@ use warnings;
 package Email::MIME::Header;
 use base 'Email::Simple::Header';
 
+our $VERSION = '1.862';
+
 use Encode 1.9801;
 
 =head1 NAME
