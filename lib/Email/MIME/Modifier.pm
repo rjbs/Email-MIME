@@ -4,7 +4,7 @@ use strict;
 package Email::MIME::Modifier;
 
 use vars qw[$VERSION];
-$VERSION = '1.442';
+$VERSION = '1.443';
 
 use Email::MIME;
 

@@ -15,4 +15,12 @@ WriteMakefile (
     'Email::MIME::Encodings'   => '1.3',
   },
   VERSION_FROM  => 'lib/Email/MIME/Modifier.pm',
+  (eval { ExtUtils::MakeMaker->VERSION(6.46) }
+    ? (META_MERGE => {
+        resources => {
+          Repository => 'http://github.com/rjbs/email-mime-modifier'
+        }
+      })
+    : ()
+  ),
 );

@@ -1,4 +1,6 @@
-1.443     2007-??
+Revision history for Email-MIME-Modifier
+
+1.443     2009-01-22
           add test for the stupid parts_set($one_part) cases
 
 1.442     2007-07-??
