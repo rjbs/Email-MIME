@@ -1,5 +1,9 @@
 Revision history for Perl extension Email::MIME.
 
+1.863   2009-01-30
+        no code changes
+        add strangely missing copyright information
+
 1.862   2009-01-22
         add repository location metadata
         always require Encode, never MIME::Words; this means that using

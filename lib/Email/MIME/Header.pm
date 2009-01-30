@@ -3,7 +3,7 @@ use warnings;
 package Email::MIME::Header;
 use base 'Email::Simple::Header';
 
-our $VERSION = '1.862';
+our $VERSION = '1.863';
 
 use Encode 1.9801;
 
@@ -52,5 +52,12 @@ sub _header_decode_str {
     unless eval { $new_str = Encode::decode("MIME-Header", $str); 1 };
   return $new_str;
 }
+
+=head1 COPYRIGHT
+
+Copyright (C) 2004, Simon Cozens.  Email-MIME is free software.  You may
+distribute this module under the terms of the Artistic or GPL licenses.
+
+=cut
 
 1;
