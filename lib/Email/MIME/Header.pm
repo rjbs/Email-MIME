@@ -55,8 +55,10 @@ sub _header_decode_str {
 
 =head1 COPYRIGHT
 
-Copyright (C) 2004, Simon Cozens.  Email-MIME is free software.  You may
-distribute this module under the terms of the Artistic or GPL licenses.
+This software is copyright (c) 2004 by Simon Cozens.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as perl itself.
 
 =cut
 
