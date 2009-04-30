@@ -38,7 +38,7 @@ It's base64 encoded.
 END_BODY
 
 # $expected_body   =~ s/\n/\x0d\x0a/g;
-# $expected_string =~ s/\n/\x0d\x0a/g;
+$expected_string =~ s/\n\z/\x0d\x0a/g;
 
 is $email->as_string, $expected_string, 'as_string matches';
 is $email->body,      $expected_body, 'body matches';

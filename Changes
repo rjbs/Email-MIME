@@ -1,5 +1,8 @@
 Revision history for Email-MIME-Creator
 
+1.456   2009-04-29
+        correct test expectations for Encodings 1.313
+
 1.455   2009-01-20
         fix a horrendous bug that would let you end up with:
         Content-Type: image/jpeg; charset="utf-8"

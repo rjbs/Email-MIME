@@ -8,6 +8,7 @@ WriteMakefile (
   PREREQ_PM     => {
     'Email::MIME'            => '1.82',
     'Email::MIME::Modifier'  => '1.440', # allow forced multipart
+    'Email::MIME::Encodings' => '1.313', # deal with qp line endings; ugh
     'Email::Simple'          => '1.92',
     'Email::Simple::Creator' => '1.4',
     'Test::More'             => '0.47',
@@ -16,7 +17,7 @@ WriteMakefile (
   (eval { ExtUtils::MakeMaker->VERSION(6.46) }
     ? (META_MERGE => {
         resources => {
-          Repository => 'http://github.com/rjbs/email-mime-creator'
+          repository => 'http://github.com/rjbs/email-mime-creator'
         }
       })
     : ()
