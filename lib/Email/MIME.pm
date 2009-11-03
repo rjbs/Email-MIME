@@ -95,6 +95,28 @@ sub body_raw {
   return $_[0]->{body_raw} || $_[0]->SUPER::body;
 }
 
+sub body_str {
+  my ($self) = @_;
+  my $encoding = $self->{ct}{attributes}{charset};
+
+  unless ($encoding) {
+    if (
+      $self->{ct}{discrete} eq 'text'
+      and (
+        $self->{ct}{composite} eq 'plain' or $self->{ct}{composite} eq 'html'
+      )
+    ) {
+      # assume that plaintext or html without ANY charset is us-ascii
+      return $self->body;
+    }
+
+    Carp::confess("can't get body as a string for " . $self->content_type)
+  }
+
+  my $str = Encode::decode($encoding, $self->body, 1);
+  return $str;
+}
+
 sub parts_multipart {
   my $self     = shift;
   my $boundary = $self->{ct}->{attributes}->{boundary};
@@ -180,9 +202,9 @@ sub invent_filename {
 
 sub default_header_class { 'Email::MIME::Header' }
 
-sub header_set_str {
+sub header_str_set {
   my $self = shift;
-  $self->header_obj->header_set_str(@_);
+  $self->header_obj->header_str_set(@_);
 }
 
 1;
@@ -212,9 +234,9 @@ message. Headers are decoded from MIME encoding.
 Please see L<Email::Simple> for the base set of methods. It won't take
 very long. Added to that, you have:
 
-=head2 header_set_str
+=head2 header_str_set
 
-  $email->header_set_str($header_name => @value_strings);
+  $email->header_str_set($header_name => @value_strings);
 
 This behaves like C<header_set>, but expects Unicode (character) strings as the
 values to set, rather than pre-encoded byte strings.  It will encode them as
@@ -236,14 +258,23 @@ In scalar context, this method returns the number of subparts.
 
 =head2 body
 
-This decodes and returns the body of the object. For top-level objects
-in multi-part messages, this is highly likely to be something like "This
-is a multi-part message in MIME format."
+This decodes and returns the body of the object I<as a byte string>. For
+top-level objects in multi-part messages, this is highly likely to be something
+like "This is a multi-part message in MIME format."
+
+=head2 body_str
+
+This decodes both the Content-Transfer-Encoding layer of the body (like the
+C<body> method) as well as the charset encoding of the body (unlike the C<body>
+method), returning a Unicode string.
+
+If the charset is known, it is used.  If there is no charset but the content
+type is either C<text/plain> or C<text/html>, us-ascii is assumed.  Otherwise,
+an exception is thrown.
 
 =head2 body_raw
 
-This returns the body of the object, but doesn't decode the transfer
-encoding.
+This returns the body of the object, but doesn't decode the transfer encoding.
 
 =head2 decode_hook
 

@@ -54,10 +54,10 @@ sub header_raw {
   return $self->SUPER::header($header);
 }
 
-sub header_set_str {
+sub header_str_set {
   my ($self, $name, @vals) = @_;
 
-  my @values = map { Encode::encode('MIME-Header', $_) } @vals;
+  my @values = map { Encode::encode('MIME-Q', $_, 1) } @vals;
 
   $self->header_set($name => @values);
 }

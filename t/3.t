@@ -32,7 +32,7 @@ is(
 {
   use utf8;
   my @strs = qw(Julián Søren);
-  $obj->header_set_str(UTF => @strs);
+  $obj->header_str_set(UTF => @strs);
 
   like(
     $obj->header_obj->header_raw('UTF'),
