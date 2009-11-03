@@ -8,6 +8,7 @@ plan skip_all => "Test::Pod::Coverage 1.08 required for testing POD coverage"
 # XXX: Determine which of these must be _-ed or documented. -- rjbs, 2006-07-13
 my $trustme = [ qw(
   force_decode_hook
+  header_str_set
 ),
 
 qw(

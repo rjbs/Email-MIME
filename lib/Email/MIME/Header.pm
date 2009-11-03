@@ -33,7 +33,7 @@ C<Encode::encode('MIME-Header', $value)> before passing them to
 C<header_set>.
 
 Alternately, if you have Unicode (character) strings to set in headers, use the
-C<header_set_str> method.
+C<header_str_set> method.
 
 =cut
 
