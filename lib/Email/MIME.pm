@@ -17,11 +17,11 @@ Email::MIME - Easy MIME message parsing.
 
 =head1 VERSION
 
-version 1.863
+version 1.900
 
 =cut
 
-our $VERSION = '1.863';
+our $VERSION = '1.900';
 
 sub new {
   my $self = shift->SUPER::new(@_);
