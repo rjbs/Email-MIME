@@ -6,6 +6,7 @@ $VERSION = '1.456';
 
 use base q[Email::Simple::Creator];
 use Email::MIME;
+use Encode ();
 
 sub _construct_part {
   my ($class, $body) = @_;
@@ -46,6 +47,18 @@ sub create {
       $CREATOR->_add_to_header(\$header, $key, $value);
     }
   }
+
+  if (exists $args{header_str}) {
+    my @headers = @{ $args{header_str} };
+    pop @headers if @headers % 2 == 1;
+    while (my ($key, $value) = splice @headers, 0, 2) {
+      $headers{$key} = 1;
+
+      $value = Encode::encode('MIME-Header', $value);
+      $CREATOR->_add_to_header(\$header, $key, $value);
+    }
+  }
+
   $CREATOR->_add_to_header(\$header, Date => $CREATOR->_date_header)
     unless exists $headers{Date};
   $CREATOR->_add_to_header(\$header, 'MIME-Version' => '1.0',);
