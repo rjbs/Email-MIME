@@ -70,8 +70,6 @@ sub content_type_set {
     return $ct;
 }
 
-=pod
-
 =item charset_set
 
 =item name_set
@@ -123,8 +121,6 @@ sub boundary_set {
     
     $self->parts_set([$self->parts]) if $self->parts > 1;
 }
-
-=pod
 
 =item encoding_set
 
@@ -185,7 +181,26 @@ sub body_set {
     $self->SUPER::body_set( $body_ref );
 }
 
-=pod
+=item body_str_set
+
+  $email->body_str_set($unicode_str);
+
+This method behaves like C<body_set>, but assumes that the given value is a
+Unicode string that should be encoded into the message's charset before being
+set.  If the charset can't be determined, an exception is thrown.
+
+=cut
+
+sub body_str_set {
+  my ($self, $body_str) = @_;
+
+  my $ct = parse_content_type($self->content_type);
+  Carp::confess("body_str was given, but no charset is defined")
+    unless my $charset = $ct->{attributse}{charset};
+
+  my $body_octets = Encode::encode($charset, $body_str, 1);
+  $self->body_set($body_octets);
+}
 
 =item disposition_set
 
@@ -205,8 +220,6 @@ sub disposition_set {
       ($dis_header = $dis);
     $self->header_set('Content-Disposition' => $dis_header);
 }
-
-=pod
 
 =item filename_set
 
@@ -236,8 +249,6 @@ sub filename_set {
 
     $self->header_set('Content-Disposition' => $dis);
 }
-
-=pod
 
 =item parts_set
 
@@ -388,8 +399,6 @@ sub _reset_cids {
 1;
 
 __END__
-
-=pod
 
 =back
 
