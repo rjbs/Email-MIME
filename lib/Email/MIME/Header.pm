@@ -57,9 +57,7 @@ sub header_raw {
 sub header_set_str {
   my ($self, $name, @vals) = @_;
 
-  my @values =
-    map { /[\x00-\x26\x80-\xFF]/ ? Encode::encode('MIME-Header', $_) : $_ }
-    @vals;
+  my @values = map { Encode::encode('MIME-Header', $_) } @vals;
 
   $self->header_set($name => @values);
 }
