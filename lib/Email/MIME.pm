@@ -180,6 +180,11 @@ sub invent_filename {
 
 sub default_header_class { 'Email::MIME::Header' }
 
+sub header_set_str {
+  my $self = shift;
+  $self->header_obj->header_set_str(@_);
+}
+
 1;
 
 __END__
@@ -202,17 +207,18 @@ encoded messages. It takes a message as a string, splits it up into its
 constituent parts, and allows you access to various parts of the
 message. Headers are decoded from MIME encoding.
 
-=head1 NOTE
-
-This is an alpha release, designed to stimulate discussion on the API,
-which may change in future releases. Please send me comments about any
-features you think C<Email::MIME> should have. Note that I expect most
-things to be driven by subclassing and mix-ins.
-
 =head1 METHODS
 
 Please see L<Email::Simple> for the base set of methods. It won't take
 very long. Added to that, you have:
+
+=head2 header_set_str
+
+  $email->header_set_str($header_name => @value_strings);
+
+This behaves like C<header_set>, but expects Unicode (character) strings as the
+values to set, rather than pre-encoded byte strings.  It will encode them as
+MIME encoded-words if they contain any control or 8-bit characters.
 
 =head2 parts
 

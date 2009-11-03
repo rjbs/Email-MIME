@@ -32,6 +32,9 @@ not C<header>!  Be sure to properly encode your headers with
 C<Encode::encode('MIME-Header', $value)> before passing them to
 C<header_set>.
 
+Alternately, if you have Unicode (character) strings to set in headers, use the
+C<header_set_str> method.
+
 =cut
 
 sub header {
@@ -49,6 +52,16 @@ sub header_raw {
   Carp::croak "header_raw may not be used to set headers" if @_ > 2;
   my ($self, $header) = @_;
   return $self->SUPER::header($header);
+}
+
+sub header_set_str {
+  my ($self, $name, @vals) = @_;
+
+  my @values =
+    map { /[\x00-\x26\x80-\xFF]/ ? Encode::encode('MIME-Header', $_) : $_ }
+    @vals;
+
+  $self->header_set($name => @values);
 }
 
 sub _header_decode_str {

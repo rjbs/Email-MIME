@@ -1,4 +1,6 @@
-use Test::More tests => 3;
+use strict;
+use warnings;
+use Test::More tests => 5;
 # Header decoding tests.
 
 use Email::MIME;
@@ -26,3 +28,21 @@ is(
   '15.\\x570b\\x7acb\\x5927\\x5b78\\x5bc4\\x4f86\\x7684??',
   "Decoded header",
 );
+
+{
+  use utf8;
+  my @strs = qw(Julián Søren);
+  $obj->header_set_str(UTF => @strs);
+
+  like(
+    $obj->header_obj->header_raw('UTF'),
+    qr{\A=\?UTF-8},
+    'header is encoded',
+  );
+
+  is_deeply(
+    [ $obj->header('UTF') ],
+    [ @strs ],
+    'header is decoded',
+  );
+}
