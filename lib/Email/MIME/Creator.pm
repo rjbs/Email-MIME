@@ -13,9 +13,7 @@ sub _construct_part {
 
   my $is_binary = $body =~ /[\x00\x80-\xFF]/;
 
-  my $content_type = $is_binary
-    ? 'application/x-binary'
-    : 'text/plain';
+  my $content_type = $is_binary ? 'application/x-binary' : 'text/plain';
 
   Email::MIME->create(
     attributes => {
@@ -32,7 +30,9 @@ use strict;
 use vars qw[$CREATOR];
 $CREATOR = 'Email::MIME::Creator';
 
+use Carp ();
 use Email::MIME::Modifier;
+use Encode ();
 
 sub create {
   my ($class, %args) = @_;
@@ -54,7 +54,7 @@ sub create {
     while (my ($key, $value) = splice @headers, 0, 2) {
       $headers{$key} = 1;
 
-      $value = Encode::encode('MIME-Header', $value);
+      $value = Encode::encode('MIME-Q', $value, 1);
       $CREATOR->_add_to_header(\$header, $key, $value);
     }
   }
@@ -79,15 +79,18 @@ sub create {
 
   my $email = $class->new($header);
 
-  foreach (
-    qw[content_type charset name format boundary
+  foreach (qw(
+    content_type charset name format boundary
     encoding
-    disposition filename]
-    )
-  {
+    disposition filename
+  )) {
     my $set = "$_\_set";
     $email->$set($attrs{$_}) if exists $attrs{$_};
   }
+
+  my $body_args = grep { defined $args{ $_ } } qw(parts body body_str);
+  Carp::confess("only one of parts, body, or body_str may be given")
+    if $body_args > 1;
 
   if ($args{parts} && @{ $args{parts} }) {
     foreach my $part (@{ $args{parts} }) {
@@ -95,8 +98,17 @@ sub create {
         unless ref($part);
     }
     $email->parts_set($args{parts});
-  } elsif (exists $args{body}) {
+  } elsif (defined $args{body}) {
     $email->body_set($args{body});
+  } elsif (defined $args{body_str}) {
+    Carp::confess("body_str was given, but no charset is defined")
+      unless my $charset = $attrs{charset};
+
+    Carp::confess("body_str was given, but no encoding is defined")
+      unless $attrs{encoding};
+
+    my $body_octets = Encode::encode($attrs{charset}, $args{body_str}, 1);
+    $email->body_set($body_octets);
   }
 
   $email;
@@ -206,9 +218,12 @@ string of data. In that case, an C<Email::MIME> object will be created
 for you. Simple checks will determine if the part is binary or not, and
 all parts created in this fashion are encoded with C<base64>, just in case.
 
-C<parts> takes precedence over C<body>, which will set this part's body
-if assigned. So, multi part messages shold use the C<parts> parameter
-and single part messages should use C<body>.
+If C<body> is given instead of C<parts>, it specifies the body to be used for a
+flat (subpart-less) MIME message.  It is assumed to be a sequence of octets.
+
+If C<body_str> is given instead of C<body> or C<parts>, it is assumed to be a
+character string to be used as the body.  If you provide a C<body_str>
+parameter, you B<must> provide C<charset> and C<encoding> attributes.
 
 Back to C<attributes>. The hash keys correspond directly to methods or
 modifying a message from C<Email::MIME::Modifier>. The allowed keys are:
