@@ -13,7 +13,7 @@ WriteMakefile(
     'MIME::Types'   => '1.13',
     'Test::More'    => '0.47',
     'Email::MIME::ContentType' => '1.011',
-    'Email::MIME::Encodings'   => '1.3',
+    'Email::MIME::Encodings'   => '1.313',
     'Email::Simple::Creator'   => 0,
     'Email::MessageID',        => 0,
   },

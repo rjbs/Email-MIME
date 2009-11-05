@@ -10,7 +10,7 @@ use Carp ();
 use Email::MessageID;
 use Email::MIME::Creator;
 use Email::MIME::ContentType;
-use Email::MIME::Encodings;
+use Email::MIME::Encodings 1.313;
 use Email::MIME::Header;
 use Email::MIME::Modifier;
 use Encode ();
