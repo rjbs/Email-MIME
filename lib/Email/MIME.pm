@@ -288,16 +288,19 @@ sub fill_parts {
 sub body {
   my $self = shift;
   my $body = $self->SUPER::body;
-  my $cte  = $self->header("Content-Transfer-Encoding");
+  my $cte  = $self->header("Content-Transfer-Encoding") || '';
+  
+  $cte =~ s/\A\s+//;
+  $cte =~ s/\s+\z//;
+  $cte =~ s/;.+//; # For S/MIME, etc.
+
   return $body unless $cte;
-  if (!$self->force_decode_hook and $cte =~ /^(?:7bit|8bit|binary)\s*$/i) {
+
+  if (!$self->force_decode_hook and $cte =~ /\A(?:7bit|8bit|binary)\z/i) {
     return $body;
   }
 
   $body = $self->decode_hook($body) if $self->can("decode_hook");
-
-  # For S/MIME, etc.
-  $cte =~ s/;.+//;
 
   $body = Email::MIME::Encodings::decode($cte, $body);
   return $body;
