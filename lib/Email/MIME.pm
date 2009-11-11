@@ -290,7 +290,7 @@ sub body {
   my $body = $self->SUPER::body;
   my $cte  = $self->header("Content-Transfer-Encoding");
   return $body unless $cte;
-  if (!$self->force_decode_hook and $cte =~ /^7bit|8bit|binary/i) {
+  if (!$self->force_decode_hook and $cte =~ /^(?:7bit|8bit|binary)\s*$/i) {
     return $body;
   }
 
@@ -547,7 +547,7 @@ sub body_set {
   # object. -- rjbs, 2007-07-16
   unless (((caller(1))[3] || '') eq 'Email::Simple::new') {
     $body = Email::MIME::Encodings::encode($enc, $body)
-      unless !$enc || $enc =~ /^(?:7bit|8bit|binary)$/i;
+      unless !$enc || $enc =~ /^(?:7bit|8bit|binary)\s*$/i;
   }
 
   $self->{body_raw} = $body;
