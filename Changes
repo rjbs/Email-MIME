@@ -1,5 +1,9 @@
 Revision history for Perl extension Email::MIME.
 
+1.902   2009-11-11
+        allow for padding spaces in the Content-Transfer-Encoding header
+        (Geraint Edwards)
+
 1.901   2009-11-05
         bump up Email::MIME::Encodings version required
 

@@ -3,7 +3,7 @@ use warnings;
 package Email::MIME::Header;
 use base 'Email::Simple::Header';
 
-our $VERSION = '1.901';
+our $VERSION = '1.902';
 
 use Encode 1.9801;
 
