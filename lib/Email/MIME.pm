@@ -572,7 +572,7 @@ sub body_str_set {
 
   my $ct = parse_content_type($self->content_type);
   Carp::confess("body_str was given, but no charset is defined")
-    unless my $charset = $ct->{attributse}{charset};
+    unless my $charset = $ct->{attributes}{charset};
 
   my $body_octets = Encode::encode($charset, $body_str, 1);
   $self->body_set($body_octets);
