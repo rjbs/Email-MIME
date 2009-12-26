@@ -433,7 +433,7 @@ sub header_str_set {
   $email->content_type_set( 'text/html' );
 
 Change the content type. All C<Content-Type> header attributes
-will remain in tact.
+will remain intact.
 
 =cut
 
@@ -583,7 +583,7 @@ sub body_str_set {
   $email->disposition_set( 'attachment' );
 
 Alter the C<Content-Disposition> of a message. All header attributes
-will remain in tact.
+will remain intact.
 
 =cut
 
