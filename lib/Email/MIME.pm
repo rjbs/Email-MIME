@@ -708,21 +708,13 @@ top-level MIME object. All changes will be applied in place.
 sub walk_parts {
   my ($self, $callback) = @_;
 
-  my $walk;
-  $walk = sub {
-    my ($part) = @_;
-    $callback->($part);
-    if ($part->parts > 1) {
-      my @subparts;
-      for ($part->parts) {
-        push @subparts, $walk->($_);
-      }
-      $part->parts_set(\@subparts);
-    }
-    return $part;
-  };
+  $callback->($self);
 
-  $walk->($self);
+  for my $part ($self->subparts) {
+    $part->walk_parts($callback);
+  }
+
+  return $self;
 }
 
 sub _compose_content_type {
