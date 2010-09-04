@@ -1,5 +1,8 @@
 Revision history for Perl extension Email::MIME.
 
+1.904   2010-09-04
+        eliminate memory leak in walk_parts (reported by MKANAT, RT #59581)
+
 1.903   2009-12-23
         correct typo in body_set_str (RT #53004) (thanks, Herbert Leitz)
 
