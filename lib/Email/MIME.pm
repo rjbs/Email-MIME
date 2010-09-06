@@ -21,7 +21,7 @@ Email::MIME - Easy MIME message parsing.
 
 =head1 VERSION
 
-version 1.904
+version 1.905
 
 =head1 SYNOPSIS
 
@@ -111,7 +111,7 @@ very long. Added to that, you have:
 
 =cut
 
-our $VERSION = '1.904';
+our $VERSION = '1.905';
 
 use vars qw[$CREATOR];
 $CREATOR = 'Email::MIME::Creator';
@@ -712,13 +712,12 @@ sub walk_parts {
   $walk = sub {
     my ($part) = @_;
     $callback->($part);
-    if ($part->parts > 1) {
-      my @subparts;
-      for ($part->parts) {
-        push @subparts, $walk->($_);
-      }
+
+    if ($part->subparts) {
+      my @subparts = map {; $walk->($_) } $part->subparts;
       $part->parts_set(\@subparts);
     }
+
     return $part;
   };
 

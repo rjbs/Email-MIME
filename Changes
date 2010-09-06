@@ -1,5 +1,9 @@
 Revision history for Perl extension Email::MIME.
 
+1.905   2010-09-06
+        fix a long-standing bug that prevent walk_parts from reaching all parts
+        (thanks, Erik Logtenberg)
+
 1.904   2010-09-04
         eliminate memory leak in walk_parts (reported by MKANAT, RT #59581)
 
