@@ -1,5 +1,8 @@
 Revision history for Perl extension Email::MIME.
 
+1.906   2010-10-07
+        update our prereq on Test::More to 0.88
+
 1.905   2010-09-06
         fix a long-standing bug that prevent walk_parts from reaching all parts
         (thanks, Erik Logtenberg)

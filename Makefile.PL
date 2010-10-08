@@ -11,7 +11,7 @@ WriteMakefile(
     'Email::Simple' => '2.004', # default_header_class
     'Encode'        => '1.9801',
     'MIME::Types'   => '1.13',
-    'Test::More'    => '0.47',
+    'Test::More'    => '0.88',
     'Email::MIME::ContentType' => '1.011',
     'Email::MIME::Encodings'   => '1.313',
     'Email::Simple::Creator'   => 0,
