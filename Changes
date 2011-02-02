@@ -1,5 +1,12 @@
 Revision history for Perl extension Email::MIME.
 
+1.907   2011-02-02
+
+        require 5.8.5 for sane encoding
+
+        be more lenient with Content-Tranfser-Encoding values; stop at
+        semicolons
+
 1.906   2010-10-07
         update our prereq on Test::More to 0.88
 
