@@ -1,7 +1,21 @@
-use Test::More tests => 14;
+use Test::More tests => 20;
 
 use_ok 'Email::MIME';
 use_ok 'Email::MIME::Modifier';
+
+for my $encode ('7bit', '7bit; foo') {
+  my $email = Email::MIME->new(<<__MESSAGE__);
+Content-Transfer-Encoding: $encode
+Content-Type: text/plain
+
+Hello World!
+I like you!
+__MESSAGE__
+
+  is $email->body, qq[Hello World!\nI like you!\n], 'plain works';
+  is $email->body_raw, qq[Hello World!\nI like you!\n], 'plain raw works';
+  is $email->header('Content-Transfer-Encoding'), $encode, 'plain encoding works';
+}
 
 my $email = Email::MIME->new(<<__MESSAGE__);
 Content-Transfer-Encoding: 7bit
