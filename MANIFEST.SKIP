@@ -1,3 +1,4 @@
+^MYMETA
 MANIFEST.SKIP
 ^\.git/
 ^control/
