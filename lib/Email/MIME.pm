@@ -693,9 +693,9 @@ sub parts_add {
 
   $email->walk_parts(sub {
       my ($part) = @_;
-      return if $part->parts > 1; # multipart
+      return if $part->subparts; # multipart
       
-      if ( $part->content_type =~ m[text/html] ) {
+      if ( $part->content_type =~ m[text/html]i ) {
           my $body = $part->body;
           $body =~ s/<link [^>]+>//; # simple filter example
           $part->body_set( $body );
