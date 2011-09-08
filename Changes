@@ -1,5 +1,9 @@
 Revision history for Perl extension Email::MIME.
 
+1.909   2011-08-09
+
+        dial the perl prereq back to 5.8.1 by popular demand... actually
+
 1.908   2011-06-01
 
         dial the perl prereq back to 5.8.1 by popular demand

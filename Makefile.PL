@@ -1,4 +1,4 @@
-use 5.8.5; # see t/perl-minver.t
+use 5.8.1; # see t/perl-minver.t
 use strict;
 use warnings;
 use ExtUtils::MakeMaker;
