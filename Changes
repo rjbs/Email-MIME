@@ -1,5 +1,9 @@
 Revision history for Perl extension Email::MIME.
 
+1.910   2011-09-12
+
+        document the header_str arg to ->create more thoroughly (i.e., at all)
+
 1.909   2011-09-08
 
         dial the perl prereq back to 5.8.1 by popular demand... actually
