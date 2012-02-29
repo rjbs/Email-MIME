@@ -52,3 +52,35 @@ require_ok 'Email::MIME::Creator';
     "...and lengths are the same",
   );
 }
+
+{
+  my @subjects = (
+    "test test test test test test test test tést te (12 34)", # unicode
+    "test test test test test test test test test te (12 34)", # not
+  );
+
+  my @tos = (
+    'Döy <test@example.com>', # unicode
+    'Doy <test@example.com>', # not
+  );
+
+  for my $subject (@subjects) {
+    for my $to (@tos) {
+      my $email = Email::MIME->create(
+        header_str => [
+          Subject => $subject,
+          To      => $to,
+        ],
+        body => "...",
+      );
+      is(scalar($email->header('Subject')), $subject,
+         "Subject header is correct");
+      is(scalar($email->header('To')), $to,
+         "To header is correct");
+      like($email->as_string, qr/test\@example\.com/,
+           "address isn't encoded");
+      like($email->as_string, qr/\p{ASCII}/,
+           "email doesn't contain any non-ascii characters");
+    }
+  }
+}
