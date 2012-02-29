@@ -191,7 +191,7 @@ sub create {
     while (my ($key, $value) = splice @headers, 0, 2) {
       $headers{$key} = 1;
 
-      $value = Encode::encode('MIME-Q', $value, 1);
+      $value = Email::MIME::Header::_mime_encode($value, 'utf8');
       $CREATOR->_add_to_header(\$header, $key, $value);
     }
   }
