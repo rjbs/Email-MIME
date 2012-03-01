@@ -5,8 +5,8 @@ use base 'Email::Simple::Header';
 
 our $VERSION = '1.911';
 
+use Email::MIME::Encode;
 use Encode 1.9801;
-use MIME::Base64 ();
 
 =head1 NAME
 
@@ -58,7 +58,9 @@ sub header_raw {
 sub header_str_set {
   my ($self, $name, @vals) = @_;
 
-  my @values = map { _mime_encode($_, 'utf8') } @vals;
+  my @values = map {
+    Email::MIME::Encode::maybe_mime_encode_header($name, $_, 'utf8')
+  } @vals;
 
   $self->header_set($name => @values);
 }
@@ -69,40 +71,6 @@ sub _header_decode_str {
   $new_str = $str
     unless eval { $new_str = Encode::decode("MIME-Header", $str); 1 };
   return $new_str;
-}
-
-# XXX this is copied directly out of Courriel::Header
-# eventually, this should be extracted out into something that could be shared
-sub _mime_encode {
-    my $text    = shift;
-    my $charset = Encode::find_encoding(shift)->mime_name();
-
-    my $head = '=?' . $charset . '?B?';
-    my $tail = '?=';
-
-    my $base_length = 75 - ( length($head) + length($tail) );
-
-    # This code is copied from Mail::Message::Field::Full in the Mail-Box
-    # distro.
-    my $real_length = int( $base_length / 4 ) * 3;
-
-    my @result;
-    my $chunk = q{};
-    while ( length( my $chr = substr( $text, 0, 1, '' ) ) ) {
-        my $chr = Encode::encode( $charset, $chr, 0 );
-
-        if ( length($chunk) + length($chr) > $real_length ) {
-            push @result, $head . MIME::Base64::encode_base64( $chunk, q{} ) . $tail;
-            $chunk = q{};
-        }
-
-        $chunk .= $chr;
-    }
-
-    push @result, $head . MIME::Base64::encode_base64( $chunk, q{} ) . $tail
-        if length $chunk;
-
-    return join q{ }, @result;
 }
 
 =head1 COPYRIGHT
