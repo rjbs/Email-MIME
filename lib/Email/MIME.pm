@@ -10,6 +10,7 @@ use Carp ();
 use Email::MessageID;
 use Email::MIME::Creator;
 use Email::MIME::ContentType;
+use Email::MIME::Encode;
 use Email::MIME::Encodings 1.313;
 use Email::MIME::Header;
 use Email::MIME::Modifier;
@@ -191,7 +192,9 @@ sub create {
     while (my ($key, $value) = splice @headers, 0, 2) {
       $headers{$key} = 1;
 
-      $value = Email::MIME::Header::_mime_encode($value, 'utf8');
+      $value = Email::MIME::Encode::maybe_mime_encode_header(
+          $key, $value, 'utf8'
+      );
       $CREATOR->_add_to_header(\$header, $key, $value);
     }
   }
