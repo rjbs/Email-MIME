@@ -24,8 +24,8 @@ my %encoders = (
 sub maybe_mime_encode_header {
     my ($header, $val, $charset) = @_;
 
-    return $val if $val =~ /\p{ASCII}/
-                && $val !~ /=\?/;
+    return $val unless $val =~ /\P{ASCII}/
+                    || $val =~ /=\?/;
 
     $header =~ s/^Resent-//;
 
@@ -56,6 +56,7 @@ sub _mailbox_list_encode {
         my $comment = $_->comment;
         $_->comment(mime_encode($comment, $charset))
             if $comment =~ /\P{ASCII}/;
+        $_;
     } @addrs;
 
     return join(', ', map { $_->format } @addrs);
