@@ -79,7 +79,7 @@ require_ok 'Email::MIME::Creator';
          "To header is correct");
       like($email->as_string, qr/test\@example\.com/,
            "address isn't encoded");
-      like($email->as_string, qr/\p{ASCII}/,
+      like($email->as_string, qr/\A\p{ASCII}*\z/,
            "email doesn't contain any non-ascii characters");
     }
   }
