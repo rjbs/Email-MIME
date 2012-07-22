@@ -8,7 +8,7 @@ WriteMakefile(
   VERSION_FROM  => 'lib/Email/MIME.pm',
   (eval { ExtUtils::MakeMaker->VERSION(6.21) } ? (LICENSE => 'perl') : ()),
   PREREQ_PM => {
-    'Email::Simple' => '2.004', # default_header_class
+    'Email::Simple' => '2.102', # crlf handling
     'Encode'        => '1.9801',
     'MIME::Types'   => '1.13',
     'Test::More'    => '0.88',
