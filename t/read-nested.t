@@ -1,11 +1,8 @@
-use Test::More tests => 5;
-
 use strict;
 use warnings;
 
-BEGIN {
-  use_ok 'Email::MIME';
-}
+use Test::More tests => 4;
+use Email::MIME;
 
 open IN, 't/Mail/nested-parts' or die "Can't read mail";
 my $incoming = do { local $/; <IN>; };

@@ -1,6 +1,6 @@
-use Test::More qw[no_plan];
 use strict;
-$^W = 1;
+use warnings;
+use Test::More qw[no_plan];
 
 use_ok 'Email::MIME::Creator';
 

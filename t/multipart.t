@@ -1,6 +1,6 @@
-use Test::More qw[no_plan];
 use strict;
-$^W = 1;
+use warnings;
+use Test::More qw[no_plan];
 
 use Carp; $SIG{__WARN__} = sub { Carp::cluck @_ };
 

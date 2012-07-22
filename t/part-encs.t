@@ -1,3 +1,5 @@
+use strict;
+use warnings;
 use Test::More;
 
 plan skip_all => "these tests require Email::MIME::Creator 1.43"

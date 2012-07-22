@@ -1,6 +1,6 @@
-use Test::More tests => 19;
 use strict;
-$^W = 1;
+use warnings;
+use Test::More tests => 19;
 
 use_ok 'Email::MIME::Modifier';
 
