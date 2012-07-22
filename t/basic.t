@@ -1,4 +1,4 @@
-#!perl -T
+#!perl
 # vim:ft=perl
 use strict;
 use warnings;
