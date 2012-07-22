@@ -3,7 +3,7 @@ use strict;
 use warnings;
 
 package Email::MIME;
-use Email::Simple 2.004;
+use Email::Simple 2.102;
 use base qw(Email::Simple);
 
 use Carp ();
