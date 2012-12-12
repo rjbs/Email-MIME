@@ -18,13 +18,13 @@ is_deeply( parse_content_type($email->header('Content-Type')), {
     },
 }, 'default ct worked' );
 
-$email->charset_set( 'utf8' );
+$email->charset_set( 'UTF-8' );
 
 is_deeply( parse_content_type($email->header('Content-Type')), {
     discrete => 'text',
     composite => 'plain',
     attributes => {
-        charset => 'utf8',
+        charset => 'UTF-8',
     },
 }, 'ct with new charset worked' );
 

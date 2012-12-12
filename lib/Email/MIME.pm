@@ -193,7 +193,7 @@ sub create {
       $headers{$key} = 1;
 
       $value = Email::MIME::Encode::maybe_mime_encode_header(
-          $key, $value, 'utf8'
+          $key, $value, 'UTF-8'
       );
       $CREATOR->_add_to_header(\$header, $key, $value);
     }
@@ -465,7 +465,7 @@ sub content_type_set {
 
 =head2 boundary_set
 
-  $email->charset_set( 'utf8' );
+  $email->charset_set( 'UTF-8' );
   $email->name_set( 'some_filename.txt' );
   $email->format_set( 'flowed' );
   $email->boundary_set( undef ); # remove the boundary

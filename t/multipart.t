@@ -23,7 +23,7 @@ my $email = Email::MIME->create(
     parts => [
         Email::MIME->create(
           attributes => {
-            charset => 'utf8',
+            charset => 'UTF-8',
             disposition => 'inline',
           },
           body => "Intro",

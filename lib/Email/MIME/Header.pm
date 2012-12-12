@@ -59,7 +59,7 @@ sub header_str_set {
   my ($self, $name, @vals) = @_;
 
   my @values = map {
-    Email::MIME::Encode::maybe_mime_encode_header($name, $_, 'utf8')
+    Email::MIME::Encode::maybe_mime_encode_header($name, $_, 'UTF-8')
   } @vals;
 
   $self->header_set($name => @values);
