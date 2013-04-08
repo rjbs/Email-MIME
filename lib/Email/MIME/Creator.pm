@@ -2,7 +2,7 @@ package Email::MIME::Creator;
 use strict;
 
 use vars qw[$VERSION];
-$VERSION = '1.911';
+$VERSION = '1.912_01';
 
 use base q[Email::Simple::Creator];
 use Email::MIME;

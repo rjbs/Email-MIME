@@ -4,7 +4,7 @@ use strict;
 package Email::MIME::Modifier;
 
 use vars qw[$VERSION];
-$VERSION = '1.911';
+$VERSION = '1.912_01';
 
 use Email::MIME;
 
@@ -16,7 +16,7 @@ Email::MIME::Modifier - obsolete do-nothing library
 
 =head1 VERSION
 
-version 1.911
+version 1.912_01
 
 =head1 PERL EMAIL PROJECT
 

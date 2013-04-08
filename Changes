@@ -1,132 +1,139 @@
 Revision history for Perl extension Email::MIME.
 
-1.911   2012-07-22
-        require a newer Email::Simple and cope with its improved line ending
-        tweaks
+1.912_01  2013-04-08
+          try to encode headers based on the header structure, if it has one,
+          rather than treating the header as a big string in all cases; thanks
+          for this work go to Jesse Luehrs
 
-1.910   2011-09-12
+1.911     2012-07-22
+          require a newer Email::Simple and cope with its improved line ending
+          tweaks
 
-        document the header_str arg to ->create more thoroughly (i.e., at all)
+1.910     2011-09-12
 
-1.909   2011-09-08
+          document the header_str arg to ->create more thoroughly (i.e., at
+          all)
 
-        dial the perl prereq back to 5.8.1 by popular demand... actually
+1.909     2011-09-08
 
-1.908   2011-06-01
+          dial the perl prereq back to 5.8.1 by popular demand... actually
 
-        dial the perl prereq back to 5.8.1 by popular demand
+1.908     2011-06-01
 
-1.907   2011-02-02
+          dial the perl prereq back to 5.8.1 by popular demand
 
-        require 5.8.5 for sane encoding
+1.907     2011-02-02
 
-        be more lenient with Content-Tranfser-Encoding values; stop at
-        semicolons
+          require 5.8.5 for sane encoding
 
-1.906   2010-10-07
-        update our prereq on Test::More to 0.88
+          be more lenient with Content-Tranfser-Encoding values; stop at
+          semicolons
 
-1.905   2010-09-06
-        fix a long-standing bug that prevent walk_parts from reaching all parts
-        (thanks, Erik Logtenberg)
+1.906     2010-10-07
+          update our prereq on Test::More to 0.88
 
-1.904   2010-09-04
-        eliminate memory leak in walk_parts (reported by MKANAT, RT #59581)
+1.905     2010-09-06
+          fix a long-standing bug that prevent walk_parts from reaching all
+          parts (thanks, Erik Logtenberg)
 
-1.903   2009-12-23
-        correct typo in body_set_str (RT #53004) (thanks, Herbert Leitz)
+1.904     2010-09-04
+          eliminate memory leak in walk_parts (reported by MKANAT, RT #59581)
 
-1.902   2009-11-11
-        allow for padding spaces in the Content-Transfer-Encoding header
-        (Geraint Edwards)
+1.903     2009-12-23
+          correct typo in body_set_str (RT #53004) (thanks, Herbert Leitz)
 
-1.901   2009-11-05
-        bump up Email::MIME::Encodings version required
+1.902     2009-11-11
+          allow for padding spaces in the Content-Transfer-Encoding header
+          (Geraint Edwards)
 
-1.900   2009-11-03
-        merge in Email-MIME-Modifier and Email-MIME-Creator
-        add better support for Unicode with body_str, header_str_set, etc.
+1.901     2009-11-05
+          bump up Email::MIME::Encodings version required
 
-1.863   2009-01-30
-        no code changes
-        add strangely missing copyright information
+1.900     2009-11-03
+          merge in Email-MIME-Modifier and Email-MIME-Creator
+          add better support for Unicode with body_str, header_str_set, etc.
 
-1.862   2009-01-22
-        add repository location metadata
-        always require Encode, never MIME::Words; this means that using
-          Email::MIME on pre-5.008 will be difficult, if not impossible
-        if a header can't be decoded, fall back to the raw header
-        move decoding methods to Email::MIME::Header, add header_raw
+1.863     2009-01-30
+          no code changes
+          add strangely missing copyright information
 
-1.861   2007-11-05
-        added perl-minver.t -- Email::MIME requires perl >= 5.006
-        we now require Email::Simple 2.003
+1.862     2009-01-22
+          add repository location metadata
+          always require Encode, never MIME::Words; this means that using
+            Email::MIME on pre-5.008 will be difficult, if not impossible
+          if a header can't be decoded, fall back to the raw header
+          move decoding methods to Email::MIME::Header, add header_raw
 
-1.860   2007-07-13
-        tentative tweak to tests and C-T-E handling for charset
-        probably needs more research, testing, and fixing
+1.861     2007-11-05
+          added perl-minver.t -- Email::MIME requires perl >= 5.006
+          we now require Email::Simple 2.003
 
-1.859   2007-03-20
-        minor test improvements
-        add "subparts" method
+1.860     2007-07-13
+          tentative tweak to tests and C-T-E handling for charset
+          probably needs more research, testing, and fixing
 
-1.858   2007-02-09
-        fixed laxity which allowed leading newlines in parts passed to 'new'
+1.859     2007-03-20
+          minor test improvements
+          add "subparts" method
+
+1.858     2007-02-09
+          fixed laxity which allowed leading newlines in parts passed to 'new'
           for instantiation; this only broke when used with Email::Simple 1.998
-        Shout out to all my former co-workers from General Cinemas unit 858!
+
+          Shout out to all my former co-workers from General Cinemas unit 858!
           This version is for you.
 
-1.857   2006-11-27
-        further severing of Email::MIME from ::Simple's guts
+1.857     2006-11-27
+          further severing of Email::MIME from ::Simple's guts
 
-1.856   2006-11-27
-        reduce the extent to which Email::MIME touches Email::Simple guts
-        improve documentation a bit
-        improve packaging
+1.856     2006-11-27
+          reduce the extent to which Email::MIME touches Email::Simple guts
+          improve documentation a bit
+          improve packaging
 
-1.855   2006-11-19
-1.854   2006-11-12
-        fix as_string to work with latest Email::Simple
+1.855     2006-11-19
+1.854     2006-11-12
+          fix as_string to work with latest Email::Simple
 
-1.853   2006-11-12
-        always call header in scalar context when getting content type (thanks,
-        JESSE)
+1.853     2006-11-12
+          always call header in scalar context when getting content type
+          (thanks, JESSE)
 
-1.852   2006-09-05
-        avoid some warnings with undef headers or bodies
+1.852     2006-09-05
+          avoid some warnings with undef headers or bodies
 
-1.851   2006-08-22
-        test coverage and layout improvements by SSORICHE
+1.851     2006-08-22
+          test coverage and layout improvements by SSORICHE
 
-1.85    2006-07-13
-        avoid memory leak due to circular references
-          (bug 7007, starter patch from MARCB)
-        pod tests
+1.85      2006-07-13
+          avoid memory leak due to circular references
+            (bug 7007, starter patch from MARCB)
+          pod tests
 
-1.81    2004-10-29
-        Fix bug in headers, now returns list in list context.
-        Dependency updates.
-        Author change.
+1.81      2004-10-29
+          Fix bug in headers, now returns list in list context.
+          Dependency updates.
+          Author change.
 
-1.8     Wed Aug 25 10:47:15 BST 2004
-        Split filename and invent_filename to separate methods, for the
-        Stripper
+1.8       Wed Aug 25 10:47:15 BST 2004
+          Split filename and invent_filename to separate methods, for the
+          Stripper
 
-1.6     Sun Jul  4 21:15:07 BST 2004
-        Another fix by Casey - this time, don't decode on as_string
+1.6       Sun Jul  4 21:15:07 BST 2004
+          Another fix by Casey - this time, don't decode on as_string
 
-1.5     Thu Jul  1 18:38:06 BST 2004
-        That didn't actually fix the bug at all.
+1.5       Thu Jul  1 18:38:06 BST 2004
+          That didn't actually fix the bug at all.
 
-1.4     Thu Jul  1 18:35:32 BST 2004
-        Only parse attributes if there are some!
+1.4       Thu Jul  1 18:35:32 BST 2004
+          Only parse attributes if there are some!
 
-1.3     Mon Apr  5 17:25:03 BST 2004
-        Bug found by Joshua Hoblitt, fixed by Richard Clamp
+1.3       Mon Apr  5 17:25:03 BST 2004
+          Bug found by Joshua Hoblitt, fixed by Richard Clamp
 
-1.2     Fri Apr  2 09:50:34 BST 2004
-        Test fix from Richard Clamp
+1.2       Fri Apr  2 09:50:34 BST 2004
+          Test fix from Richard Clamp
 
-0.01    Thu Apr 10 13:38:09 2003
-	      original version; created by h2xs 1.2 with options -AX -n Email::MIME
+0.01      Thu Apr 10 13:38:09 2003
+	        original version; created by h2xs 1.2 with options -AX -n Email::MIME
 
