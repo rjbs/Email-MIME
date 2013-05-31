@@ -35,3 +35,8 @@ my $email = Email::MIME->create(
 is scalar($email->parts), 2, 'two parts for email';
 
 is scalar(($email->parts)[-1]->parts), 3, 'three parts for all_his';
+
+my @parts = ($email->parts)[-1]->parts;
+is $parts[0]->body_str, 'Hi';
+is $parts[1]->body_str, 'Howdy';
+is $parts[2]->body_str, 'Hello';
