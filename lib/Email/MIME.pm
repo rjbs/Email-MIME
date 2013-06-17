@@ -11,7 +11,7 @@ use Email::MessageID;
 use Email::MIME::Creator;
 use Email::MIME::ContentType;
 use Email::MIME::Encode;
-use Email::MIME::Encodings 1.313;
+use Email::MIME::Encodings 1.314;
 use Email::MIME::Header;
 use Email::MIME::Modifier;
 use Encode ();
@@ -300,7 +300,7 @@ sub body {
   my $self = shift;
   my $body = $self->SUPER::body;
   my $cte  = $self->header("Content-Transfer-Encoding") || '';
-  
+
   $cte =~ s/\A\s+//;
   $cte =~ s/\s+\z//;
   $cte =~ s/;.+//; # For S/MIME, etc.
@@ -313,7 +313,7 @@ sub body {
 
   $body = $self->decode_hook($body) if $self->can("decode_hook");
 
-  $body = Email::MIME::Encodings::decode($cte, $body);
+  $body = Email::MIME::Encodings::decode($cte, $body, '7bit');
   return $body;
 }
 
