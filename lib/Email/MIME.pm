@@ -22,7 +22,7 @@ Email::MIME - Easy MIME message parsing.
 
 =head1 VERSION
 
-version 1.912_01
+version 1.920
 
 =head1 SYNOPSIS
 
@@ -112,7 +112,7 @@ very long. Added to that, you have:
 
 =cut
 
-our $VERSION = '1.912_01';
+our $VERSION = '1.920';
 
 our $CREATOR = 'Email::MIME::Creator';
 

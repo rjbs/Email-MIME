@@ -1,5 +1,14 @@
 Revision history for Perl extension Email::MIME.
 
+1.920     2013-06-17
+          do not call parts_set during walk_parts unless the parts have
+          actually changed
+
+          When trying to decode a body, fall back to 7bit if the encoding is
+          unknown.  Trying to create a new body in an unknown encoding is still
+          forbidden.  This should make it easier to handle broken messages
+          from "the internet."  ("Content-Transfer-Encoding: n"!?)
+
 1.912_01  2013-04-08
           try to encode headers based on the header structure, if it has one,
           rather than treating the header as a big string in all cases; thanks
