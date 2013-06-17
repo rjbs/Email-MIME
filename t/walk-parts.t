@@ -4,10 +4,22 @@ use warnings;
 use Test::More 0.88;
 
 use Email::MIME;
+
+my $called_parts_set = 0;
+{
+  package Email::MIME::Metered;
+  BEGIN { our @ISA = qw(Email::MIME); }
+  sub parts_set {
+    $called_parts_set++;
+    my $self = shift;
+    $self->SUPER::parts_set(@_);
+  }
+}
+
 my $email;
 {
   local $/;
-  $email = Email::MIME->new(<DATA>);
+  $email = Email::MIME::Metered->new(<DATA>);
 }
 
 my @types;
@@ -27,6 +39,27 @@ is_deeply(
   ],
   "walk_parts descends into all parts",
 );
+
+is($called_parts_set, 0, "didn't parts_set");
+
+my $i = 1;
+$email->walk_parts(sub {
+  return if $i--;
+  $_[0] = Email::MIME::Metered->create(
+    header => [
+      From    => 'me',
+      To      => 'you',
+      Subject => 'test',
+    ],
+    parts => [
+      q[Part one],
+      q[Part two],
+      (join '', map { chr } 1 .. 255),
+    ],
+  );
+});
+
+is($called_parts_set, 1, "called parts_set once");
 
 done_testing;
 
