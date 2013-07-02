@@ -3,26 +3,19 @@ use strict;
 use warnings;
 
 package Email::MIME;
-use Email::Simple 2.102;
-use base qw(Email::Simple);
+use Email::Simple 2.102; # crlf handling
+use parent qw(Email::Simple);
+# ABSTRACT: easy MIME message handling
 
 use Carp ();
 use Email::MessageID;
 use Email::MIME::Creator;
-use Email::MIME::ContentType;
+use Email::MIME::ContentType 1.011;
 use Email::MIME::Encode;
 use Email::MIME::Encodings 1.314;
 use Email::MIME::Header;
 use Email::MIME::Modifier;
-use Encode ();
-
-=head1 NAME
-
-Email::MIME - Easy MIME message parsing.
-
-=head1 VERSION
-
-version 1.920
+use Encode 1.9801 ();
 
 =head1 SYNOPSIS
 
@@ -128,14 +121,14 @@ sub new {
   return $self;
 }
 
-=head2 create
+=method create
 
   my $single = Email::MIME->create(
     header_str => [ ... ],
     body_str   => '...',
     attributes => { ... },
   );
-  
+
   my $multi = Email::MIME->create(
     header_str => [ ... ],
     parts      => [ ... ],
@@ -439,7 +432,7 @@ sub header_str_set {
   $self->header_obj->header_str_set(@_);
 }
 
-=head2 content_type_set
+=method content_type_set
 
   $email->content_type_set( 'text/html' );
 
@@ -457,13 +450,13 @@ sub content_type_set {
   return $ct;
 }
 
-=head2 charset_set
+=method charset_set
 
-=head2 name_set
+=method name_set
 
-=head2 format_set
+=method format_set
 
-=head2 boundary_set
+=method boundary_set
 
   $email->charset_set( 'UTF-8' );
   $email->name_set( 'some_filename.txt' );
@@ -509,7 +502,7 @@ sub boundary_set {
   $self->parts_set([ $self->parts ]) if $self->parts > 1;
 }
 
-=head2 encoding_set
+=method encoding_set
 
   $email->encoding_set( 'base64' );
   $email->encoding_set( 'quoted-printable' );
@@ -530,7 +523,7 @@ sub encoding_set {
   $self->body_set($body);
 }
 
-=head2 body_set
+=method body_set
 
   $email->body_set( $unencoded_body_string );
 
@@ -568,7 +561,7 @@ sub body_set {
   $self->SUPER::body_set($body_ref);
 }
 
-=head2 body_str_set
+=method body_str_set
 
   $email->body_str_set($unicode_str);
 
@@ -589,7 +582,7 @@ sub body_str_set {
   $self->body_set($body_octets);
 }
 
-=head2 disposition_set
+=method disposition_set
 
   $email->disposition_set( 'attachment' );
 
@@ -608,7 +601,7 @@ sub disposition_set {
   $self->header_set('Content-Disposition' => $dis_header);
 }
 
-=head2 filename_set
+=method filename_set
 
   $email->filename_set( 'boo.pdf' );
 
@@ -637,7 +630,7 @@ sub filename_set {
   $self->header_set('Content-Disposition' => $dis);
 }
 
-=head2 parts_set
+=method parts_set
 
   $email->parts_set( \@new_parts );
 
@@ -681,7 +674,7 @@ sub parts_set {
   $self->_reset_cids;
 }
 
-=head2 parts_add
+=method parts_add
 
   $email->parts_add( \@more_parts );
 
@@ -696,7 +689,7 @@ sub parts_add {
   $self->parts_set([ $self->parts, @{$parts}, ]);
 }
 
-=head2 walk_parts
+=method walk_parts
 
   $email->walk_parts(sub {
       my ($part) = @_;
@@ -791,7 +784,7 @@ sub _reset_cids {
 __END__
 
 
-=head2 header_str_set
+=method header_str_set
 
   $email->header_str_set($header_name => @value_strings);
 
@@ -799,27 +792,29 @@ This behaves like C<header_set>, but expects Unicode (character) strings as the
 values to set, rather than pre-encoded byte strings.  It will encode them as
 MIME encoded-words if they contain any control or 8-bit characters.
 
-=head2 parts
+=method parts
 
 This returns a list of C<Email::MIME> objects reflecting the parts of the
 message. If it's a single-part message, you get the original object back.
 
 In scalar context, this method returns the number of parts.
 
-=head2 subparts
+This is a stupid method.  Don't use it.
+
+=method subparts
 
 This returns a list of C<Email::MIME> objects reflecting the parts of the
 message.  If it's a single-part message, this method returns an empty list.
 
 In scalar context, this method returns the number of subparts.
 
-=head2 body
+=method body
 
 This decodes and returns the body of the object I<as a byte string>. For
 top-level objects in multi-part messages, this is highly likely to be something
 like "This is a multi-part message in MIME format."
 
-=head2 body_str
+=method body_str
 
 This decodes both the Content-Transfer-Encoding layer of the body (like the
 C<body> method) as well as the charset encoding of the body (unlike the C<body>
@@ -829,11 +824,11 @@ If the charset is known, it is used.  If there is no charset but the content
 type is either C<text/plain> or C<text/html>, us-ascii is assumed.  Otherwise,
 an exception is thrown.
 
-=head2 body_raw
+=method body_raw
 
 This returns the body of the object, but doesn't decode the transfer encoding.
 
-=head2 decode_hook
+=method decode_hook
 
 This method is called before the L<Email::MIME::Encodings> C<decode> method, to
 decode the body of non-binary messages (or binary messages, if the
@@ -843,25 +838,25 @@ nothing, but subclasses may define behavior.
 This method could be used to implement the decryption of content in secure
 email, for example.
 
-=head2 content_type
+=method content_type
 
 This is a shortcut for access to the content type header.
 
-=head2 filename
+=method filename
 
 This provides the suggested filename for the attachment part. Normally
 it will return the filename from the headers, but if C<filename> is
 passed a true parameter, it will generate an appropriate "stable"
 filename if one is not found in the MIME headers.
 
-=head2 invent_filename
+=method invent_filename
 
   my $filename = Email::MIME->invent_filename($content_type);
 
 This routine is used by C<filename> to generate filenames for attached files.
 It will attempt to choose a reasonable extension, falling back to F<dat>.
 
-=head2 debug_structure
+=method debug_structure
 
   my $description = $email->debug_structure;
 
@@ -882,26 +877,9 @@ L<Email::MIME::Modifier>, sadly.
 
 L<Email::Simple>, L<Email::MIME::Modifier>, L<Email::MIME::Creator>.
 
-=head1 PERL EMAIL PROJECT
-
-This module is maintained by the Perl Email Project
-
-L<http://emailproject.perl.org/wiki/Email::MIME>
-
-=head1 AUTHOR
-
-Casey West, C<casey@geeknest.com>
-
-Simon Cozens, C<simon@cpan.org> (retired)
-
-This software is copyright (c) 2004 by Simon Cozens.
-
-This is free software; you can redistribute it and/or modify it under
-the same terms as perl itself.
-
 =head1 THANKS
 
 This module was generously sponsored by Best Practical
-(http://www.bestpractical.com/) and Pete Sergeant.
+(http://www.bestpractical.com/), Pete Sergeant, and Pobox.com.
 
 =cut

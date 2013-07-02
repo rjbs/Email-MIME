@@ -1,6 +1,7 @@
 use strict;
 use warnings;
 package Email::MIME::Encode;
+# ABSTRACT: a private helper for MIME header encoding
 
 use Email::Address;
 use Encode ();

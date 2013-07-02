@@ -1,10 +1,10 @@
-package Email::MIME::Creator;
+use 5.008001;
 use strict;
+use warnings;
+package Email::MIME::Creator;
+# ABSTRACT: obsolete do-nothing library
 
-use vars qw[$VERSION];
-$VERSION = '1.920';
-
-use base q[Email::Simple::Creator];
+use parent q[Email::Simple::Creator];
 use Email::MIME;
 use Encode ();
 
@@ -26,30 +26,8 @@ sub _construct_part {
 
 1;
 
-__END__
-
-=head1 NAME
-
-Email::MIME::Creator - obsolete do-nothing library
-
 =head1 SYNOPSIS
 
 You don't need to use this module for anything.
-
-=head1 PERL EMAIL PROJECT
-
-This module is maintained by the Perl Email Project.
-
-L<http://emailproject.perl.org/wiki/Email::MIME::Creator>
-
-=head1 ORIGINAL AUTHOR
-
-B<Do not send bug reports to>: Casey West, <F<casey@geeknest.com>>.
-
-=head1 COPYRIGHT
-
-  Copyright (c) 2004 Casey West.  All rights reserved.
-  This module is free software; you can redistribute it and/or modify it
-  under the same terms as Perl itself.
 
 =cut

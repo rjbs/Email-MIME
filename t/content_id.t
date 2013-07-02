@@ -2,7 +2,7 @@ use strict;
 use warnings;
 use Test::More tests => 19;
 
-use_ok 'Email::MIME::Modifier';
+use_ok 'Email::MIME';
 
 my $email = Email::MIME->new(<<'__MESSAGE__');
 From: me@example.com

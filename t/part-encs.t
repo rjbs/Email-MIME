@@ -2,9 +2,6 @@ use strict;
 use warnings;
 use Test::More;
 
-plan skip_all => "these tests require Email::MIME::Creator 1.43"
-  unless eval "use Email::MIME::Creator 1.43; 1";
-
 plan tests => 11;
 
 use_ok 'Email::MIME';
