@@ -1,5 +1,10 @@
 Revision history for Perl extension Email::MIME.
 
+{{$NEXT}}
+
+1.921     2013-07-01 22:51:01 America/New_York
+          repackage, remove PEP links, update bugtracker
+
 1.920     2013-06-17
           do not call parts_set during walk_parts unless the parts have
           actually changed
