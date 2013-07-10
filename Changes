@@ -1,6 +1,8 @@
 Revision history for Perl extension Email::MIME.
 
 {{$NEXT}}
+
+1.922     2013-07-10 08:45:02 America/New_York
           repackage, fixing version number
 
 1.921     2013-07-01 22:51:01 America/New_York
