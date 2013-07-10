@@ -1,6 +1,7 @@
 Revision history for Perl extension Email::MIME.
 
 {{$NEXT}}
+          repackage, fixing version number
 
 1.921     2013-07-01 22:51:01 America/New_York
           repackage, remove PEP links, update bugtracker

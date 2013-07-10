@@ -105,8 +105,6 @@ very long. Added to that, you have:
 
 =cut
 
-our $VERSION = '1.920';
-
 our $CREATOR = 'Email::MIME::Creator';
 
 my $NO_ENCODE_RE = qr/
