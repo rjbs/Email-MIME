@@ -389,7 +389,7 @@ sub debug_structure {
   my ($self, $level) = @_;
   $level ||= 0;
   my $rv = " " x (5 * $level);
-  $rv .= "+ " . $self->content_type . "\n";
+  $rv .= "+ " . ($self->content_type || '') . "\n";
   my @parts = $self->parts;
   if (@parts > 1) { $rv .= $_->debug_structure($level + 1) for @parts; }
   return $rv;

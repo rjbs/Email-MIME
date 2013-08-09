@@ -1,6 +1,9 @@
 Revision history for Perl extension Email::MIME.
 
 {{$NEXT}}
+          avoid undefined warnings in debug_structure [rt.cpan.org #82388]
+          (Thanks, Kurt Anderson)
+
           better error message when the given body is a ref but not a scalar
           ref [rt.cpan.org #59205]
 
