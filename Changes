@@ -1,6 +1,8 @@
 Revision history for Perl extension Email::MIME.
 
 {{$NEXT}}
+
+1.923     2013-08-08 21:59:02 America/New_York
           do not consider the part-ending CRLF part of the body
 
           avoid undefined warnings in debug_structure [rt.cpan.org #82388]
