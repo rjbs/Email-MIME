@@ -20,6 +20,11 @@ use Scalar::Util qw(reftype);
 
 =head1 SYNOPSIS
 
+B<Wait!>  Before you read this, maybe you just need L<Email::Stuffer>, which is
+a much easier-to-use tool for building simple email messages that might have
+attachments or both plain text and HTML.  If that doesn't do it for you, then
+by all means keep reading.
+
   use Email::MIME;
   my $parsed = Email::MIME->new($message);
 
@@ -567,8 +572,12 @@ sub body_set {
   $email->body_str_set($unicode_str);
 
 This method behaves like C<body_set>, but assumes that the given value is a
-Unicode string that should be encoded into the message's charset before being
-set.  If the charset can't be determined, an exception is thrown.
+Unicode string that should be encoded into the message's charset
+before being set.
+
+The charset must already be set, either manually (via the C<attribuets>
+argument to C<create> or C<charset_set>) or through the C<Content-Type of a
+parsed message.  If the charset can't be determined, an exception is thrown.
 
 =cut
 
