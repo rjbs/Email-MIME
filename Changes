@@ -1,6 +1,8 @@
 Revision history for Perl extension Email::MIME.
 
 {{$NEXT}}
+          better error message when the given body is a ref but not a scalar
+          ref [rt.cpan.org #59205]
 
 1.922     2013-07-10 08:45:02 America/New_York
           repackage, fixing version number

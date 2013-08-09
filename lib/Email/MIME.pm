@@ -16,6 +16,7 @@ use Email::MIME::Encodings 1.314;
 use Email::MIME::Header;
 use Email::MIME::Modifier;
 use Encode 1.9801 ();
+use Scalar::Util qw(reftype);
 
 =head1 SYNOPSIS
 
@@ -538,6 +539,8 @@ sub body_set {
   my $body_ref;
 
   if (ref $body) {
+    Carp::croak("provided body reference is not a scalar reference")
+      unless reftype($body) eq 'SCALAR';
     $body_ref = $body;
     $body     = $$body_ref;
   } else {
