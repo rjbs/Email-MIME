@@ -576,7 +576,7 @@ This method behaves like C<body_set>, but assumes that the given value is a
 Unicode string that should be encoded into the message's charset
 before being set.
 
-The charset must already be set, either manually (via the C<attribuets>
+The charset must already be set, either manually (via the C<attributes>
 argument to C<create> or C<charset_set>) or through the C<Content-Type of a
 parsed message.  If the charset can't be determined, an exception is thrown.
 
