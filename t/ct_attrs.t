@@ -10,9 +10,18 @@ my $email = Email::MIME->new(<<__MESSAGE__);
 Content-Type: text/plain; charset="us-ascii"
 __MESSAGE__
 
+sub ct {
+  return (
+    type    => $_[0], # okay!
+    subtype => $_[1], # okay!
+
+    discrete  => $_[0], # dumb!
+    composite => $_[1], # dumb!
+  );
+}
+
 is_deeply( parse_content_type($email->header('Content-Type')), {
-    discrete => 'text',
-    composite => 'plain',
+    ct(qw(text plain)),
     attributes => {
         charset => 'us-ascii',
     },
@@ -21,8 +30,7 @@ is_deeply( parse_content_type($email->header('Content-Type')), {
 $email->charset_set( 'UTF-8' );
 
 is_deeply( parse_content_type($email->header('Content-Type')), {
-    discrete => 'text',
-    composite => 'plain',
+    ct(qw(text plain)),
     attributes => {
         charset => 'UTF-8',
     },
@@ -31,8 +39,7 @@ is_deeply( parse_content_type($email->header('Content-Type')), {
 $email->charset_set( undef );
 
 is_deeply( parse_content_type($email->header('Content-Type')), {
-    discrete => 'text',
-    composite => 'plain',
+    ct(qw(text plain)),
     attributes => {
     },
 }, 'ct with no charset worked' );
@@ -40,8 +47,7 @@ is_deeply( parse_content_type($email->header('Content-Type')), {
 $email->format_set( 'flowed' );
 
 is_deeply( parse_content_type($email->header('Content-Type')), {
-    discrete => 'text',
-    composite => 'plain',
+    ct(qw(text plain)),
     attributes => {
         format => 'flowed',
     },
@@ -50,8 +56,7 @@ is_deeply( parse_content_type($email->header('Content-Type')), {
 $email->name_set( 'foo.txt' );
 
 is_deeply( parse_content_type($email->header('Content-Type')), {
-    discrete => 'text',
-    composite => 'plain',
+    ct(qw(text plain)),
     attributes => {
         format => 'flowed',
         name => 'foo.txt',
@@ -65,8 +70,7 @@ is $email->header('Content-Type'),
 $email->boundary_set( 'marker' );
 
 is_deeply( parse_content_type($email->header('Content-Type')), {
-    discrete => 'text',
-    composite => 'plain',
+    ct(qw(text plain)),
     attributes => {
         boundary => 'marker',
         format => 'flowed',

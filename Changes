@@ -1,6 +1,8 @@
 Revision history for Perl extension Email::MIME.
 
 {{$NEXT}}
+          update use of Email::MIME::ContentType to match new, fixed hash keys:
+          type/subtype
 
 1.923     2013-08-08 21:59:02 America/New_York
           do not consider the part-ending CRLF part of the body
