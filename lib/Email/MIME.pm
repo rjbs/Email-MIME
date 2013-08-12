@@ -207,7 +207,7 @@ sub create {
   # parse_content_type(undef) which, for some reason, returns the default.
   # It's really sort of mind-boggling.  Anyway, the default ends up being
   # q{text/plain; charset="us-ascii"} so that if content_type is in the
-  # attributes, but not charset, then charset isn't changedand you up with
+  # attributes, but not charset, then charset isn't changed and you up with
   # something that's q{image/jpeg; charset="us-ascii"} and you look like a
   # moron. -- rjbs, 2009-01-20
   if (
@@ -367,7 +367,7 @@ sub parts_multipart {
   $self->SUPER::body_set(undef);
 
   # If there are no headers in the potential MIME part, it's just part of the
-  # body.  This is a horrible hack, although it's debateable whether it was
+  # body.  This is a horrible hack, although it's debatable whether it was
   # better or worse when it was $self->{body} = shift @bits ... -- rjbs,
   # 2006-11-27
   $self->SUPER::body_set(shift @bits) if ($bits[0] || '') !~ /.*:.*/;
