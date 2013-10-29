@@ -734,7 +734,10 @@ sub walk_parts {
         =  (@subparts != @orig_subparts)
         || (grep { $subparts[$_] != $orig_subparts[$_] } (0 .. $#subparts));
 
-      $part->parts_set(\@subparts) if $differ;
+      if ($differ) {
+        $part->parts_set(\@subparts);
+        $part = bless {%$part}, ref($part);
+      }
     }
 
     return $part;
