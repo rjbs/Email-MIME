@@ -62,6 +62,15 @@ $email->walk_parts(sub {
 is($called_parts_set, 1, "called parts_set once");
 like($email->as_string, qr/Part one/);
 
+$email->walk_parts(sub {
+  if ($_[0]->body and $_[0]->body eq 'Part one') {
+    $_[0] = Email::MIME->create(
+      body => 'Part ONE',
+    );
+  }
+});
+like($email->as_string, qr/Part ONE/);
+
 done_testing;
 
 __DATA__
