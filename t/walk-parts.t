@@ -10,7 +10,7 @@ my $called_parts_set = 0;
   package Email::MIME::Metered;
   BEGIN { our @ISA = qw(Email::MIME); }
   sub parts_set {
-    $called_parts_set++;
+    $called_parts_set++ if (caller(2))[3] eq 'Email::MIME::walk_parts';
     my $self = shift;
     $self->SUPER::parts_set(@_);
   }
@@ -60,6 +60,7 @@ $email->walk_parts(sub {
 });
 
 is($called_parts_set, 1, "called parts_set once");
+like($email->as_string, qr/Part one/);
 
 done_testing;
 
