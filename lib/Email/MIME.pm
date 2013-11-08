@@ -723,6 +723,8 @@ top-level MIME object. All changes will be applied in place.
 sub walk_parts {
   my ($self, $callback) = @_;
 
+  my %changed;
+
   my $walk;
   $walk = sub {
     my ($part) = @_;
@@ -732,11 +734,12 @@ sub walk_parts {
       my @subparts = map {; $walk->($_) } @orig_subparts;
       my $differ
         =  (@subparts != @orig_subparts)
-        || (grep { $subparts[$_] != $orig_subparts[$_] } (0 .. $#subparts));
+        || (grep { $subparts[$_] != $orig_subparts[$_] } (0 .. $#subparts))
+        || (grep { $changed{ 0+$subparts[$_] } } (0 .. $#subparts));
 
       if ($differ) {
         $part->parts_set(\@subparts);
-        $part = bless {%$part}, ref($part);
+        $changed{ 0+$part }++;
       }
     }
 
