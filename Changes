@@ -1,6 +1,8 @@
 Revision history for Perl extension Email::MIME.
 
 {{$NEXT}}
+
+1.925     2013-11-08 07:01:03 America/New_York
           improve reliability of mail reconstruction during walk_parts (thanks,
           Tomohiro Hosaka!)
 
