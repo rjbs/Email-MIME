@@ -377,7 +377,7 @@ sub parts_multipart {
   my @parts;
   for my $bit (@bits) {
     $bit =~ s/\A[\n\r]+//smg;
-    $bit =~ s/$self->{mycrlf}\Z//smg;
+    $bit =~ s/(?<!\x0d)$self->{mycrlf}\Z//smg;
     my $email = (ref $self)->new($bit);
     push @parts, $email;
   }

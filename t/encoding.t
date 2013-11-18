@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 20;
+use Test::More tests => 26;
 
 use_ok 'Email::MIME';
 use_ok 'Email::MIME::Modifier';
@@ -109,3 +109,35 @@ is(
   'quoted-printable',
   'quoted-printble + body_set encoding works',
 );
+
+{
+  my $qp_part = Email::MIME->create(
+      attributes => {
+          encoding => "quoted-printable",
+          charset  => "US-ASCII",
+      },
+      body_str => 'Hello World!',
+  );
+
+  # mycrlf = LF & parts_multipart & quoted-printable
+  {
+    my $email = Email::MIME->new("Subject: LF\x0a\x0abody");
+    is $email->{mycrlf}, "\x0a";
+
+    $email->parts_add([$qp_part]);
+
+    is( ($email->parts)[1]->body_raw, "Hello World!=\x0d\x0a" );
+    is( ($email->parts)[1]->body_str, "Hello World!" );
+  }
+
+  # mycrlf = CRLF & parts_multipart & quoted-printable
+  {
+    my $email = Email::MIME->new("Subject: CRLF\x0d\x0a\x0d\x0abody");
+    is $email->{mycrlf}, "\x0d\x0a";
+
+    $email->parts_add([$qp_part]);
+
+    is( ($email->parts)[1]->body_raw, "Hello World!=\x0d\x0a" );
+    is( ($email->parts)[1]->body_str, "Hello World!" );
+  }
+}
