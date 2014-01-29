@@ -1,8 +1,9 @@
 use strict;
 use warnings;
 package Email::MIME::Header;
-use parent 'Email::Simple::Header';
 # ABSTRACT: the header of a MIME message
+
+use parent 'Email::Simple::Header';
 
 use Email::MIME::Encode;
 use Encode 1.9801;

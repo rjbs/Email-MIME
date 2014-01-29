@@ -1,11 +1,11 @@
 use 5.008001;
 use strict;
 use warnings;
-
 package Email::MIME;
+# ABSTRACT: easy MIME message handling
+
 use Email::Simple 2.102; # crlf handling
 use parent qw(Email::Simple);
-# ABSTRACT: easy MIME message handling
 
 use Carp ();
 use Email::MessageID;
