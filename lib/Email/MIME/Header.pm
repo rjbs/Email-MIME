@@ -33,6 +33,7 @@ sub header {
   my @header = $self->SUPER::header(@_);
   local $@;
   foreach my $header (@header) {
+    next unless defined $header;
     next unless $header =~ /=\?/;
     $header = $self->_header_decode_str($header);
   }

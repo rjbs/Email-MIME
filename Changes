@@ -1,11 +1,12 @@
 Revision history for Perl extension Email::MIME.
 
 {{$NEXT}}
-          improve EOL processing with quoted-printable (thanks, Tomohiro
+        - improve EOL processing with quoted-printable (thanks, Tomohiro
           Hosaka!)
+        - avoid uninitialized warnings [rt.cpan.org #91707]
 
 1.925     2013-11-08 07:01:03 America/New_York
-          improve reliability of mail reconstruction during walk_parts (thanks,
+        - improve reliability of mail reconstruction during walk_parts (thanks,
           Tomohiro Hosaka!)
 
 1.924     2013-08-10 23:23:55 America/New_York
