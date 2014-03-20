@@ -71,6 +71,14 @@ $email->walk_parts(sub {
 });
 like($email->as_string, qr/Part ONE/);
 
+my $new_text = 'DEERRRPP' ;
+$email->walk_parts(sub {
+  my $part = shift;
+  if ( $part->content_type =~ m[text/plain]i ) {
+    $part->body_set( $new_text );
+  }
+});
+like($email->as_string, qr/\Q$new_text\E/, 'set body from walk_parts');
 done_testing;
 
 __DATA__
