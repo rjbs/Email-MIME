@@ -36,7 +36,7 @@ by all means keep reading.
 
 ...or...
 
-  use Email::MIME::Creator;
+  use Email::MIME;
   use IO::All;
 
   # multipart message
