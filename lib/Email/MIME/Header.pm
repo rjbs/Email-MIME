@@ -30,15 +30,22 @@ C<header_str_set> method.
 =cut
 
 sub header {
-  my $self   = shift;
-  my @header = $self->SUPER::header(@_);
+  my $self  = shift;
+  my $wanta = wantarray;
+
+  return unless defined $wanta; # ??
+
+  my @header = $wanta ? $self->SUPER::header(@_)
+                      : scalar $self->SUPER::header(@_);
+
   local $@;
   foreach my $header (@header) {
     next unless defined $header;
     next unless $header =~ /=\?/;
-    $header = $self->_header_decode_str($header);
+
+    _maybe_decode(\$header);
   }
-  return wantarray ? (@header) : $header[0];
+  return $wanta ? @header : $header[0];
 }
 
 sub header_raw {
@@ -57,12 +64,16 @@ sub header_str_set {
   $self->header_set($name => @values);
 }
 
-sub _header_decode_str {
-  my ($self, $str) = @_;
-  my $new_str;
-  $new_str = $str
-    unless eval { $new_str = Encode::decode("MIME-Header", $str); 1 };
-  return $new_str;
+sub _maybe_decode {
+  my ($str_ref) = @_;
+
+  # The eval is to cope with unknown encodings, like Latin-62, or other
+  # nonsense that gets put in there by spammers and weirdos
+  # -- rjbs, 2014-12-04
+  my $new;
+  $$str_ref = $new
+    if eval { $new = Encode::decode("MIME-Header", $$str_ref); 1 };
+  return;
 }
 
 1;
