@@ -1,6 +1,7 @@
 Revision history for Perl extension Email::MIME.
 
 {{$NEXT}}
+        - add header_str_pairs; like header_pairs, but decoded
         - remove Email:MIME::Creator from synopsis
 
 1.926     2014-01-28 23:28:41-05:00 America/New_York

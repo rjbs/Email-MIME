@@ -24,6 +24,13 @@ require_ok 'Email::MIME::Creator';
   is($header[0], 'Julián', "1st header decodes to J...");
   is($header[1], '=?UTF-8?B?SnVsacOhbg==?=', "2nd header decodes to =?..?=");
   is($header[2], 'Julián', "3rd header decodes to J...");
+
+  my @pairs = $email->header_str_pairs;
+  my @idx   = grep { $_ % 2 == 0 and $pairs[$_] eq 'Test' } (0..$#pairs);
+  is(@idx, 3, 'there are three entries for Test in header_str_pairs');
+  is($pairs[$idx[0]+1], 'Julián', "1st header decodes to J...");
+  is($pairs[$idx[1]+1], '=?UTF-8?B?SnVsacOhbg==?=', "2nd header decodes to =?..?=");
+  is($pairs[$idx[2]+1], 'Julián', "3rd header decodes to J...");
 }
 
 {

@@ -64,6 +64,17 @@ sub header_str_set {
   $self->header_set($name => @values);
 }
 
+sub header_str_pairs {
+  my ($self) = @_;
+
+  my @pairs = $self->header_pairs;
+  for (grep { $_ % 2 } (1 .. $#pairs)) {
+    _maybe_decode(\$pairs[$_]);
+  }
+
+  return @pairs;
+}
+
 sub _maybe_decode {
   my ($str_ref) = @_;
 

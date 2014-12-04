@@ -437,6 +437,11 @@ sub header_str_set {
   $self->header_obj->header_str_set(@_);
 }
 
+sub header_str_pairs {
+  my $self = shift;
+  $self->header_obj->header_str_pairs(@_);
+}
+
 =method content_type_set
 
   $email->content_type_set( 'text/html' );
@@ -808,6 +813,13 @@ __END__
 This behaves like C<header_set>, but expects Unicode (character) strings as the
 values to set, rather than pre-encoded byte strings.  It will encode them as
 MIME encoded-words if they contain any control or 8-bit characters.
+
+=method header_str_pairs
+
+  my @pairs = $email->header_str_pairs;
+
+This method behaves like C<header_pairs>, returning a list of field name/value
+pairs, but the values have been decoded to character strings, when possible.
 
 =method parts
 
