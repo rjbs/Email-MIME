@@ -738,11 +738,20 @@ sub walk_parts {
     $callback->($part);
 
     if (my @orig_subparts = $part->subparts) {
-      my @subparts = map {; $walk->($_) } @orig_subparts;
-      my $differ
-        =  (@subparts != @orig_subparts)
-        || (grep { $subparts[$_] != $orig_subparts[$_] } (0 .. $#subparts))
-        || (grep { $changed{ 0+$subparts[$_] } } (0 .. $#subparts));
+      my $differ;
+      my @subparts;
+
+      for my $part (@orig_subparts) {
+        my $str = $part->as_string;
+        next unless my $new = $walk->($part);
+        $differ = 1 if $str ne $new->as_string;
+        push @subparts, $new;
+      }
+
+      $differ
+        ||=  (@subparts != @orig_subparts)
+        ||   (grep { $subparts[$_] != $orig_subparts[$_] } (0 .. $#subparts))
+        ||   (grep { $changed{ 0+$subparts[$_] } } (0 .. $#subparts));
 
       if ($differ) {
         $part->parts_set(\@subparts);
