@@ -48,7 +48,7 @@ by all means keep reading.
               encoding     => "quoted-printable",
               name         => "2004-financials.pdf",
           },
-          body => io( "2004-financials.pdf" )->all,
+          body => io( "2004-financials.pdf" )->binary->all,
       ),
       Email::MIME->create(
           attributes => {
