@@ -675,6 +675,8 @@ sub parts_set {
     $body .= "$self->{mycrlf}--$bound--$self->{mycrlf}";
     @{$ct_header}{qw[type subtype]} = qw[multipart mixed]
       unless grep { $ct_header->{type} eq $_ } qw[multipart message];
+    $self->encoding_set('7bit');
+    delete $ct_header->{attributes}{charset};
   } elsif (@$parts == 1) {  # setup singlepart
     $body .= $parts->[0]->body;
     @{$ct_header}{qw[type subtype]}
