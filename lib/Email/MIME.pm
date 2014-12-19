@@ -553,7 +553,6 @@ sub body_set {
     Carp::croak("provided body reference is not a scalar reference")
       unless reftype($body) eq 'SCALAR';
     $body_ref = $body;
-    $body     = $$body_ref;
   } else {
     $body_ref = \$body;
   }
@@ -565,11 +564,11 @@ sub body_set {
   # Simple subclasses were free to alter the guts of the Email::Simple
   # object. -- rjbs, 2007-07-16
   unless (((caller(1))[3] || '') eq 'Email::Simple::new') {
-    $body = Email::MIME::Encodings::encode($enc, $body)
+    $$body_ref = Email::MIME::Encodings::encode($enc, $$body_ref)
       unless !$enc || $enc =~ $NO_ENCODE_RE;
   }
 
-  $self->{body_raw} = $body;
+  $self->{body_raw} = $$body_ref;
   $self->SUPER::body_set($body_ref);
 }
 
