@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 10;
+use Test::More tests => 12;
 
 use_ok 'Email::MIME';
 use_ok 'Email::MIME::Modifier';
@@ -77,4 +77,20 @@ is_deeply( parse_content_type($email->header('Content-Type')), {
         name => 'foo.txt',
     },
 }, 'ct with boundary worked' );
+
+$email->content_type_attribute_set( 'Bananas' => 'true' );
+
+is $email->header('Content-Type'),
+    'text/plain; bananas="true"; boundary="marker"; format="flowed"; name="foo.txt"',
+    'ct format is correct';
+
+is_deeply( parse_content_type($email->header('Content-Type')), {
+    ct(qw(text plain)),
+    attributes => {
+        bananas => 'true',
+        boundary => 'marker',
+        format => 'flowed',
+        name => 'foo.txt',
+    },
+}, 'ct with misc. attr (bananas) worked' );
 

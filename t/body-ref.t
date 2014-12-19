@@ -16,6 +16,7 @@ for my $ref (0,1) {
     attributes => {
       encoding     => 'base64',
       content_type => 'application/octet-stream',
+      invented     => 'xyzzy',
     },
   );
 
@@ -24,6 +25,8 @@ for my $ref (0,1) {
     "$prefix: email is long enough"
   );
   isnt(index($email->body, 'I LIKE PIE'), -1, "$prefix: target string");
+
+  note $email->as_string;
 }
 
 done_testing;

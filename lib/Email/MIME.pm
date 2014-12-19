@@ -169,6 +169,12 @@ modification.
 
 =cut
 
+my %CT_SETTER = map {; $_ => 1 } qw(
+  content_type charset name format boundary
+  encoding
+  disposition filename
+);
+
 sub create {
   my ($class, %args) = @_;
 
@@ -218,13 +224,8 @@ sub create {
 
   my $email = $class->new($header);
 
-  foreach (qw(
-    content_type charset name format boundary
-    encoding
-    disposition filename
-  )) {
-    my $set = "$_\_set";
-    $email->$set($attrs{$_}) if exists $attrs{$_};
+  for my $key (keys %attrs) {
+    $email->content_type_attribute_set($key => $attrs{$key});
   }
 
   my $body_args = grep { defined $args{$_} } qw(parts body body_str);
@@ -510,6 +511,30 @@ sub boundary_set {
   $self->_compose_content_type($ct_header);
 
   $self->parts_set([ $self->parts ]) if $self->parts > 1;
+}
+
+sub content_type_attribute_set {
+  my ($self, $key, $value) = @_;
+  $key = lc $key;
+
+  if ($CT_SETTER{$key}) {
+    my $method = "$key\_set";
+    return $self->$method($value);
+  }
+
+  my $ct_header = parse_content_type($self->header('Content-Type'));
+  my $attrs = $ct_header->{attributes};
+
+  for my $existing_key (keys %$attrs) {
+    delete $attrs->{$existing_key} if lc $existing_key eq $key;
+  }
+
+  if ($value) {
+    $ct_header->{attributes}->{$key} = $value;
+  } else {
+    delete $ct_header->{attributes}->{$key};
+  }
+  $self->_compose_content_type($ct_header);
 }
 
 =method encoding_set
