@@ -25,6 +25,8 @@ for my $ref (0,1) {
     "$prefix: email is long enough"
   );
   isnt(index($email->body, 'I LIKE PIE'), -1, "$prefix: target string");
+
+  like($email->header('Content-Type'), qr/invented="xyzzy"/, "custom CT param");
 }
 
 done_testing;
