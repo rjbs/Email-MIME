@@ -25,8 +25,6 @@ for my $ref (0,1) {
     "$prefix: email is long enough"
   );
   isnt(index($email->body, 'I LIKE PIE'), -1, "$prefix: target string");
-
-  note $email->as_string;
 }
 
 done_testing;
