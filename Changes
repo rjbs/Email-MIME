@@ -1,6 +1,8 @@
 Revision history for Perl extension Email::MIME.
 
 {{$NEXT}}
+        - try not to lose unrecognized content-type parameters
+        - avoid copying the body content when not needed during construction
 
 1.928     2014-12-15 21:47:49-05:00 America/New_York
         - when converting from single part to multipart, drop
