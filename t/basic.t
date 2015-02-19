@@ -45,3 +45,4 @@ is scalar(@headers), 3, 'got all three back in list context';
 #   -- rjbs, 2006-10-15
 eval { $email->as_string };
 is($@, '', "we can stringify without dying");
+

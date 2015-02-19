@@ -5,28 +5,30 @@ use Test::More;
 
 for my $ref (0,1) {
   my $prefix = $ref ? 'ref' : 'str';
+  subtest "email from $prefix" => sub {
+    my $str = 'x' x 1024
+            .  "\nI LIKE PIE\n"
+            . 'x' x 1024;
 
-  my $str = 'x' x 1024
-          .  "\nI LIKE PIE\n"
-          . 'x' x 1024;
+    my $email = Email::MIME->create(
+      body => ($ref ? \$str : $str),
+      header => [ From => 'fred@example.com' ],
+      attributes => {
+        encoding     => 'base64',
+        content_type => 'application/octet-stream',
+        invented     => 'xyzzy',
+      },
+    );
 
-  my $email = Email::MIME->create(
-    body => ($ref ? \$str : $str),
-    header => [ From => 'fred@example.com' ],
-    attributes => {
-      encoding     => 'base64',
-      content_type => 'application/octet-stream',
-      invented     => 'xyzzy',
-    },
-  );
+    cmp_ok(
+      length($email->as_string), '>=', 2048,
+      "$prefix: email is long enough"
+    );
 
-  cmp_ok(
-    length($email->as_string), '>=', 2048,
-    "$prefix: email is long enough"
-  );
-  isnt(index($email->body, 'I LIKE PIE'), -1, "$prefix: target string");
+    isnt(index($email->body, 'I LIKE PIE'), -1, "$prefix: target string");
 
-  like($email->header('Content-Type'), qr/invented="xyzzy"/, "custom CT param");
+    like($email->header('Content-Type'), qr/invented="xyzzy"/, "custom CT param");
+  };
 }
 
 done_testing;
