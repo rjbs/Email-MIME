@@ -433,6 +433,11 @@ sub invent_filename {
 
 sub default_header_class { 'Email::MIME::Header' }
 
+sub header_str {
+  my $self = shift;
+  $self->header_obj->header_str(@_);
+}
+
 sub header_str_set {
   my $self = shift;
   $self->header_obj->header_str_set(@_);
