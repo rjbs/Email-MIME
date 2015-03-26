@@ -4,7 +4,7 @@ use warnings;
 package Email::MIME;
 # ABSTRACT: easy MIME message handling
 
-use Email::Simple 2.102; # crlf handling
+use Email::Simple 2.104; # header_raw_*
 use parent qw(Email::Simple);
 
 use Carp ();
@@ -554,7 +554,7 @@ sub encoding_set {
   my ($self, $enc) = @_;
   $enc ||= '7bit';
   my $body = $self->body;
-  $self->header_set('Content-Transfer-Encoding' => $enc);
+  $self->header_raw_set('Content-Transfer-Encoding' => $enc);
   $self->body_set($body);
 }
 
@@ -638,7 +638,7 @@ sub disposition_set {
   $dis_header
     ? ($dis_header =~ s/^([^;]+)/$dis/)
     : ($dis_header = $dis);
-  $self->header_set('Content-Disposition' => $dis_header);
+  $self->header_raw_set('Content-Disposition' => $dis_header);
 }
 
 =method filename_set
@@ -667,7 +667,7 @@ sub filename_set {
     $dis .= qq[; $attr="$val"];
   }
 
-  $self->header_set('Content-Disposition' => $dis);
+  $self->header_raw_set('Content-Disposition' => $dis);
 }
 
 =method parts_set
@@ -799,7 +799,7 @@ sub _compose_content_type {
   for my $attr (sort keys %{ $ct_header->{attributes} }) {
     $ct .= qq[; $attr="$ct_header->{attributes}{$attr}"];
   }
-  $self->header_set('Content-Type' => $ct);
+  $self->header_raw_set('Content-Type' => $ct);
   $self->{ct} = $ct_header;
 }
 
@@ -825,11 +825,11 @@ sub _reset_cids {
       return if keys(%cids) == 1;
 
       my $cid = $self->_get_cid;
-      $_->header_set('Content-ID' => "<$cid>") for $self->parts;
+      $_->header_raw_set('Content-ID' => "<$cid>") for $self->parts;
     } else {
       foreach ($self->parts) {
         my $cid = $self->_get_cid;
-        $_->header_set('Content-ID' => "<$cid>")
+        $_->header_raw_set('Content-ID' => "<$cid>")
           unless $_->header('Content-ID');
       }
     }
@@ -840,21 +840,30 @@ sub _reset_cids {
 
 __END__
 
+=method header
+
+B<Achtung!>  Beware this method!  In Email::MIME, it means the same as
+C<header_str>, but on an Email::Simple object, it means C<header_raw>.  Unless
+you always know what kind of object you have, you could get one of two
+significantly different behaviors.
+
+Try to use either C<header_str> or C<header_raw> as appropriate.
 
 =method header_str_set
 
   $email->header_str_set($header_name => @value_strings);
 
-This behaves like C<header_set>, but expects Unicode (character) strings as the
-values to set, rather than pre-encoded byte strings.  It will encode them as
-MIME encoded-words if they contain any control or 8-bit characters.
+This behaves like C<header_raw_set>, but expects Unicode (character) strings as
+the values to set, rather than pre-encoded byte strings.  It will encode them
+as MIME encoded-words if they contain any control or 8-bit characters.
 
 =method header_str_pairs
 
   my @pairs = $email->header_str_pairs;
 
-This method behaves like C<header_pairs>, returning a list of field name/value
-pairs, but the values have been decoded to character strings, when possible.
+This method behaves like C<header_raw_pairs>, returning a list of field
+name/value pairs, but the values have been decoded to character strings, when
+possible.
 
 =method parts
 

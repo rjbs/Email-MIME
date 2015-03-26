@@ -29,14 +29,14 @@ C<header_str_set> method.
 
 =cut
 
-sub header {
+sub header_str {
   my $self  = shift;
   my $wanta = wantarray;
 
   return unless defined $wanta; # ??
 
-  my @header = $wanta ? $self->SUPER::header(@_)
-                      : scalar $self->SUPER::header(@_);
+  my @header = $wanta ? $self->header_raw(@_)
+                      : scalar $self->header_raw(@_);
 
   local $@;
   foreach my $header (@header) {
@@ -48,10 +48,9 @@ sub header {
   return $wanta ? @header : $header[0];
 }
 
-sub header_raw {
-  Carp::croak "header_raw may not be used to set headers" if @_ > 2;
-  my ($self, $header) = @_;
-  return $self->SUPER::header($header);
+sub header {
+  my ($self, $name) = @_;
+  return $self->header_str($name);
 }
 
 sub header_str_set {
