@@ -1,6 +1,8 @@
 Revision history for Perl extension Email::MIME.
 
 {{$NEXT}}
+
+1.930     2015-03-25 22:58:42-04:00 America/New_York (TRIAL RELEASE)
         - rely on the new header_raw methods in new Email::Simple
 
 1.929     2015-02-17 09:31:35-05:00 America/New_York
