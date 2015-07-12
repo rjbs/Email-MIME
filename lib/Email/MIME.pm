@@ -72,7 +72,7 @@ by all means keep reading.
         Email::MIME->create( parts => [ @parts ] ),
       ],
   );
-  
+
   # standard modifications
   $email->header_str_set( 'X-PoweredBy' => 'RT v3.0'      );
   $email->header_str_set( To            => rcpts()        );
@@ -81,7 +81,7 @@ by all means keep reading.
 
   # more advanced
   $_->encoding_set( 'base64' ) for $email->parts;
-  
+
   # Quick multipart creation
   my $quicky = Email::MIME->create(
       header_str => [
@@ -94,9 +94,9 @@ by all means keep reading.
           q[These could be binary too],
       ],
   );
-  
+
   print $email->as_string;
-  
+
 =head1 DESCRIPTION
 
 This is an extension of the L<Email::Simple> module, to handle MIME
@@ -741,7 +741,7 @@ sub parts_add {
   $email->walk_parts(sub {
       my ($part) = @_;
       return if $part->subparts; # multipart
-      
+
       if ( $part->content_type =~ m[text/html]i ) {
           my $body = $part->body;
           $body =~ s/<link [^>]+>//; # simple filter example
