@@ -708,9 +708,12 @@ sub parts_set {
     delete $ct_header->{attributes}{charset};
   } elsif (@$parts == 1) {  # setup singlepart
     $body .= $parts->[0]->body;
-    @{$ct_header}{qw[type subtype]}
-      = @{ parse_content_type($parts->[0]->header('Content-Type')) }
-      {qw[type subtype]};
+
+    my $from_ct = parse_content_type($parts->[0]->header('Content-Type'));
+    @{$ct_header}{qw[type subtype]} = @{ $from_ct }{qw[type subtype]};
+
+    $ct_header->{attributes}{charset} = $from_ct->{attributes}{charset};
+
     $self->encoding_set($parts->[0]->header('Content-Transfer-Encoding'));
     delete $ct_header->{attributes}->{boundary};
   }

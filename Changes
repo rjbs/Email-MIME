@@ -1,6 +1,11 @@
 Revision history for Perl extension Email::MIME.
 
 {{$NEXT}}
+        - When doing parts_set to become single-part, do not lose the charset
+          and set the mail to us-ascii.
+
+          This is almost certainly a half measure, and this whole hunk of code
+          should be improved.
 
 1.930     2015-03-25 22:58:42-04:00 America/New_York (TRIAL RELEASE)
         - rely on the new header_raw methods in new Email::Simple
