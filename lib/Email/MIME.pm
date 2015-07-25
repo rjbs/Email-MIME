@@ -805,7 +805,8 @@ sub _compose_content_type {
   my ($self, $ct_header) = @_;
   my $ct = join q{/}, @{$ct_header}{qw[type subtype]};
   for my $attr (sort keys %{ $ct_header->{attributes} }) {
-    $ct .= qq[; $attr="$ct_header->{attributes}{$attr}"];
+    next unless defined (my $value = $ct_header->{attributes}{$attr});
+    $ct .= qq[; $attr="$value"];
   }
   $self->header_raw_set('Content-Type' => $ct);
   $self->{ct} = $ct_header;
