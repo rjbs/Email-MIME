@@ -2,6 +2,10 @@ Revision history for Perl extension Email::MIME.
 
 {{$NEXT}}
 
+1.933     2015-07-25 09:30:56-04:00 America/New_York
+        - correct Email::Simple prereq
+        - skip omitting content-type attributes with undef value
+
 1.932     2015-07-24 22:24:06-04:00 America/New_York
         - stable release of previous trial releases
         - see v1.930 and v1.931, below
