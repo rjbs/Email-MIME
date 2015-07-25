@@ -4,7 +4,7 @@ use warnings;
 package Email::MIME;
 # ABSTRACT: easy MIME message handling
 
-use Email::Simple 2.104; # header_raw_*
+use Email::Simple 2.206; # header_raw
 use parent qw(Email::Simple);
 
 use Carp ();
