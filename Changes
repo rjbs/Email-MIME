@@ -2,6 +2,10 @@ Revision history for Perl extension Email::MIME.
 
 {{$NEXT}}
 
+1.932     2015-07-24 22:24:06-04:00 America/New_York
+        - stable release of previous trial releases
+        - see v1.930 and v1.931, below
+
 1.931     2015-07-12 17:31:01-04:00 America/New_York (TRIAL RELEASE)
         - When doing parts_set to become single-part, do not lose the charset
           and set the mail to us-ascii.
