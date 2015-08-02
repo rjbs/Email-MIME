@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More qw[no_plan];
+use Test::More;
 
 use Carp; $SIG{__WARN__} = sub { Carp::cluck @_ };
 
@@ -40,3 +40,17 @@ my @parts = ($email->parts)[-1]->parts;
 is $parts[0]->body_str, 'Hi';
 is $parts[1]->body_str, 'Howdy';
 is $parts[2]->body_str, 'Hello';
+
+{
+  my $all_his = Email::MIME->create(
+      attributes => {
+        content_type => 'multipart/alternative',
+      },
+      parts => [ $hi ],
+  );
+
+  my @lines = split /\n/, $all_his->debug_structure;
+  is(@lines, 2, "2 lines of debug: multipart, then plaintext");
+}
+
+done_testing;
