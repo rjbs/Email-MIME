@@ -2,6 +2,9 @@ Revision history for Perl extension Email::MIME.
 
 {{$NEXT}}
 
+1.934     2015-08-01 20:33:57-04:00 America/New_York
+        - fix debug_structure for multipart mail with only one subpart
+
 1.933     2015-07-25 09:30:56-04:00 America/New_York
         - correct Email::Simple prereq
         - skip omitting content-type attributes with undef value
