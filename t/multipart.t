@@ -53,4 +53,15 @@ is $parts[2]->body_str, 'Hello';
   is(@lines, 2, "2 lines of debug: multipart, then plaintext");
 }
 
+{
+  open my $qp_problem, '<', 't/Mail/qp-equals'
+    or die "can't read qp-equals: $!";
+
+  my $message = do { local $/; <$qp_problem> };
+  my $email = Email::MIME->new($message);
+  my @parts = $email->subparts;
+  unlike($parts[0]->as_string, qr/=\z/, "text: no trailing = from busted QP");
+  unlike($parts[1]->as_string, qr/=\z/, "html: no trailing = from busted QP");
+}
+
 done_testing;
