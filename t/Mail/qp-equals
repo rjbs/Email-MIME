@@ -1,0 +1,28 @@
+Date: Mon, 31 Aug 2015 14:48:02 -0400
+MIME-Version: 1.0
+Content-Type: multipart/alternative; boundary="14410468820.e183d.7953"
+Content-Transfer-Encoding: 7bit
+Subject: hi
+
+--14410468820.e183d.7953
+Date: Mon, 31 Aug 2015 14:48:02 -0400
+MIME-Version: 1.0
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+This is plain =
+text that is quoted-=
+printable.=
+
+--14410468820.e183d.7953
+Date: Mon, 31 Aug 2015 14:48:02 -0400
+MIME-Version: 1.0
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<html><body><p>This is some HTML=
+-ish text that should =
+not have linebreaks because of =
+quoted-printable.</p></body></html>=
+
+--14410468820.e183d.7953--
