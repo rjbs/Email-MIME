@@ -2,6 +2,9 @@ Revision history for Perl extension Email::MIME.
 
 {{$NEXT}}
 
+1.935     2015-08-31 16:47:46-04:00 America/New_York (TRIAL RELEASE)
+        - do not remove too many newlines at the end (bug introduced in 1.926)
+
 1.934     2015-08-01 20:33:57-04:00 America/New_York
         - fix debug_structure for multipart mail with only one subpart
 
