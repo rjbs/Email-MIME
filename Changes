@@ -2,6 +2,9 @@ Revision history for Perl extension Email::MIME.
 
 {{$NEXT}}
 
+1.937     2016-01-28 13:31:06-05:00 America/New_York
+        - eliminate memory leak in walk_parts (again, rjbs)
+
 1.936     2015-09-10 22:46:29-04:00 America/New_York
         - no changes since 1.935, but a stable release
 
