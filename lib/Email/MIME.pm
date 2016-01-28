@@ -16,7 +16,7 @@ use Email::MIME::Encodings 1.314;
 use Email::MIME::Header;
 use Email::MIME::Modifier;
 use Encode 1.9801 ();
-use Scalar::Util qw(reftype);
+use Scalar::Util qw(reftype weaken);
 
 =head1 SYNOPSIS
 
@@ -764,8 +764,8 @@ sub walk_parts {
 
   my %changed;
 
-  my $walk;
-  $walk = sub {
+  my $walk_weak;
+  my $walk = sub {
     my ($part) = @_;
     $callback->($part);
 
@@ -775,7 +775,7 @@ sub walk_parts {
 
       for my $part (@orig_subparts) {
         my $str = $part->as_string;
-        next unless my $new = $walk->($part);
+        next unless my $new = $walk_weak->($part);
         $differ = 1 if $str ne $new->as_string;
         push @subparts, $new;
       }
@@ -793,6 +793,9 @@ sub walk_parts {
 
     return $part;
   };
+
+  $walk_weak = $walk;
+  weaken $walk_weak;
 
   my $rv = $walk->($self);
 
