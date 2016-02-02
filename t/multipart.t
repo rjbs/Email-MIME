@@ -64,4 +64,29 @@ is $parts[2]->body_str, 'Hello';
   unlike($parts[1]->as_string, qr/=\z/, "html: no trailing = from busted QP");
 }
 
+{
+  my $email = Email::MIME->new(<<'END');
+Subject: hello
+Content-Type: multipart/mixed; boundary="bananas"
+
+Prelude
+
+--bananas
+Content-Type: text/plain
+
+This is plain text.
+--bananas--
+
+Postlude
+END
+
+  like($email->as_string, qr/Prelude/,  "prelude in string");
+  like($email->as_string, qr/Postlude/, "postlude in string");
+
+  $email->parts_set([ $email->subparts ]);
+
+  unlike($email->as_string, qr/Prelude/,  "prelude in string");
+  unlike($email->as_string, qr/Postlude/, "postlude in string");
+}
+
 done_testing;
