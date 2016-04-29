@@ -702,8 +702,14 @@ sub parts_set {
       $body .= $part->as_string;
     }
     $body .= "$self->{mycrlf}--$bound--$self->{mycrlf}";
-    @{$ct_header}{qw[type subtype]} = qw[multipart mixed]
-      unless grep { $ct_header->{type} eq $_ } qw[multipart message];
+
+    unless (grep { $ct_header->{type} eq $_ } qw[multipart message]) {
+      if (scalar $self->header('Content-Type')) {
+        Carp::carp("replacing non-multipart type ($ct_header->{type}/$ct_header->{subtype}) with multipart/mixed");
+      }
+      @{$ct_header}{qw[type subtype]} = qw[multipart mixed];
+    }
+
     $self->encoding_set('7bit');
     delete $ct_header->{attributes}{charset};
   } elsif (@$parts == 1) {  # setup singlepart

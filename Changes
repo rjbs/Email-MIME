@@ -1,6 +1,10 @@
 Revision history for Perl extension Email::MIME.
 
 {{$NEXT}}
+        - When a single-part content type has been provided with multiple
+          parts, the user is now warned that the type has been changed to
+          multipart/mixed.  This helps catch typos like
+          "mutlipart/alternative".
 
 1.937     2016-01-28 13:31:06-05:00 America/New_York
         - eliminate memory leak in walk_parts (again, rjbs)
