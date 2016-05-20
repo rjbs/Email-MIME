@@ -5,6 +5,17 @@ use Test::More;
 use Carp; $SIG{__WARN__} = sub { Carp::cluck @_ };
 
 use_ok 'Email::MIME::Creator';
+use_ok 'Email::MIME::ContentType';
+
+sub ct {
+  return (
+    type    => $_[0], # okay!
+    subtype => $_[1], # okay!
+
+    discrete  => $_[0], # dumb!
+    composite => $_[1], # dumb!
+  );
+}
 
 my $hi    = Email::MIME->create(body => "Hi");
 my $hello = Email::MIME->create(body => "Hello");
@@ -87,6 +98,50 @@ END
 
   unlike($email->as_string, qr/Prelude/,  "prelude in string");
   unlike($email->as_string, qr/Postlude/, "postlude in string");
+}
+
+{
+  my $email = Email::MIME->new(<<'END');
+From: Test <test@test.com>
+To: Test <test@test.com>
+Subject: Test
+Content-Type: multipart/alternative; boundary=90e6ba6e8d06f1723604fc1b809a
+
+--90e6ba6e8d06f1723604fc1b809a
+Content-Type: text/plain; charset=UTF-8
+
+Part 1
+
+Part 1a
+
+--90e6ba6e8d06f1723604fc1b809a
+
+Part 2
+
+Part 2a
+
+--90e6ba6e8d06f1723604fc1b809a--
+END
+
+  my @parts = $email->subparts;
+
+  is(@parts, 2, 'got 2 parts');
+
+  like($parts[0]->body, qr/^Part 1.*Part 1a$/s, 'Part 1 looks right');
+  is_deeply( parse_content_type($parts[0]->header('Content-Type')), {
+      ct(qw(text plain)),
+      attributes => {
+          charset => 'UTF-8',
+      },
+  }, 'explicit ct worked' );
+
+  like($parts[1]->body, qr/^Part 2.*Part 2a$/s, 'Part 2 looks right');
+  is_deeply( parse_content_type($parts[1]->header('Content-Type')), {
+      ct(qw(text plain)),
+      attributes => {
+          charset => 'us-ascii',
+      },
+  }, 'default ct worked' );
 }
 
 done_testing;

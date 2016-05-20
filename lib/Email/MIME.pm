@@ -363,7 +363,7 @@ sub parts_multipart {
   # rfc1521 7.2.1
   my ($body, $epilogue) = split /^--\Q$boundary\E--\s*$/sm, $self->body_raw, 2;
 
-  my @bits = split /^--\Q$boundary\E\s*$/sm, ($body || '');
+  my @bits = split /^--\Q$boundary\E\s*?$/m, ($body || '');
 
   $self->SUPER::body_set(undef);
 
@@ -377,6 +377,26 @@ sub parts_multipart {
 
   my @parts;
   for my $bit (@bits) {
+    my $no_header;
+
+    # Parts don't need headers. If they don't have them, they look like this:
+    #
+    #   --90e6ba6e8d06f1723604fc1b809a
+    #
+    #   Part 2
+    #
+    #   Part 2a
+    #
+    # $bit will contain two new lines before Part 2.
+    #
+    # Anything with headers will only have one new line.
+    #
+    # RFC 1341 Section 7.2 says parts without headers are to be considered
+    # plain US-ASCII text.
+    if ($bit =~ /^([\r\n][\r\n])/) {
+      $bit = "Content-type: text/plain; charset=us-ascii" . $bit;
+    }
+
     $bit =~ s/\A[\n\r]+//smg;
     $bit =~ s/(?<!\x0d)$self->{mycrlf}\Z//sm;
     my $email = (ref $self)->new($bit);
