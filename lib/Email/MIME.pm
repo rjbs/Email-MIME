@@ -363,7 +363,8 @@ sub parts_multipart {
   # rfc1521 7.2.1
   my ($body, $epilogue) = split /^--\Q$boundary\E--\s*$/sm, $self->body_raw, 2;
 
-  my @bits = split /^--\Q$boundary\E\s*?$/m, ($body || '');
+  # Split on boundaries, but keep blank lines after them intact
+  my @bits = split /^--\Q$boundary\E\s*?(?=$self->{mycrlf})/m, ($body || '');
 
   $self->SUPER::body_set(undef);
 
@@ -392,8 +393,9 @@ sub parts_multipart {
     # Anything with headers will only have one new line.
     #
     # RFC 1341 Section 7.2 says parts without headers are to be considered
-    # plain US-ASCII text.
-    if ($bit =~ /^([\r\n][\r\n])/) {
+    # plain US-ASCII text. -- alh
+    # 2016-08-01
+    if ($bit =~ /^(?:$self->{mycrlf}){2}/) {
       $bit = "Content-type: text/plain; charset=us-ascii" . $bit;
     }
 

@@ -101,7 +101,7 @@ END
 }
 
 {
-  my $email = Email::MIME->new(<<'END');
+  my $email_str = <<'END';
 From: Test <test@test.com>
 To: Test <test@test.com>
 Subject: Test
@@ -123,25 +123,40 @@ Part 2a
 --90e6ba6e8d06f1723604fc1b809a--
 END
 
-  my @parts = $email->subparts;
+  my @emails = (["lf-delimited", $email_str]);
 
-  is(@parts, 2, 'got 2 parts');
+  # Also test with CRLF email
+  $email_str =~ s/\n/\r\n/g;
 
-  like($parts[0]->body, qr/^Part 1.*Part 1a$/s, 'Part 1 looks right');
-  is_deeply( parse_content_type($parts[0]->header('Content-Type')), {
-      ct(qw(text plain)),
-      attributes => {
-          charset => 'UTF-8',
-      },
-  }, 'explicit ct worked' );
+  push @emails, ["crlf-delimited", $email_str];
 
-  like($parts[1]->body, qr/^Part 2.*Part 2a$/s, 'Part 2 looks right');
-  is_deeply( parse_content_type($parts[1]->header('Content-Type')), {
-      ct(qw(text plain)),
-      attributes => {
-          charset => 'us-ascii',
-      },
-  }, 'default ct worked' );
+  for my $test (@emails) {
+    my ($desc, $email_str) = @$test;
+
+    note("Testing $desc email");
+
+    my $email = Email::MIME->new($email_str);
+
+    my @parts = $email->subparts;
+
+    is(@parts, 2, 'got 2 parts');
+
+    like($parts[0]->body, qr/^Part 1.*Part 1a\r?$/s, 'Part 1 looks right');
+    is_deeply( parse_content_type($parts[0]->header('Content-Type')), {
+        ct(qw(text plain)),
+        attributes => {
+            charset => 'UTF-8',
+        },
+    }, 'explicit ct worked' );
+
+    like($parts[1]->body, qr/^Part 2.*Part 2a\r?$/s, 'Part 2 looks right');
+    is_deeply( parse_content_type($parts[1]->header('Content-Type')), {
+        ct(qw(text plain)),
+        attributes => {
+            charset => 'us-ascii',
+        },
+    }, 'default ct worked' );
+  }
 }
 
 done_testing;
