@@ -138,8 +138,12 @@ END
     my $email = Email::MIME->new($email_str);
 
     my @parts = $email->subparts;
-
     is(@parts, 2, 'got 2 parts');
+
+    # Force a change to the email so as_string gives us something fresh from
+    # the parts involved. Ensure that the body parts in the message have not
+    # changed (so we don't interfere with DKIM signing, for example).
+    $email->parts_set([ @parts ]);
 
     like($parts[0]->body, qr/^Part 1.*Part 1a\r?$/s, 'Part 1 looks right');
     is_deeply( parse_content_type($parts[0]->header('Content-Type')), {
@@ -156,6 +160,12 @@ END
             charset => 'us-ascii',
         },
     }, 'default ct worked' );
+
+    like(
+      $email->as_string,
+      qr/--90e6ba6e8d06f1723604fc1b809a\r?\n\r?\nPart 2/,
+      "Email string not modified"
+    );
   }
 }
 

@@ -378,8 +378,6 @@ sub parts_multipart {
 
   my @parts;
   for my $bit (@bits) {
-    my $no_header;
-
     # Parts don't need headers. If they don't have them, they look like this:
     #
     #   --90e6ba6e8d06f1723604fc1b809a
@@ -395,13 +393,24 @@ sub parts_multipart {
     # RFC 1341 Section 7.2 says parts without headers are to be considered
     # plain US-ASCII text. -- alh
     # 2016-08-01
+    my $added_header;
+
     if ($bit =~ /^(?:$self->{mycrlf}){2}/) {
       $bit = "Content-type: text/plain; charset=us-ascii" . $bit;
+
+      $added_header = 1;
     }
 
     $bit =~ s/\A[\n\r]+//smg;
     $bit =~ s/(?<!\x0d)$self->{mycrlf}\Z//sm;
+
     my $email = (ref $self)->new($bit);
+
+    if ($added_header) {
+      # Remove our changes so we don't change the raw email content
+      $email->header_str_set('Content-Type');
+    }
+
     push @parts, $email;
   }
 
