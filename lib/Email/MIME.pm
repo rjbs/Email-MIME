@@ -83,7 +83,7 @@ by all means keep reading.
   $_->encoding_set( 'base64' ) for $email->parts;
 
   # Quick multipart creation
-  my $quicky = Email::MIME->create(
+  my $email = Email::MIME->create(
       header_str => [
           From => 'my@address',
           To   => 'your@address',
