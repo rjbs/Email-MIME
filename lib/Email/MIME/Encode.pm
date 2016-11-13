@@ -64,11 +64,6 @@ sub _mailbox_list_encode {
     return join(', ', map { $_->format } @addrs);
 }
 
-sub _address_encode {
-    my ($val, $charset) = @_;
-    return _address_list_encode($val, $charset);
-}
-
 sub _address_list_encode {
     my ($val, $charset) = @_;
     return _mailbox_list_encode($val, $charset); # XXX is this right?
