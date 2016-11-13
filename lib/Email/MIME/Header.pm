@@ -38,7 +38,6 @@ sub header_str {
   my @header = $wanta ? $self->header_raw(@_)
                       : scalar $self->header_raw(@_);
 
-  local $@;
   foreach my $header (@header) {
     next unless defined $header;
     next unless $header =~ /=\?/;
@@ -80,6 +79,7 @@ sub _maybe_decode {
   # The eval is to cope with unknown encodings, like Latin-62, or other
   # nonsense that gets put in there by spammers and weirdos
   # -- rjbs, 2014-12-04
+  local $@;
   my $new;
   $$str_ref = $new
     if eval { $new = Encode::decode("MIME-Header", $$str_ref); 1 };
