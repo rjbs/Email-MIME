@@ -8,33 +8,39 @@ use Encode ();
 use MIME::Base64();
 
 my %encoders = (
-    'Date'        => \&_date_time_encode,
-    'From'        => \&_mailbox_list_encode,
-    'Sender'      => \&_mailbox_encode,
-    'Reply-To'    => \&_address_list_encode,
-    'To'          => \&_address_list_encode,
-    'Cc'          => \&_address_list_encode,
-    'Bcc'         => \&_address_list_encode,
-    'Message-ID'  => \&_msg_id_encode,
-    'In-Reply-To' => \&_msg_id_encode,
-    'References'  => \&_msg_id_encode,
-    'Subject'     => \&_unstructured_encode,
-    'Comments'    => \&_unstructured_encode,
+    'date'        => \&_date_time_encode,
+    'from'        => \&_mailbox_list_encode,
+    'sender'      => \&_mailbox_encode,
+    'reply-to'    => \&_address_list_encode,
+    'to'          => \&_address_list_encode,
+    'cc'          => \&_address_list_encode,
+    'bcc'         => \&_address_list_encode,
+    'message-id'  => \&_msg_id_encode,
+    'in-reply-to' => \&_msg_id_encode,
+    'references'  => \&_msg_id_encode,
+    'subject'     => \&_unstructured_encode,
+    'comments'    => \&_unstructured_encode,
 );
 
 sub maybe_mime_encode_header {
     my ($header, $val, $charset) = @_;
 
-    return $val unless defined $val;
-    return $val unless $val =~ /\P{ASCII}/
-                    || $val =~ /=\?/;
+    $header = lc $header;
 
-    $header =~ s/^Resent-//;
+    return $val
+        unless _needs_encode($val);
+
+    $header =~ s/^resent-//i;
 
     return $encoders{$header}->($val, $charset)
         if exists $encoders{$header};
 
     return _unstructured_encode($val, $charset);
+}
+
+sub _needs_encode {
+    my ($val) = @_;
+    return defined $val && $val =~ /(?:\P{ASCII}|=\?|[^\s]{79,}|^\s+|\s+$)/s;
 }
 
 sub _date_time_encode {
