@@ -27,15 +27,18 @@ sub maybe_mime_encode_header {
 
     $header = lc $header;
 
+    my $header_length = length($header) + length(": ");
+    my $min_wrap_length = 78 - $header_length + 1;
+
     return $val
-        unless _needs_encode($val);
+        unless _needs_encode($val) || $val =~ /[^\s]{$min_wrap_length,}/;
 
     $header =~ s/^resent-//i;
 
-    return $encoders{$header}->($val, $charset)
+    return $encoders{$header}->($val, $charset, $header_length)
         if exists $encoders{$header};
 
-    return _unstructured_encode($val, $charset);
+    return _unstructured_encode($val, $charset, $header_length);
 }
 
 sub _needs_encode {
@@ -44,26 +47,28 @@ sub _needs_encode {
 }
 
 sub _date_time_encode {
-    my ($val, $charset) = @_;
+    my ($val, $charset, $header_length) = @_;
     return $val;
 }
 
 sub _mailbox_encode {
-    my ($val, $charset) = @_;
-    return _mailbox_list_encode($val, $charset);
+    my ($val, $charset, $header_length) = @_;
+    return _mailbox_list_encode($val, $charset, $header_length);
 }
 
 sub _mailbox_list_encode {
-    my ($val, $charset) = @_;
+    my ($val, $charset, $header_length) = @_;
     my @addrs = Email::Address->parse($val);
 
     @addrs = map {
         my $phrase = $_->phrase;
-        $_->phrase(mime_encode($phrase, $charset))
-            if defined $phrase && $phrase =~ /\P{ASCII}/;
+        # try to not split phrase into more encoded words (hence 0 for header_length)
+        # rather fold header around mime encoded word
+        $_->phrase(mime_encode($phrase, $charset, 0))
+            if _needs_encode($phrase);
         my $comment = $_->comment;
-        $_->comment(mime_encode($comment, $charset))
-            if defined $comment && $comment =~ /\P{ASCII}/;
+        $_->comment(mime_encode($comment, $charset, 0))
+            if _needs_encode($comment);
         $_;
     } @addrs;
 
@@ -71,43 +76,52 @@ sub _mailbox_list_encode {
 }
 
 sub _address_list_encode {
-    my ($val, $charset) = @_;
-    return _mailbox_list_encode($val, $charset); # XXX is this right?
+    my ($val, $charset, $header_length) = @_;
+    return _mailbox_list_encode($val, $charset, $header_length); # XXX is this right?
 }
 
 sub _msg_id_encode {
-    my ($val, $charset) = @_;
+    my ($val, $charset, $header_length) = @_;
     return $val;
 }
 
 sub _unstructured_encode {
-    my ($val, $charset) = @_;
-    return mime_encode($val, $charset);
+    my ($val, $charset, $header_length) = @_;
+    return mime_encode($val, $charset, $header_length);
 }
 
 # XXX this is copied directly out of Courriel::Header
 # eventually, this should be extracted out into something that could be shared
 sub mime_encode {
-    my $text    = shift;
-    my $charset = Encode::find_encoding(shift)->mime_name();
+    my ($text, $charset, $header_length) = @_;
 
-    my $head = '=?' . $charset . '?B?';
+    $header_length = 0 unless defined $header_length;
+
+    my $enc_obj = Encode::find_encoding($charset);
+
+    my $head = '=?' . $enc_obj->mime_name() . '?B?';
     my $tail = '?=';
 
-    my $base_length = 75 - ( length($head) + length($tail) );
+    my $mime_length = length($head) + length($tail);
 
     # This code is copied from Mail::Message::Field::Full in the Mail-Box
     # distro.
-    my $real_length = int( $base_length / 4 ) * 3;
+    my $real_length = int( ( 75 - $mime_length ) / 4 ) * 3;
+    my $first_length = int( ( 75 - $header_length - $mime_length ) / 4 ) * 3;
 
     my @result;
     my $chunk = q{};
+    my $first_processed = 0;
     while ( length( my $chr = substr( $text, 0, 1, '' ) ) ) {
-        my $chr = Encode::encode( $charset, $chr, 0 );
+        my $chr = $enc_obj->encode( $chr, 0 );
 
-        if ( length($chunk) + length($chr) > $real_length ) {
-            push @result, $head . MIME::Base64::encode_base64( $chunk, q{} ) . $tail;
-            $chunk = q{};
+        if ( length($chunk) + length($chr) > ( $first_processed ? $real_length : $first_length ) ) {
+            if ( length($chunk) > 0 ) {
+                push @result, $head . MIME::Base64::encode_base64( $chunk, q{} ) . $tail;
+                $chunk = q{};
+            }
+            $first_processed = 1
+                unless $first_processed;
         }
 
         $chunk .= $chr;
