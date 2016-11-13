@@ -46,7 +46,7 @@ sub _address_list_encode {
     my ($val, $charset) = @_;
     my @addrs = Email::Address->parse($val);
 
-    @addrs = map {
+    foreach (@addrs) {
         my $phrase = $_->phrase;
         # try to not split phrase into more encoded words (hence 0 for header_length)
         # rather fold header around mime encoded word
@@ -55,8 +55,7 @@ sub _address_list_encode {
         my $comment = $_->comment;
         $_->comment(mime_encode($comment, $charset, 0))
             if _needs_encode_addr($comment);
-        $_;
-    } @addrs;
+    }
 
     return join(', ', map { $_->format } @addrs);
 }
