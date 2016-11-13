@@ -22,7 +22,8 @@ Note that C<header_set> does not do encoding for you, and expects an
 encoded header.  Thus, C<header_set> round-trips with C<header_raw>,
 not C<header>!  Be sure to properly encode your headers with
 C<Encode::encode('MIME-Header', $value)> before passing them to
-C<header_set>.
+C<header_set>.  And be sure to use minimal version 2.83 of Encode
+module due to L<bugs in MIME-Header|Encode::MIME::Header/BUGS>.
 
 Alternately, if you have Unicode (character) strings to set in headers, use the
 C<header_str_set> method.
