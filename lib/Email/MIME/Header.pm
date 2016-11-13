@@ -49,8 +49,8 @@ sub header_str {
 }
 
 sub header {
-  my ($self, $name) = @_;
-  return $self->header_str($name);
+  my $self = shift;
+  return $self->header_str(@_);
 }
 
 sub header_str_set {
