@@ -7,20 +7,8 @@ use Email::Address;
 use Encode ();
 use MIME::Base64();
 
-my %encoders = (
-    'date'        => \&_date_time_encode,
-    'from'        => \&_mailbox_list_encode,
-    'sender'      => \&_mailbox_encode,
-    'reply-to'    => \&_address_list_encode,
-    'to'          => \&_address_list_encode,
-    'cc'          => \&_address_list_encode,
-    'bcc'         => \&_address_list_encode,
-    'message-id'  => \&_msg_id_encode,
-    'in-reply-to' => \&_msg_id_encode,
-    'references'  => \&_msg_id_encode,
-    'subject'     => \&_unstructured_encode,
-    'comments'    => \&_unstructured_encode,
-);
+my %address_list_headers = map { $_ => undef } qw(from sender reply-to to cc bcc);
+my %no_mime_headers = map { $_ => undef } qw(date message-id in-reply-to references);
 
 sub maybe_mime_encode_header {
     my ($header, $val, $charset) = @_;
@@ -35,10 +23,13 @@ sub maybe_mime_encode_header {
 
     $header =~ s/^resent-//i;
 
-    return $encoders{$header}->($val, $charset, $header_length)
-        if exists $encoders{$header};
+    return $val
+        if exists $no_mime_headers{$header};
 
-    return _unstructured_encode($val, $charset, $header_length);
+    return _address_list_encode($val, $charset)
+        if exists $address_list_headers{$header};
+
+    return mime_encode($val, $charset, $header_length);
 }
 
 sub _needs_encode {
@@ -46,18 +37,8 @@ sub _needs_encode {
     return defined $val && $val =~ /(?:\P{ASCII}|=\?|[^\s]{79,}|^\s+|\s+$)/s;
 }
 
-sub _date_time_encode {
-    my ($val, $charset, $header_length) = @_;
-    return $val;
-}
-
-sub _mailbox_encode {
-    my ($val, $charset, $header_length) = @_;
-    return _mailbox_list_encode($val, $charset, $header_length);
-}
-
-sub _mailbox_list_encode {
-    my ($val, $charset, $header_length) = @_;
+sub _address_list_encode {
+    my ($val, $charset) = @_;
     my @addrs = Email::Address->parse($val);
 
     @addrs = map {
@@ -73,21 +54,6 @@ sub _mailbox_list_encode {
     } @addrs;
 
     return join(', ', map { $_->format } @addrs);
-}
-
-sub _address_list_encode {
-    my ($val, $charset, $header_length) = @_;
-    return _mailbox_list_encode($val, $charset, $header_length); # XXX is this right?
-}
-
-sub _msg_id_encode {
-    my ($val, $charset, $header_length) = @_;
-    return $val;
-}
-
-sub _unstructured_encode {
-    my ($val, $charset, $header_length) = @_;
-    return mime_encode($val, $charset, $header_length);
 }
 
 # XXX this is copied directly out of Courriel::Header
