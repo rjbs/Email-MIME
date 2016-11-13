@@ -22,7 +22,8 @@ Note that C<header_set> does not do encoding for you, and expects an
 encoded header.  Thus, C<header_set> round-trips with C<header_raw>,
 not C<header>!  Be sure to properly encode your headers with
 C<Encode::encode('MIME-Header', $value)> before passing them to
-C<header_set>.
+C<header_set>.  And be sure to use minimal version 2.83 of Encode
+module due to L<bugs in MIME-Header|Encode::MIME::Header/BUGS>.
 
 Alternately, if you have Unicode (character) strings to set in headers, use the
 C<header_str_set> method.
@@ -38,7 +39,6 @@ sub header_str {
   my @header = $wanta ? $self->header_raw(@_)
                       : scalar $self->header_raw(@_);
 
-  local $@;
   foreach my $header (@header) {
     next unless defined $header;
     next unless $header =~ /=\?/;
@@ -49,8 +49,8 @@ sub header_str {
 }
 
 sub header {
-  my ($self, $name) = @_;
-  return $self->header_str($name);
+  my $self = shift;
+  return $self->header_str(@_);
 }
 
 sub header_str_set {
@@ -80,6 +80,7 @@ sub _maybe_decode {
   # The eval is to cope with unknown encodings, like Latin-62, or other
   # nonsense that gets put in there by spammers and weirdos
   # -- rjbs, 2014-12-04
+  local $@;
   my $new;
   $$str_ref = $new
     if eval { $new = Encode::decode("MIME-Header", $$str_ref); 1 };
