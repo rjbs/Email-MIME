@@ -37,6 +37,11 @@ sub _needs_encode {
     return defined $val && $val =~ /(?:\P{ASCII}|=\?|[^\s]{79,}|^\s+|\s+$)/s;
 }
 
+sub _needs_encode_addr {
+    my ($val) = @_;
+    return _needs_encode($val) || ( defined $val && $val =~ /[:;,]/ );
+}
+
 sub _address_list_encode {
     my ($val, $charset) = @_;
     my @addrs = Email::Address->parse($val);
@@ -46,10 +51,10 @@ sub _address_list_encode {
         # try to not split phrase into more encoded words (hence 0 for header_length)
         # rather fold header around mime encoded word
         $_->phrase(mime_encode($phrase, $charset, 0))
-            if _needs_encode($phrase);
+            if _needs_encode_addr($phrase);
         my $comment = $_->comment;
         $_->comment(mime_encode($comment, $charset, 0))
-            if _needs_encode($comment);
+            if _needs_encode_addr($comment);
         $_;
     } @addrs;
 
