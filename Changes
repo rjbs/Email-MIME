@@ -1,6 +1,8 @@
 Revision history for Perl extension Email::MIME.
 
 {{$NEXT}}
+
+1.938     2017-01-01 20:03:38-05:00 America/New_York (TRIAL RELEASE)
         - numerous small fixes to header encoding (thanks, Pali Rohár)
           for more details see https://github.com/rjbs/Email-MIME/pull/32
         - When a single-part content type has been provided with multiple
