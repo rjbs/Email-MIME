@@ -1,6 +1,8 @@
 Revision history for Perl extension Email::MIME.
 
 {{$NEXT}}
+        - numerous small fixes to header encoding (thanks, Pali Rohár)
+          for more details see https://github.com/rjbs/Email-MIME/pull/32
         - When a single-part content type has been provided with multiple
           parts, the user is now warned that the type has been changed to
           multipart/mixed.  This helps catch typos like
