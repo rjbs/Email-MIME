@@ -8,7 +8,7 @@ use Encode ();
 use MIME::Base64();
 
 my %address_list_headers = map { $_ => undef } qw(from sender reply-to to cc bcc);
-my %no_mime_headers = map { $_ => undef } qw(date message-id in-reply-to references);
+my %no_mime_headers = map { $_ => undef } qw(date message-id in-reply-to references downgraded-message-id downgraded-in-reply-to downgraded-references);
 
 sub maybe_mime_encode_header {
     my ($header, $val, $charset) = @_;
