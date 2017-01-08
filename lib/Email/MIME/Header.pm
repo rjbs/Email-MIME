@@ -43,7 +43,7 @@ sub header_str {
     next unless defined $header;
     next unless $header =~ /=\?/;
 
-    _maybe_decode(\$header);
+    _maybe_decode($_[0], \$header);
   }
   return $wanta ? @header : $header[0];
 }
@@ -68,22 +68,15 @@ sub header_str_pairs {
 
   my @pairs = $self->header_pairs;
   for (grep { $_ % 2 } (1 .. $#pairs)) {
-    _maybe_decode(\$pairs[$_]);
+    _maybe_decode($pairs[$_-1], \$pairs[$_]);
   }
 
   return @pairs;
 }
 
 sub _maybe_decode {
-  my ($str_ref) = @_;
-
-  # The eval is to cope with unknown encodings, like Latin-62, or other
-  # nonsense that gets put in there by spammers and weirdos
-  # -- rjbs, 2014-12-04
-  local $@;
-  my $new;
-  $$str_ref = $new
-    if eval { $new = Encode::decode("MIME-Header", $$str_ref); 1 };
+  my ($name, $str_ref) = @_;
+  $$str_ref = Email::MIME::Encode::maybe_mime_decode_header($name, $$str_ref);
   return;
 }
 

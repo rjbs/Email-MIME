@@ -103,4 +103,28 @@ sub mime_encode {
     return join q{ }, @result;
 }
 
+sub maybe_mime_decode_header {
+    my ($header, $val) = @_;
+
+    $header = lc $header;
+    $header =~ s/^resent-//i;
+
+    return $val
+        if exists $no_mime_headers{$header};
+
+    return mime_decode($val);
+}
+
+sub mime_decode {
+    my ($text) = @_;
+    return undef unless defined $text;
+
+    # The eval is to cope with unknown encodings, like Latin-62, or other
+    # nonsense that gets put in there by spammers and weirdos
+    # -- rjbs, 2014-12-04
+    local $@;
+    my $result = eval { Encode::decode("MIME-Header", $text) };
+    return defined $result ? $result : $text;
+}
+
 1;
