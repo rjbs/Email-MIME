@@ -141,7 +141,11 @@ sub new {
 
 This method creates a new MIME part. The C<header_str> parameter is a list of
 headers pairs to include in the message. The value for each pair is expected to
-be a text string that will be MIME-encoded as needed.  A similar C<header>
+be a text string that will be MIME-encoded as needed.  Alternatively it can be
+an object with C<as_mime_string> method which implements conversion of that
+object to MIME-encoded string.  That object method is called with two input
+parameters: charset and length of header name and should return MIME-encoded
+representation of the object.  A similar C<header>
 parameter can be provided in addition to or instead of C<header_str>.  Its
 values will be used verbatim.
 
@@ -874,6 +878,9 @@ Try to use either C<header_str> or C<header_raw> as appropriate.
 This behaves like C<header_raw_set>, but expects Unicode (character) strings as
 the values to set, rather than pre-encoded byte strings.  It will encode them
 as MIME encoded-words if they contain any control or 8-bit characters.
+
+Alternatively, values can be objects with C<as_mime_string> method.  Same as in
+method C<create>.
 
 =method header_str_pairs
 
