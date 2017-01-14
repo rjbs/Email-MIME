@@ -4,7 +4,7 @@ use warnings;
 package Email::MIME;
 # ABSTRACT: easy MIME message handling
 
-use Email::Simple 2.206; # header_raw
+use Email::Simple 2.212; # nth header value
 use parent qw(Email::Simple);
 
 use Carp ();
@@ -452,6 +452,11 @@ sub header_str_pairs {
   $self->header_obj->header_str_pairs(@_);
 }
 
+sub header_as_obj {
+  my $self = shift;
+  $self->header_obj->header_as_obj(@_);
+}
+
 =method content_type_set
 
   $email->content_type_set( 'text/html' );
@@ -889,6 +894,21 @@ method C<create>.
 This method behaves like C<header_raw_pairs>, returning a list of field
 name/value pairs, but the values have been decoded to character strings, when
 possible.
+
+=method header_as_obj
+
+  my $first_obj = $email->header_as_obj($field);
+  my $nth_obj   = $email->header_as_obj($field, $index);
+  my @all_objs  = $email->header_as_obj($field);
+
+  my $nth_obj_of_class  = $email->header_as_obj($field, $index, $class);
+  my @all_objs_of_class = $email->header_as_obj($field, undef, $class);
+
+This method returns an object representation of the header value.  It instances
+new object via method C<from_mime_string> of specified class.  Input argument
+for that class method is list of the raw MIME-encoded values.  If class argument
+is not specified then class name is taken from the hash
+C<%Email::MIME::Header::header_to_class_map> via key field.
 
 =method parts
 
