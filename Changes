@@ -2,6 +2,10 @@ Revision history for Perl extension Email::MIME.
 
 {{$NEXT}}
 
+1.939     2017-01-14 14:58:44-05:00 America/New_York (TRIAL RELEASE)
+        - do not decode MIME headers known to be never encoded (Pali Rohár)
+        - ...and that includes the Downgraded-* headers (Pali Rohár)
+
 1.938     2017-01-01 20:03:38-05:00 America/New_York (TRIAL RELEASE)
         - numerous small fixes to header encoding (thanks, Pali Rohár)
           for more details see https://github.com/rjbs/Email-MIME/pull/32
