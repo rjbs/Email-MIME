@@ -256,9 +256,13 @@ sub create {
 
 sub as_string {
   my $self = shift;
-  return $self->__head->as_string
+  my $str = $self->__head->as_string
     . ($self->{mycrlf} || "\n")  # XXX: replace with ->crlf
     . $self->body_raw;
+  if (utf8::is_utf8($str)) {
+    utf8::encode($str);
+  }
+  return $str
 }
 
 sub parts {
