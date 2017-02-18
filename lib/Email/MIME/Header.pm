@@ -106,4 +106,12 @@ sub _maybe_decode {
   return;
 }
 
+sub set_class_for_header {
+  my ($class, $header) = @_;
+  $header = lc $header;
+  Carp::croak("Class for header '$header' is already set") if defined $header_to_class_map{$header};
+  $header_to_class_map{$header} = $class;
+  return;
+}
+
 1;
