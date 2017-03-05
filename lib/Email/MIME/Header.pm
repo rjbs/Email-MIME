@@ -88,7 +88,6 @@ sub header_as_obj {
   {
     local @CARP_NOT = qw(Email::MIME);
     Carp::croak("No class for header '$name' was specified") unless defined $class;
-    Carp::croak("Cannot load package '$class' for header '$name': $@") unless eval "require $class";
     Carp::croak("Class '$class' does not have method 'from_mime_string'") unless $class->can('from_mime_string');
   }
 
