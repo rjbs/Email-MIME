@@ -5,8 +5,13 @@ package Email::MIME::Header;
 
 use parent 'Email::Simple::Header';
 
+use Carp ();
 use Email::MIME::Encode;
 use Encode 1.9801;
+
+our @CARP_NOT;
+
+our %header_to_class_map;
 
 =head1 DESCRIPTION
 
@@ -15,6 +20,7 @@ changes:
 
 =for :list
 * the C<header> method automatically decodes encoded headers if possible
+* the C<header_as_obj> method returns an object representation of the header value
 * the C<header_raw> method returns the raw header; (read only for now)
 * stringification uses C<header_raw> rather than C<header>
 
@@ -74,9 +80,37 @@ sub header_str_pairs {
   return @pairs;
 }
 
+sub header_as_obj {
+  my ($self, $name, $index, $class) = @_;
+
+  $class = $header_to_class_map{lc $name} unless defined $class;
+
+  {
+    local @CARP_NOT = qw(Email::MIME);
+    Carp::croak("No class for header '$name' was specified") unless defined $class;
+    Carp::croak("Cannot load package '$class' for header '$name': $@") unless eval "require $class";
+    Carp::croak("Class '$class' does not have method 'from_mime_string'") unless $class->can('from_mime_string');
+  }
+
+  my @values = $self->header_raw($name, $index);
+  if (wantarray) {
+    return map { $class->from_mime_string($_) } @values;
+  } else {
+    return $class->from_mime_string(@values);
+  }
+}
+
 sub _maybe_decode {
   my ($name, $str_ref) = @_;
   $$str_ref = Email::MIME::Encode::maybe_mime_decode_header($name, $$str_ref);
+  return;
+}
+
+sub set_class_for_header {
+  my ($class, $header) = @_;
+  $header = lc $header;
+  Carp::croak("Class for header '$header' is already set") if defined $header_to_class_map{$header};
+  $header_to_class_map{$header} = $class;
   return;
 }
 

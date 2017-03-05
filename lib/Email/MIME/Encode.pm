@@ -6,6 +6,7 @@ package Email::MIME::Encode;
 use Email::Address;
 use Encode ();
 use MIME::Base64();
+use Scalar::Util;
 
 my %address_list_headers = map { $_ => undef } qw(from sender reply-to to cc bcc);
 my %no_mime_headers = map { $_ => undef } qw(date message-id in-reply-to references downgraded-message-id downgraded-in-reply-to downgraded-references);
@@ -16,6 +17,10 @@ sub maybe_mime_encode_header {
     $header = lc $header;
 
     my $header_length = length($header) + length(": ");
+
+    return $val->as_mime_string($charset, $header_length)
+        if Scalar::Util::blessed($val) && $val->can("as_mime_string");
+
     my $min_wrap_length = 78 - $header_length + 1;
 
     return $val
