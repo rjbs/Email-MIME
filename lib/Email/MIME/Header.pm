@@ -83,7 +83,7 @@ sub header_str_pairs {
 sub header_as_obj {
   my ($self, $name, $index, $class) = @_;
 
-  $class = $header_to_class_map{lc $name} unless defined $class;
+  $class = $self->get_class_for_header($name) unless defined $class;
 
   {
     local @CARP_NOT = qw(Email::MIME);
@@ -106,8 +106,13 @@ sub _maybe_decode {
   return;
 }
 
+sub get_class_for_header {
+  my ($self, $name) = @_;
+  return $header_to_class_map{lc $name};
+}
+
 sub set_class_for_header {
-  my ($class, $header) = @_;
+  my ($self, $class, $header) = @_;
   $header = lc $header;
   Carp::croak("Class for header '$header' is already set") if defined $header_to_class_map{$header};
   $header_to_class_map{$header} = $class;

@@ -908,8 +908,8 @@ This method returns an object representation of the header value.  It instances
 new object via method C<from_mime_string> of specified class.  Input argument
 for that class method is list of the raw MIME-encoded values.  If class argument
 is not specified then class name is taken from the hash
-C<%Email::MIME::Header::header_to_class_map> via key field.  Use function
-C<Email::MIME::Header::set_class_for_header($class, $field)> for adding new
+C<%Email::MIME::Header::header_to_class_map> via key field.  Use class method
+C<< Email::MIME::Header->set_class_for_header($class, $field) >> for adding new
 mapping.
 
 =method parts
