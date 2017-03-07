@@ -13,6 +13,14 @@ our @CARP_NOT;
 
 our %header_to_class_map;
 
+{
+  my @address_list_headers = qw(from sender reply-to to cc bcc);
+  push @address_list_headers, map { "resent-$_" } @address_list_headers;
+  push @address_list_headers, map { "downgraded-$_" } @address_list_headers; # RFC 5504
+  push @address_list_headers, qw(original-from disposition-notification-to); # RFC 5703 and RFC 3798
+  $header_to_class_map{$_} = 'Email::MIME::Header::AddressList' foreach @address_list_headers;
+}
+
 =head1 DESCRIPTION
 
 This object behaves like a standard Email::Simple header, with the following
