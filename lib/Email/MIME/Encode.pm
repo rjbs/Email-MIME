@@ -24,7 +24,7 @@ sub maybe_mime_encode_header {
     my $min_wrap_length = 78 - $header_length + 1;
 
     return $val
-        unless _needs_encode($val) || $val =~ /[^\s]{$min_wrap_length,}/;
+        unless needs_mime_encode($val) || $val =~ /[^\s]{$min_wrap_length,}/;
 
     $header =~ s/^resent-//i;
 
@@ -37,14 +37,14 @@ sub maybe_mime_encode_header {
     return mime_encode($val, $charset, $header_length);
 }
 
-sub _needs_encode {
+sub needs_mime_encode {
     my ($val) = @_;
     return defined $val && $val =~ /(?:\P{ASCII}|=\?|[^\s]{79,}|^\s+|\s+$)/s;
 }
 
-sub _needs_encode_addr {
+sub needs_mime_encode_addr {
     my ($val) = @_;
-    return _needs_encode($val) || ( defined $val && $val =~ /[:;,]/ );
+    return needs_mime_encode($val) || ( defined $val && $val =~ /[:;,]/ );
 }
 
 sub _address_list_encode {
@@ -56,10 +56,10 @@ sub _address_list_encode {
         # try to not split phrase into more encoded words (hence 0 for header_length)
         # rather fold header around mime encoded word
         $_->phrase(mime_encode($phrase, $charset, 0))
-            if _needs_encode_addr($phrase);
+            if needs_mime_encode_addr($phrase);
         my $comment = $_->comment;
         $_->comment(mime_encode($comment, $charset, 0))
-            if _needs_encode_addr($comment);
+            if needs_mime_encode_addr($comment);
     }
 
     return join(', ', map { $_->format } @addrs);
