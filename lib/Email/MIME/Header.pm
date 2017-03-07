@@ -8,6 +8,7 @@ use parent 'Email::Simple::Header';
 use Carp ();
 use Email::MIME::Encode;
 use Encode 1.9801;
+use Module::Runtime ();
 
 our @CARP_NOT;
 
@@ -95,7 +96,9 @@ sub header_as_obj {
 
   {
     local @CARP_NOT = qw(Email::MIME);
+    local $@;
     Carp::croak("No class for header '$name' was specified") unless defined $class;
+    Carp::croak("Cannot load package '$class' for header '$name': $@") unless eval { Module::Runtime::require_module($class) };
     Carp::croak("Class '$class' does not have method 'from_mime_string'") unless $class->can('from_mime_string');
   }
 
