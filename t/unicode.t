@@ -69,6 +69,8 @@ require_ok 'Email::MIME::Creator';
   my @tos = (
     'Döy <test@example.com>', # unicode
     'Doy <test@example.com>', # not
+    '"<look@like.address>," <test@example.com>', # address-like pattern in phrase
+    '"Döy <look@like.address>," <test@example.com>', # unicode address-like pattern in phrase
   );
 
   for my $subject (@subjects) {
@@ -82,7 +84,13 @@ require_ok 'Email::MIME::Creator';
       );
       is(scalar($email->header('Subject')), $subject,
          "Subject header is correct");
+      $email->header_str_set('Subject', $subject);
+      is(scalar($email->header_str('Subject')), $subject,
+         "Subject header is correct");
       is(scalar($email->header('To')), $to,
+         "To header is correct");
+      $email->header_str_set('To', $to);
+      is(scalar($email->header_str('To')), $to,
          "To header is correct");
       like($email->as_string, qr/test\@example\.com/,
            "address isn't encoded");
