@@ -71,6 +71,7 @@ sub mime_encode {
     my ($text, $charset, $header_length) = @_;
 
     $header_length = 0 unless defined $header_length;
+    $charset = 'UTF-8' unless defined $charset;
 
     my $enc_obj = Encode::find_encoding($charset);
 
