@@ -3,12 +3,14 @@ use warnings;
 package Email::MIME::Encode;
 # ABSTRACT: a private helper for MIME header encoding
 
-use Email::Address;
+use Carp ();
 use Encode ();
 use MIME::Base64();
+use Module::Runtime ();
 use Scalar::Util;
 
-my %address_list_headers = map { $_ => undef } qw(from sender reply-to to cc bcc);
+our @CARP_NOT;
+
 my %no_mime_headers = map { $_ => undef } qw(date message-id in-reply-to references downgraded-message-id downgraded-in-reply-to downgraded-references);
 
 sub maybe_mime_encode_header {
@@ -21,18 +23,16 @@ sub maybe_mime_encode_header {
     return $val->as_mime_string($charset, $header_length)
         if Scalar::Util::blessed($val) && $val->can("as_mime_string");
 
+    return _object_encode($val, $charset, $header_length, $Email::MIME::Header::header_to_class_map{$header})
+        if exists $Email::MIME::Header::header_to_class_map{$header};
+
     my $min_wrap_length = 78 - $header_length + 1;
 
     return $val
         unless needs_mime_encode($val) || $val =~ /[^\s]{$min_wrap_length,}/;
 
-    $header =~ s/^resent-//i;
-
     return $val
         if exists $no_mime_headers{$header};
-
-    return _address_list_encode($val, $charset)
-        if exists $address_list_headers{$header};
 
     return mime_encode($val, $charset, $header_length);
 }
@@ -47,22 +47,23 @@ sub needs_mime_encode_addr {
     return needs_mime_encode($val) || ( defined $val && $val =~ /[:;,]/ );
 }
 
-sub _address_list_encode {
-    my ($val, $charset) = @_;
-    my @addrs = Email::Address->parse($val);
+sub _object_encode {
+    my ($val, $charset, $header_length, $class) = @_;
 
-    foreach (@addrs) {
-        my $phrase = $_->phrase;
-        # try to not split phrase into more encoded words (hence 0 for header_length)
-        # rather fold header around mime encoded word
-        $_->phrase(mime_encode($phrase, $charset, 0))
-            if needs_mime_encode_addr($phrase);
-        my $comment = $_->comment;
-        $_->comment(mime_encode($comment, $charset, 0))
-            if needs_mime_encode_addr($comment);
+    local @CARP_NOT = qw(Email::MIME Email::MIME::Header);
+
+    {
+        local $@;
+        Carp::croak("Cannot load package '$class': $@") unless eval { Module::Runtime::require_module($class) };
     }
 
-    return join(', ', map { $_->format } @addrs);
+    Carp::croak("Class '$class' does not have method 'from_string'") unless $class->can('from_string');
+
+    my $object = $class->from_string(ref $val eq 'ARRAY' ? @{$val} : $val);
+
+    Carp::croak("Object from class '$class' does not have method 'as_mime_string'") unless $object->can('as_mime_string');
+
+    return $object->as_mime_string($charset, $header_length);
 }
 
 # XXX this is copied directly out of Courriel::Header
@@ -113,12 +114,36 @@ sub maybe_mime_decode_header {
     my ($header, $val) = @_;
 
     $header = lc $header;
-    $header =~ s/^resent-//i;
+
+    return _object_decode($val, $Email::MIME::Header::header_to_class_map{$header})
+        if exists $Email::MIME::Header::header_to_class_map{$header};
 
     return $val
         if exists $no_mime_headers{$header};
 
+    return $val
+        unless $val =~ /=\?/;
+
     return mime_decode($val);
+}
+
+sub _object_decode {
+    my ($string, $class) = @_;
+
+    local @CARP_NOT = qw(Email::MIME Email::MIME::Header);
+
+    {
+        local $@;
+        Carp::croak("Cannot load package '$class': $@") unless eval { Module::Runtime::require_module($class) };
+    }
+
+    Carp::croak("Class '$class' does not have method 'from_mime_string'") unless $class->can('from_mime_string');
+
+    my $object = $class->from_mime_string($string);
+
+    Carp::croak("Object from class '$class' does not have method 'as_string'") unless $object->can('as_string');
+
+    return $object->as_string();
 }
 
 sub mime_decode {
