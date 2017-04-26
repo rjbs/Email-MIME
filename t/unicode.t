@@ -60,7 +60,8 @@ require_ok 'Email::MIME::Creator';
   );
 }
 
-{
+SKIP: {
+  skip 'Email::Address::XS is required for this test', 1 unless eval { require Email::Address::XS };
   my @subjects = (
     "test test test test test test test test tést te (12 34)", # unicode
     "test test test test test test test test test te (12 34)", # not

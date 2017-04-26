@@ -5,7 +5,7 @@ use Test::More;
 use Email::MIME;
 
 my $email = Email::MIME->create(
-  header_str => [
+  header    => [
     From    => q{"Your name" <your_email@some-domain.com>},
     To      => q{"The recipients's name" <recipients_email@some-domain.com>},
     Subject => q{Lorem ipsum dolor}
