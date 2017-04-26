@@ -61,7 +61,11 @@ by all means keep reading.
   );
 
   my $email = Email::MIME->create(
-      header_str => [ From => 'casey@geeknest.com' ],
+      header_str => [
+          From => 'casey@geeknest.com',
+          To => [ 'user1@host.com', 'Name <user2@host.com>' ],
+          Cc => Email::Address::XS->new("Display Name \N{U+1F600}", 'user@example.com'),
+      ],
       parts      => [ @parts ],
   );
 
@@ -145,9 +149,17 @@ be a text string that will be MIME-encoded as needed.  Alternatively it can be
 an object with C<as_mime_string> method which implements conversion of that
 object to MIME-encoded string.  That object method is called with two input
 parameters: charset and length of header name and should return MIME-encoded
-representation of the object.  A similar C<header>
-parameter can be provided in addition to or instead of C<header_str>.  Its
-values will be used verbatim.
+representation of the object.
+
+In case header name is registered in C<%Email::MIME::Header::header_to_class_map>
+hash then registered class is used for conversion from Unicode string to 8bit
+MIME encoding.  Value can be either string or array reference to strings.
+Object is constructed via method C<from_string> with string value (or values
+in case of array reference) and converted to MIME-encoded string via
+C<as_mime_string> method.
+
+A similar C<header> parameter can be provided in addition to or instead of
+C<header_str>.  Its values will be used verbatim.
 
 C<attributes> is a hash of MIME attributes to assign to the part, and may
 override portions of the header set in the C<header> parameter.
