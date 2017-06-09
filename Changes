@@ -2,6 +2,9 @@ Revision history for Perl extension Email::MIME.
 
 {{$NEXT}}
 
+1.943     2017-06-09 19:00:09-04:00 America/New_York (TRIAL RELEASE)
+        - add Email::MIME::Header::AddressList and related support code
+
 1.942     2017-03-05 08:15:00-05:00 America/New_York (TRIAL RELEASE)
         - This adds ->header_as_obj to get MIME headers out of the header not
           as strings, but as objects.  The field-to-header mapping can be
