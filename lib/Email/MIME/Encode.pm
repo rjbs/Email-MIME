@@ -29,7 +29,7 @@ sub maybe_mime_encode_header {
     my $min_wrap_length = 78 - $header_length + 1;
 
     return $val
-        unless needs_mime_encode($val) || $val =~ /[^\s]{$min_wrap_length,}/;
+        unless _needs_mime_encode($val) || $val =~ /[^\s]{$min_wrap_length,}/;
 
     return $val
         if exists $no_mime_headers{$header};
@@ -37,14 +37,14 @@ sub maybe_mime_encode_header {
     return mime_encode($val, $charset, $header_length);
 }
 
-sub needs_mime_encode {
+sub _needs_mime_encode {
     my ($val) = @_;
     return defined $val && $val =~ /(?:\P{ASCII}|=\?|[^\s]{79,}|^\s+|\s+$)/s;
 }
 
-sub needs_mime_encode_addr {
+sub _needs_mime_encode_addr {
     my ($val) = @_;
-    return needs_mime_encode($val) || ( defined $val && $val =~ /[:;,]/ );
+    return _needs_mime_encode($val) || ( defined $val && $val =~ /[:;,]/ );
 }
 
 sub _object_encode {

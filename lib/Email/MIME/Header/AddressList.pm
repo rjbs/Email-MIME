@@ -199,11 +199,11 @@ sub as_mime_string {
   my @groups = $self->groups();
   foreach (0 .. scalar @groups / 2 - 1) {
     $groups[2 * $_] = Email::MIME::Encode::mime_encode($groups[2 * $_], $charset)
-      if Email::MIME::Encode::needs_mime_encode_addr($groups[2 * $_]);
+      if Email::MIME::Encode::_needs_mime_encode_addr($groups[2 * $_]);
     $groups[2 * $_ + 1] = [ @{$groups[2 * $_ + 1]} ];
     foreach (@{$groups[2 * $_ + 1]}) {
-      my $encode_phrase = Email::MIME::Encode::needs_mime_encode_addr($_->phrase);
-      my $encode_comment = Email::MIME::Encode::needs_mime_encode_addr($_->comment);
+      my $encode_phrase = Email::MIME::Encode::_needs_mime_encode_addr($_->phrase);
+      my $encode_comment = Email::MIME::Encode::_needs_mime_encode_addr($_->comment);
       next unless $encode_phrase or $encode_comment;
       $_ = ref($_)->new(copy => $_);
       $_->phrase(Email::MIME::Encode::mime_encode($_->phrase, $charset))
