@@ -147,9 +147,9 @@ This method creates a new MIME part. The C<header_str> parameter is a list of
 headers pairs to include in the message. The value for each pair is expected to
 be a text string that will be MIME-encoded as needed.  Alternatively it can be
 an object with C<as_mime_string> method which implements conversion of that
-object to MIME-encoded string.  That object method is called with two input
-parameters: charset and length of header name and should return MIME-encoded
-representation of the object.
+object to MIME-encoded string.  That object method is called with two named
+input parameters: C<charset> and C<header_name_length>.  It should return
+MIME-encoded representation of the object.
 
 In case header name is registered in C<%Email::MIME::Header::header_to_class_map>
 hash then registered class is used for conversion from Unicode string to 8bit

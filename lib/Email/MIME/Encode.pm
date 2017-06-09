@@ -18,15 +18,19 @@ sub maybe_mime_encode_header {
 
     $header = lc $header;
 
-    my $header_length = length($header) + length(": ");
+    my $header_name_length = length($header) + length(": ");
 
-    return $val->as_mime_string($charset, $header_length)
-        if Scalar::Util::blessed($val) && $val->can("as_mime_string");
+    if (Scalar::Util::blessed($val) && $val->can("as_mime_string")) {
+      return $val->as_mime_string({
+        charset => $charset,
+        header_name_length => $header_name_length,
+      });
+    }
 
-    return _object_encode($val, $charset, $header_length, $Email::MIME::Header::header_to_class_map{$header})
+    return _object_encode($val, $charset, $header_name_length, $Email::MIME::Header::header_to_class_map{$header})
         if exists $Email::MIME::Header::header_to_class_map{$header};
 
-    my $min_wrap_length = 78 - $header_length + 1;
+    my $min_wrap_length = 78 - $header_name_length + 1;
 
     return $val
         unless _needs_mime_encode($val) || $val =~ /[^\s]{$min_wrap_length,}/;
@@ -34,7 +38,7 @@ sub maybe_mime_encode_header {
     return $val
         if exists $no_mime_headers{$header};
 
-    return mime_encode($val, $charset, $header_length);
+    return mime_encode($val, $charset, $header_name_length);
 }
 
 sub _needs_mime_encode {
@@ -48,7 +52,7 @@ sub _needs_mime_encode_addr {
 }
 
 sub _object_encode {
-    my ($val, $charset, $header_length, $class) = @_;
+    my ($val, $charset, $header_name_length, $class) = @_;
 
     local @CARP_NOT = qw(Email::MIME Email::MIME::Header);
 
@@ -63,15 +67,18 @@ sub _object_encode {
 
     Carp::croak("Object from class '$class' does not have method 'as_mime_string'") unless $object->can('as_mime_string');
 
-    return $object->as_mime_string($charset, $header_length);
+    return $object->as_mime_string({
+      charset => $charset,
+      header_name_length => $header_name_length,
+    });
 }
 
 # XXX this is copied directly out of Courriel::Header
 # eventually, this should be extracted out into something that could be shared
 sub mime_encode {
-    my ($text, $charset, $header_length) = @_;
+    my ($text, $charset, $header_name_length) = @_;
 
-    $header_length = 0 unless defined $header_length;
+    $header_name_length = 0 unless defined $header_name_length;
     $charset = 'UTF-8' unless defined $charset;
 
     my $enc_obj = Encode::find_encoding($charset);
@@ -84,7 +91,7 @@ sub mime_encode {
     # This code is copied from Mail::Message::Field::Full in the Mail-Box
     # distro.
     my $real_length = int( ( 75 - $mime_length ) / 4 ) * 3;
-    my $first_length = int( ( 75 - $header_length - $mime_length ) / 4 ) * 3;
+    my $first_length = int( ( 75 - $header_name_length - $mime_length ) / 4 ) * 3;
 
     my @result;
     my $chunk = q{};

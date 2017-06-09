@@ -195,7 +195,10 @@ L<Email::Address::XS::format_email_groups|Email::Address::XS/format_email_groups
 =cut
 
 sub as_mime_string {
-  my ($self, $charset, $header_length) = @_;
+  my ($self, $arg) = @_;
+  my $charset = $arg->{charset};
+  my $header_name_length = $arg->{header_name_length};
+
   my @groups = $self->groups();
   foreach (0 .. scalar @groups / 2 - 1) {
     $groups[2 * $_] = Email::MIME::Encode::mime_encode($groups[2 * $_], $charset)
