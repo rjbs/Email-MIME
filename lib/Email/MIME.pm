@@ -119,7 +119,15 @@ my $NO_ENCODE_RE = qr/
 /ix;
 
 sub new {
-  my $self = shift->SUPER::new(@_);
+  my ($class, $text, $arg, @rest) = @_;
+  $arg ||= {};
+
+  my $encode_check = exists $arg->{encode_check}
+                   ? delete $arg->{encode_check}
+                   : 1; # Encode::FB_CROAK
+
+  my $self = shift->SUPER::new($text, $arg, @rest);
+  $self->encode_check_set($encode_check);
   $self->{ct} = parse_content_type($self->content_type);
   $self->parts;
   return $self;
@@ -222,7 +230,13 @@ sub create {
     $CREATOR->_add_to_header(\$header, 'Content-Type' => 'text/plain',);
   }
 
-  my $email = $class->new($header);
+  my %pass_on;
+
+  if (exists $args{encode_check}) {
+    $pass_on{encode_check} = $args{encode_check};
+  }
+
+  my $email = $class->new($header, \%pass_on);
 
   for my $key (keys %attrs) {
     $email->content_type_attribute_set($key => $attrs{$key});
@@ -247,7 +261,7 @@ sub create {
     Carp::confess("body_str was given, but no encoding is defined")
       unless $attrs{encoding};
 
-    my $body_octets = Encode::encode($attrs{charset}, $args{body_str}, 1);
+    my $body_octets = Encode::encode($attrs{charset}, $args{body_str}, $email->encode_check);
     $email->body_set($body_octets);
   }
 
@@ -342,7 +356,7 @@ sub body_str {
     Carp::confess("can't get body as a string for " . $self->content_type);
   }
 
-  my $str = Encode::decode($encoding, $self->body, 1);
+  my $str = Encode::decode($encoding, $self->body, $self->encode_check);
   return $str;
 }
 
@@ -542,6 +556,42 @@ sub content_type_attribute_set {
   $self->_compose_content_type($ct_header);
 }
 
+=method encode_check
+
+=method encode_check-set
+
+  $email->encode_check;
+  $email->encode_check_set(0);
+  $email->encode_check_set(Encode::FB_DEFAULT);
+
+Gets/sets the current C<encode_check> setting (default: I<FB_CROAK>).
+This is the parameter passed to L<Encode/"decode"> and L<Encode/"encode">
+when C<body_str()>, C<body_str_set()>, and C<create()> are called.
+
+With the default setting, Email::MIME may crash if the claimed charset
+of a body does not match its contents (for example - utf8 data in a
+text/plain; charset=us-ascii message).
+
+With an C<encode_check> of 0, the unrecognized bytes will instead be
+replaced with the C<REPLACEMENT CHARACTER> (U+0FFFD), and may end up
+as either that or question marks (?).
+
+See L<Encode/"Handling Malformed Data"> for more information.
+
+=cut
+
+sub encode_check {
+  my ($self) = @_;
+
+  return $self->{encode_check};
+}
+
+sub encode_check_set {
+  my ($self, $val) = @_;
+
+  return $self->{encode_check} = $val;
+}
+
 =method encoding_set
 
   $email->encoding_set( 'base64' );
@@ -623,7 +673,7 @@ sub body_str_set {
   Carp::confess("body_str was given, but no charset is defined")
     unless my $charset = $ct->{attributes}{charset};
 
-  my $body_octets = Encode::encode($charset, $body_str, 1);
+  my $body_octets = Encode::encode($charset, $body_str, $self->encode_check);
   $self->body_set($body_octets);
 }
 
