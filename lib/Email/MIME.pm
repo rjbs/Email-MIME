@@ -4,7 +4,7 @@ use warnings;
 package Email::MIME;
 # ABSTRACT: easy MIME message handling
 
-use Email::Simple 2.206; # header_raw
+use Email::Simple 2.212; # nth header value
 use parent qw(Email::Simple);
 
 use Carp ();
@@ -61,7 +61,11 @@ by all means keep reading.
   );
 
   my $email = Email::MIME->create(
-      header_str => [ From => 'casey@geeknest.com' ],
+      header_str => [
+          From => 'casey@geeknest.com',
+          To => [ 'user1@host.com', 'Name <user2@host.com>' ],
+          Cc => Email::Address::XS->new("Display Name \N{U+1F600}", 'user@example.com'),
+      ],
       parts      => [ @parts ],
   );
 
@@ -141,9 +145,21 @@ sub new {
 
 This method creates a new MIME part. The C<header_str> parameter is a list of
 headers pairs to include in the message. The value for each pair is expected to
-be a text string that will be MIME-encoded as needed.  A similar C<header>
-parameter can be provided in addition to or instead of C<header_str>.  Its
-values will be used verbatim.
+be a text string that will be MIME-encoded as needed.  Alternatively it can be
+an object with C<as_mime_string> method which implements conversion of that
+object to MIME-encoded string.  That object method is called with two named
+input parameters: C<charset> and C<header_name_length>.  It should return
+MIME-encoded representation of the object.
+
+In case header name is registered in C<%Email::MIME::Header::header_to_class_map>
+hash then registered class is used for conversion from Unicode string to 8bit
+MIME encoding.  Value can be either string or array reference to strings.
+Object is constructed via method C<from_string> with string value (or values
+in case of array reference) and converted to MIME-encoded string via
+C<as_mime_string> method.
+
+A similar C<header> parameter can be provided in addition to or instead of
+C<header_str>.  Its values will be used verbatim.
 
 C<attributes> is a hash of MIME attributes to assign to the part, and may
 override portions of the header set in the C<header> parameter.
@@ -446,6 +462,11 @@ sub header_str_set {
 sub header_str_pairs {
   my $self = shift;
   $self->header_obj->header_str_pairs(@_);
+}
+
+sub header_as_obj {
+  my $self = shift;
+  $self->header_obj->header_as_obj(@_);
 }
 
 =method content_type_set
@@ -875,6 +896,9 @@ This behaves like C<header_raw_set>, but expects Unicode (character) strings as
 the values to set, rather than pre-encoded byte strings.  It will encode them
 as MIME encoded-words if they contain any control or 8-bit characters.
 
+Alternatively, values can be objects with C<as_mime_string> method.  Same as in
+method C<create>.
+
 =method header_str_pairs
 
   my @pairs = $email->header_str_pairs;
@@ -882,6 +906,23 @@ as MIME encoded-words if they contain any control or 8-bit characters.
 This method behaves like C<header_raw_pairs>, returning a list of field
 name/value pairs, but the values have been decoded to character strings, when
 possible.
+
+=method header_as_obj
+
+  my $first_obj = $email->header_as_obj($field);
+  my $nth_obj   = $email->header_as_obj($field, $index);
+  my @all_objs  = $email->header_as_obj($field);
+
+  my $nth_obj_of_class  = $email->header_as_obj($field, $index, $class);
+  my @all_objs_of_class = $email->header_as_obj($field, undef, $class);
+
+This method returns an object representation of the header value.  It instances
+new object via method C<from_mime_string> of specified class.  Input argument
+for that class method is list of the raw MIME-encoded values.  If class argument
+is not specified then class name is taken from the hash
+C<%Email::MIME::Header::header_to_class_map> via key field.  Use class method
+C<< Email::MIME::Header->set_class_for_header($class, $field) >> for adding new
+mapping.
 
 =method parts
 
