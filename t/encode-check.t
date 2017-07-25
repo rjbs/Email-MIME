@@ -14,7 +14,7 @@ subtest "encode_check 0 during create()" => sub {
       charset  => 'us-ascii',
     },
     body_str => "Look, a snowman: ☃",
-    encode_check => 0, # Encode::FB_DEFAULT
+    encode_check => Encode::FB_DEFAULT,
   );
 
   ok($email, 'we created an email with badly encoded data');
@@ -64,7 +64,7 @@ subtest "encode_check 1 during create()" => sub {
         charset  => 'us-ascii',
       },
       body_str => "Look, a snowman: ☃",
-      encode_check => 1, # Encode::FB_CROAK
+      encode_check => Encode::FB_CROAK,
     );
   };
 

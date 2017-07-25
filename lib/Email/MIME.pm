@@ -128,7 +128,7 @@ sub new {
 
   my $encode_check = exists $arg->{encode_check}
                    ? delete $arg->{encode_check}
-                   : 1; # Encode::FB_CROAK
+                   : Encode::FB_CROAK;
 
   my $self = shift->SUPER::new($text, $arg, @rest);
   $self->encode_check_set($encode_check);
