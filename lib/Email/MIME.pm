@@ -171,7 +171,11 @@ A similar C<header> parameter can be provided in addition to or instead of
 C<header_str>.  Its values will be used verbatim.
 
 C<attributes> is a hash of MIME attributes to assign to the part, and may
-override portions of the header set in the C<header> parameter.
+override portions of the header set in the C<header> parameter. The hash keys
+correspond directly to methods or modifying a message from
+C<Email::MIME::Modifier>. The allowed keys are: content_type, charset, name,
+format, boundary, encoding, disposition, and filename. They will be mapped to
+C<"$attr\_set"> for message modification.
 
 The C<parts> parameter is a list reference containing C<Email::MIME>
 objects. Elements of the C<parts> list can also be a non-reference
@@ -185,12 +189,6 @@ flat (subpart-less) MIME message.  It is assumed to be a sequence of octets.
 If C<body_str> is given instead of C<body> or C<parts>, it is assumed to be a
 character string to be used as the body.  If you provide a C<body_str>
 parameter, you B<must> provide C<charset> and C<encoding> attributes.
-
-Back to C<attributes>. The hash keys correspond directly to methods or
-modifying a message from C<Email::MIME::Modifier>. The allowed keys are:
-content_type, charset, name, format, boundary, encoding, disposition,
-and filename. They will be mapped to C<"$attr\_set"> for message
-modification.
 
 =cut
 
