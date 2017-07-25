@@ -157,7 +157,8 @@ be a text string that will be MIME-encoded as needed.  Alternatively it can be
 an object with C<as_mime_string> method which implements conversion of that
 object to MIME-encoded string.  That object method is called with two named
 input parameters: C<charset> and C<header_name_length>.  It should return
-MIME-encoded representation of the object.
+MIME-encoded representation of the object.  As of 2017-07-25, the
+header-value-as-object code is very young, and may yet change.
 
 In case header name is registered in C<%Email::MIME::Header::header_to_class_map>
 hash then registered class is used for conversion from Unicode string to 8bit

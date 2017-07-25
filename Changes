@@ -1,6 +1,9 @@
 Revision history for Perl extension Email::MIME.
 
 {{$NEXT}}
+        - non-trial release of header_as_obj changes
+        - support for supplying a non-croak encode_check (thanks, Matthew
+          Horsfall)
 
 1.943     2017-06-09 19:00:09-04:00 America/New_York (TRIAL RELEASE)
         - add Email::MIME::Header::AddressList and related support code
