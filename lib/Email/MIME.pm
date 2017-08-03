@@ -18,6 +18,8 @@ use Email::MIME::Modifier;
 use Encode 1.9801 ();
 use Scalar::Util qw(reftype weaken);
 
+our @CARP_NOT = qw(Email::MIME::ContentType);
+
 =head1 SYNOPSIS
 
 B<Wait!>  Before you read this, maybe you just need L<Email::Stuffer>, which is
