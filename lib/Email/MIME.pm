@@ -10,7 +10,7 @@ use parent qw(Email::Simple);
 use Carp ();
 use Email::MessageID;
 use Email::MIME::Creator;
-use Email::MIME::ContentType 1.016; # type/subtype, not discrete/composite
+use Email::MIME::ContentType 1.022; # parse_content_disposition
 use Email::MIME::Encode;
 use Email::MIME::Encodings 1.314;
 use Email::MIME::Header;
@@ -442,10 +442,7 @@ sub filename {
   return $gcache{$self} if exists $gcache{$self};
 
   my $dis = $self->header("Content-Disposition") || '';
-  my $attrs
-    = $dis =~ s/^.*?;//
-    ? Email::MIME::ContentType::_parse_attributes($dis)
-    : {};
+  my $attrs = parse_content_disposition($dis)->{attributes};
   my $name = $attrs->{filename}
     || $self->{ct}{attributes}{name};
   return $name if $name or !$force;
@@ -734,9 +731,9 @@ sub filename_set {
   my $dis_header = $self->header('Content-Disposition');
   my ($disposition, $attrs);
   if ($dis_header) {
-    ($disposition) = ($dis_header =~ /^([^;]+)/);
-    $dis_header =~ s/^$disposition(?:;\s*)?//;
-    $attrs = Email::MIME::ContentType::_parse_attributes($dis_header) || {};
+    my $struct = parse_content_disposition($dis_header);
+    $disposition = $struct->{type};
+    $attrs = $struct->{attributes};
   }
   $filename ? $attrs->{filename} = $filename : delete $attrs->{filename};
   $disposition ||= 'inline';
