@@ -410,7 +410,7 @@ sub parts_multipart {
   for my $bit (@bits) {
     $bit =~ s/\A[\n\r]+//smg;
     $bit =~ s/(?<!\x0d)$self->{mycrlf}\Z//sm;
-    my $email = (ref $self)->new($bit);
+    my $email = (ref $self)->new($bit, { encode_check => $self->encode_check });
     push @parts, $email;
   }
 
@@ -580,7 +580,7 @@ sub content_type_attribute_set {
 
 =method encode_check
 
-=method encode_check-set
+=method encode_check_set
 
   $email->encode_check;
   $email->encode_check_set(0);
