@@ -32,6 +32,31 @@ subtest "encode_check 0 during create()" => sub {
   );
 };
 
+subtest "encode_check 0 during create(), multi-part" => sub {
+  my $email = Email::MIME->create(
+    parts => [
+        q[Totally ascii first part],
+        q[Look, a snowman: ☃],
+    ],
+    encode_check => Encode::FB_DEFAULT,
+  );
+
+  ok($email, 'we created an email with badly encoded data');
+
+  my $part_num = 1;
+
+  $email->walk_parts(sub {
+    my ($part) = @_;
+    return if $part->subparts;
+
+    is(
+      $part->encode_check,
+      Encode::FB_DEFAULT,
+      "subpart picked up email's encode_check setting"
+    );
+  });
+};
+
 subtest "encode_check 0 during new()" => sub {
   my $email = Email::MIME->new(<<'EOF', { encode_check => 0 });
 Date: Fri, 16 Jun 2017 09:48:19 -0400
