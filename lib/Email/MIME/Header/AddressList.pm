@@ -131,8 +131,8 @@ sub new_mime_groups {
     $groups[2 * $_ + 1] = [ @{$groups[2 * $_ + 1]} ];
     foreach (@{$groups[2 * $_ + 1]}) {
       next unless Email::Address::XS->is_obj($_);
-      my $decode_phrase = defined $_->phrase and $_->phrase =~ /=\?/;
-      my $decode_comment = defined $_->comment and $_->comment =~ /=\?/;
+      my $decode_phrase = (defined $_->phrase and $_->phrase =~ /=\?/);
+      my $decode_comment = (defined $_->comment and $_->comment =~ /=\?/);
       next unless $decode_phrase or $decode_comment;
       $_ = ref($_)->new(copy => $_);
       $_->phrase(Email::MIME::Encode::mime_decode($_->phrase))
