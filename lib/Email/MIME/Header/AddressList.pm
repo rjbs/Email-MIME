@@ -8,6 +8,7 @@ use warnings;
 use Carp ();
 use Email::Address::XS;
 use Email::MIME::Encode;
+use Net::IDN::Encode;
 
 =encoding utf8
 
@@ -133,14 +134,18 @@ sub new_mime_groups {
       next unless Email::Address::XS->is_obj($_);
       my $phrase = $_->phrase;
       my $comment = $_->comment;
+      my $host = $_->host;
       my $decode_phrase = (defined $phrase and $phrase =~ /=\?/);
       my $decode_comment = (defined $comment and $comment =~ /=\?/);
-      next unless $decode_phrase or $decode_comment;
+      my $decode_host = (defined $host and $host =~ /xn--/);
+      next unless $decode_phrase or $decode_comment or $decode_host;
       $_ = ref($_)->new(copy => $_);
       $_->phrase(Email::MIME::Encode::mime_decode($phrase))
         if $decode_phrase;
       $_->comment(Email::MIME::Encode::mime_decode($comment))
         if $decode_comment;
+      $_->host(Net::IDN::Encode::domain_to_unicode($host))
+        if $decode_host;
     }
   }
   return $class->new_groups(@groups);
@@ -209,14 +214,18 @@ sub as_mime_string {
     foreach (@{$groups[2 * $_ + 1]}) {
       my $phrase = $_->phrase;
       my $comment = $_->comment;
+      my $host = $_->host;
       my $encode_phrase = Email::MIME::Encode::_needs_mime_encode_addr($phrase);
       my $encode_comment = Email::MIME::Encode::_needs_mime_encode_addr($comment);
-      next unless $encode_phrase or $encode_comment;
+      my $encode_host = (defined $host and $host =~ /\P{ASCII}/);
+      next unless $encode_phrase or $encode_comment or $encode_host;
       $_ = ref($_)->new(copy => $_);
       $_->phrase(Email::MIME::Encode::mime_encode($phrase, $charset))
         if $encode_phrase;
       $_->comment(Email::MIME::Encode::mime_encode($comment, $charset))
         if $encode_comment;
+      $_->host(Net::IDN::Encode::domain_to_ascii($host))
+        if $encode_host;
     }
   }
   return Email::Address::XS::format_email_groups(@groups);

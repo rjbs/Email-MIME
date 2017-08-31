@@ -56,8 +56,6 @@ sub header_str {
 
   foreach my $header (@header) {
     next unless defined $header;
-    next unless $header =~ /=\?/;
-
     _maybe_decode($_[0], \$header);
   }
   return $wanta ? @header : $header[0];
