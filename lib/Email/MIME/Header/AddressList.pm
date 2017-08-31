@@ -131,13 +131,15 @@ sub new_mime_groups {
     $groups[2 * $_ + 1] = [ @{$groups[2 * $_ + 1]} ];
     foreach (@{$groups[2 * $_ + 1]}) {
       next unless Email::Address::XS->is_obj($_);
-      my $decode_phrase = (defined $_->phrase and $_->phrase =~ /=\?/);
-      my $decode_comment = (defined $_->comment and $_->comment =~ /=\?/);
+      my $phrase = $_->phrase;
+      my $comment = $_->comment;
+      my $decode_phrase = (defined $phrase and $phrase =~ /=\?/);
+      my $decode_comment = (defined $comment and $comment =~ /=\?/);
       next unless $decode_phrase or $decode_comment;
       $_ = ref($_)->new(copy => $_);
-      $_->phrase(Email::MIME::Encode::mime_decode($_->phrase))
+      $_->phrase(Email::MIME::Encode::mime_decode($phrase))
         if $decode_phrase;
-      $_->comment(Email::MIME::Encode::mime_decode($_->comment))
+      $_->comment(Email::MIME::Encode::mime_decode($comment))
         if $decode_comment;
     }
   }
@@ -205,13 +207,15 @@ sub as_mime_string {
       if Email::MIME::Encode::_needs_mime_encode_addr($groups[2 * $_]);
     $groups[2 * $_ + 1] = [ @{$groups[2 * $_ + 1]} ];
     foreach (@{$groups[2 * $_ + 1]}) {
-      my $encode_phrase = Email::MIME::Encode::_needs_mime_encode_addr($_->phrase);
-      my $encode_comment = Email::MIME::Encode::_needs_mime_encode_addr($_->comment);
+      my $phrase = $_->phrase;
+      my $comment = $_->comment;
+      my $encode_phrase = Email::MIME::Encode::_needs_mime_encode_addr($phrase);
+      my $encode_comment = Email::MIME::Encode::_needs_mime_encode_addr($comment);
       next unless $encode_phrase or $encode_comment;
       $_ = ref($_)->new(copy => $_);
-      $_->phrase(Email::MIME::Encode::mime_encode($_->phrase, $charset))
+      $_->phrase(Email::MIME::Encode::mime_encode($phrase, $charset))
         if $encode_phrase;
-      $_->comment(Email::MIME::Encode::mime_encode($_->comment, $charset))
+      $_->comment(Email::MIME::Encode::mime_encode($comment, $charset))
         if $encode_comment;
     }
   }
