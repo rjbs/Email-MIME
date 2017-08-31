@@ -36,7 +36,7 @@ subtest "encode_check 0 during create(), multi-part" => sub {
   my $email = Email::MIME->create(
     parts => [
         q[Totally ascii first part],
-        q[Look, a snowman: ☃],
+        qq[Look, a snowman: \x{E2}\x{98}\x{83}],
     ],
     encode_check => Encode::FB_DEFAULT,
   );
