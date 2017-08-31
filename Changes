@@ -2,6 +2,12 @@ Revision history for Perl extension Email::MIME.
 
 {{$NEXT}}
 
+1.946     2017-08-31 09:29:41-04:00 America/New_York
+        - propagate encode_check to subparts (thanks, Michael McClimon)
+        - use the new parse_content_disposition function in
+          Email::MIME::ContentType (thanks, Pali Rohár)
+        - fix a bug in AddressList handling (thanks, Pali Rohár)
+
 1.945     2017-07-25 14:17:32-04:00 America/New_York
         - fix encode-check.t to pass under legacy Test::Builder
 
