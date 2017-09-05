@@ -797,7 +797,11 @@ sub parts_set {
     my $from_ct = parse_content_type($parts->[0]->header('Content-Type'));
     @{$ct_header}{qw[type subtype]} = @{ $from_ct }{qw[type subtype]};
 
-    $ct_header->{attributes}{charset} = $from_ct->{attributes}{charset};
+    if (exists $from_ct->{attributes}{charset}) {
+      $ct_header->{attributes}{charset} = $from_ct->{attributes}{charset};
+    } else {
+      delete $ct_header->{attributes}{charset};
+    }
 
     $self->encoding_set($parts->[0]->header('Content-Transfer-Encoding'));
     delete $ct_header->{attributes}->{boundary};
