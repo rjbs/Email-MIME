@@ -63,8 +63,8 @@ is_deeply( parse_content_type($email->header('Content-Type')), {
     },
 }, 'ct with name worked' );
 
-is $email->header('Content-Type'),
-    'text/plain; format="flowed"; name="foo.txt"',
+like $email->header('Content-Type'),
+    qr'^text/plain; format=(?:"flowed"|flowed); name=(?:"foo\.txt"|foo\.txt)$',
     'ct format is correct';
 
 $email->boundary_set( 'marker' );
@@ -80,8 +80,8 @@ is_deeply( parse_content_type($email->header('Content-Type')), {
 
 $email->content_type_attribute_set( 'Bananas' => 'true' );
 
-is $email->header('Content-Type'),
-    'text/plain; bananas="true"; boundary="marker"; format="flowed"; name="foo.txt"',
+like $email->header('Content-Type'),
+    qr'^text/plain; bananas=(?:"true"|true); boundary=(?:"marker"|marker); format=(?:"flowed"|flowed); name=(?:"foo\.txt"|foo\.txt)$',
     'ct format is correct';
 
 is_deeply( parse_content_type($email->header('Content-Type')), {

@@ -10,7 +10,7 @@ use parent qw(Email::Simple);
 use Carp ();
 use Email::MessageID;
 use Email::MIME::Creator;
-use Email::MIME::ContentType 1.022; # parse_content_disposition
+use Email::MIME::ContentType 1.023; # build_content_type
 use Email::MIME::Encode;
 use Email::MIME::Encodings 1.314;
 use Email::MIME::Header;
@@ -736,20 +736,14 @@ header information is preserved when setting this attribute.
 sub filename_set {
   my ($self, $filename) = @_;
   my $dis_header = $self->header('Content-Disposition');
-  my ($disposition, $attrs);
+  my ($disposition, $attrs) = ('inline', {});
   if ($dis_header) {
     my $struct = parse_content_disposition($dis_header);
     $disposition = $struct->{type};
     $attrs = $struct->{attributes};
   }
   $filename ? $attrs->{filename} = $filename : delete $attrs->{filename};
-  $disposition ||= 'inline';
-
-  my $dis = $disposition;
-  while (my ($attr, $val) = each %{$attrs}) {
-    $dis .= qq[; $attr="$val"];
-  }
-
+  my $dis = build_content_disposition({type => $disposition, attributes => $attrs});
   $self->header_raw_set('Content-Disposition' => $dis);
 }
 
@@ -895,11 +889,7 @@ sub walk_parts {
 
 sub _compose_content_type {
   my ($self, $ct_header) = @_;
-  my $ct = join q{/}, @{$ct_header}{qw[type subtype]};
-  for my $attr (sort keys %{ $ct_header->{attributes} }) {
-    next unless defined (my $value = $ct_header->{attributes}{$attr});
-    $ct .= qq[; $attr="$value"];
-  }
+  my $ct = build_content_type({type => $ct_header->{type}, subtype => $ct_header->{subtype}, attributes => $ct_header->{attributes}});
   $self->header_raw_set('Content-Type' => $ct);
   $self->{ct} = $ct_header;
 }
