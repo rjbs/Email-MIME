@@ -20,11 +20,11 @@ is $email->header('Content-Disposition'), 'attachment', 'reset worked';
 
 $email->filename_set( 'loco.pdf' );
 
-is $email->header('Content-Disposition'), 'attachment; filename="loco.pdf"', 'filename_set worked';
+like $email->header('Content-Disposition'), qr'^attachment; filename=(?:"loco\.pdf"|loco\.pdf)$', 'filename_set worked';
 
 $email->disposition_set('inline');
 
-is $email->header('Content-Disposition'), 'inline; filename="loco.pdf"', 're-reset worked';
+like $email->header('Content-Disposition'), qr'^inline; filename=(?:"loco\.pdf"|loco\.pdf)$', 're-reset worked';
 
 $email->filename_set(undef);
 
