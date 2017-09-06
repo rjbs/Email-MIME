@@ -5,6 +5,7 @@ package Email::MIME::Encode;
 
 use Carp ();
 use Encode ();
+use Email::MIME::Header;
 use MIME::Base64();
 use Module::Runtime ();
 use Scalar::Util;
