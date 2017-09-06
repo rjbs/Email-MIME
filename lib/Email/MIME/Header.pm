@@ -14,7 +14,7 @@ our @CARP_NOT;
 
 our %header_to_class_map;
 
-{
+BEGIN {
   my @address_list_headers = qw(from sender reply-to to cc bcc);
   push @address_list_headers, map { "resent-$_" } @address_list_headers;
   push @address_list_headers, map { "downgraded-$_" } @address_list_headers; # RFC 5504
