@@ -2,7 +2,6 @@ use strict;
 use warnings;
 package Email::MIME::Encode;
 # ABSTRACT: a private helper for MIME header encoding
-
 use Carp ();
 use Encode ();
 use MIME::Base64();
@@ -26,14 +25,14 @@ sub maybe_mime_encode_header {
       header_name_length => $header_name_length,
     });
   }
-
-  return _object_encode($val, $charset, $header_name_length, $Email::MIME::Header::header_to_class_map{$header})
-    if exists $Email::MIME::Header::header_to_class_map{$header};
-
   my $min_wrap_length = 78 - $header_name_length + 1;
 
   return $val
-    unless _needs_mime_encode($val) || $val =~ /[^\s]{$min_wrap_length,}/;
+    if !ref $val && !_needs_mime_encode_addr($val) && $val !~ /[^\s]{$min_wrap_length,}/;
+
+
+  return _object_encode($val, $charset, $header_name_length, $Email::MIME::Header::header_to_class_map{$header})
+    if exists $Email::MIME::Header::header_to_class_map{$header};
 
   return $val
     if exists $no_mime_headers{$header};
