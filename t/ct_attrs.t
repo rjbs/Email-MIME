@@ -1,6 +1,7 @@
 use strict;
 use warnings;
-use Test::More tests => 12;
+use utf8;
+use Test::More tests => 16;
 
 use_ok 'Email::MIME';
 use_ok 'Email::MIME::Modifier';
@@ -94,3 +95,34 @@ is_deeply( parse_content_type($email->header('Content-Type')), {
     },
 }, 'ct with misc. attr (bananas) worked' );
 
+$email->name_set( 'hah"ha"\'ha\\' );
+
+is_deeply( parse_content_type($email->header('Content-Type')), {
+    ct(qw(text plain)),
+    attributes => {
+        bananas => 'true',
+        boundary => 'marker',
+        format => 'flowed',
+        name => 'hah"ha"\'ha\\',
+    },
+}, 'ct with quotes in name worked' );
+
+like $email->header('Content-Type'),
+    qr'^text/plain; bananas=(?:"true"|true); boundary=(?:"marker"|marker); format=(?:"flowed"|flowed); name="hah\\"ha\\"\'ha\\\\"$',
+    'ct format is correct';
+
+$email->name_set( 'kůň.pdf' );
+
+is_deeply( parse_content_type($email->header('Content-Type')), {
+    ct(qw(text plain)),
+    attributes => {
+        bananas => 'true',
+        boundary => 'marker',
+        format => 'flowed',
+        name => 'kůň.pdf',
+    },
+}, 'ct with unicode name worked' );
+
+like $email->header('Content-Type'),
+    qr'^text/plain; bananas=(?:"true"|true); boundary=(?:"marker"|marker); format=(?:"flowed"|flowed); name\*=UTF-8\'\'k%C5%AF%C5%88\.pdf; name=kun\.pdf$',
+    'ct format is correct';
