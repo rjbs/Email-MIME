@@ -1,6 +1,7 @@
 use strict;
 use warnings;
-use Test::More tests => 7;
+use utf8;
+use Test::More tests => 9;
 
 use_ok 'Email::MIME';
 use_ok 'Email::MIME::Modifier';
@@ -30,3 +31,10 @@ $email->filename_set(undef);
 
 is $email->header('Content-Disposition'), 'inline', 'filename_set(undef) worked';
 
+$email->disposition_set('attachment');
+
+$email->filename_set('hah"ha"\'ha\\');
+is $email->header('Content-Disposition'), q(attachment; filename="hah\\"ha\\"'ha\\\\");
+
+$email->filename_set('kůň.pdf');
+is $email->header('Content-Disposition'), q(attachment; filename*=UTF-8''k%C5%AF%C5%88.pdf; filename=kun.pdf);
