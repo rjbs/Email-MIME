@@ -18,6 +18,10 @@ Email::MIME::Header::AddressList - MIME support for list of Email::Address::XS o
 
 =head1 SYNOPSIS
 
+  use utf8;
+  use Email::Address::XS;
+  use Email::MIME::Header::AddressList;
+
   my $address1 = Email::Address::XS->new('Name1' => 'address1@host.com');
   my $address2 = Email::Address::XS->new("Name2 \N{U+263A}" => 'address2@host.com');
   my $mime_address = Email::Address::XS->new('=?UTF-8?B?TmFtZTIg4pi6?=' => 'address2@host.com');
