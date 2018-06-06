@@ -75,7 +75,7 @@ sub header_str_set {
     Email::MIME::Encode::maybe_mime_encode_header($name, $_, 'UTF-8')
   } @vals;
 
-  $self->header_set($name => @values);
+  $self->header_raw_set($name => @values);
 }
 
 sub header_str_pairs {
