@@ -255,7 +255,7 @@ sub create {
 
   my $email = $class->new($header, \%pass_on);
 
-  for my $key (keys %attrs) {
+  for my $key (sort keys %attrs) {
     $email->content_type_attribute_set($key => $attrs{$key});
   }
 
