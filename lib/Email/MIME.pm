@@ -134,7 +134,7 @@ sub new {
 
   my $self = shift->SUPER::new($text, $arg, @rest);
   $self->encode_check_set($encode_check);
-  $self->{ct} = parse_content_type($self->content_type);
+  $self->{ct} = parse_content_type($self->content_type_raw);
   $self->parts;
   return $self;
 }
@@ -422,6 +422,7 @@ sub parts_multipart {
 sub force_decode_hook { 0 }
 sub decode_hook       { return $_[1] }
 sub content_type      { scalar shift->header("Content-type"); }
+sub content_type_raw  { scalar shift->header_raw("Content-type"); }
 
 sub debug_structure {
   my ($self, $level) = @_;
