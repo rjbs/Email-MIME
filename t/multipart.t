@@ -67,21 +67,28 @@ is $parts[2]->body_str, 'Hello';
 {
   my $email = Email::MIME->new(<<'END');
 Subject: hello
-Content-Type: multipart/mixed; boundary="bananas"
+Content-Type: multipart/mixed; boundary="0"
 
 Prelude
 
---bananas
+--0
 Content-Type: text/plain
 
 This is plain text.
---bananas--
+--0--
 
 Postlude
 END
 
   like($email->as_string, qr/Prelude/,  "prelude in string");
   like($email->as_string, qr/Postlude/, "postlude in string");
+
+  my @p;
+  $email->walk_parts(sub {
+    my $str = eval { $_[0]->body_str };
+    push @p, $str if defined $str;
+  });
+  is_deeply(\@p, ['This is plain text.']);
 
   $email->parts_set([ $email->subparts ]);
 

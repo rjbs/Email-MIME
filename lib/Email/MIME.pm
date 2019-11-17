@@ -387,7 +387,8 @@ sub parts_multipart {
   # that means it's a bogus message, but a mangled result (or exception) is
   # better than endless recursion. -- rjbs, 2008-01-07
   return $self->parts_single_part
-    unless $boundary and $self->body_raw =~ /^--\Q$boundary\E\s*$/sm;
+    unless defined $boundary and length $boundary and
+           $self->body_raw =~ /^--\Q$boundary\E\s*$/sm;
 
   $self->{body_raw} = $self->SUPER::body;
 
@@ -541,7 +542,7 @@ sub boundary_set {
   my ($self, $value) = @_;
   my $ct_header = parse_content_type($self->header('Content-Type'));
 
-  if ($value) {
+  if (defined $value and length $value) {
     $ct_header->{attributes}->{boundary} = $value;
   } else {
     delete $ct_header->{attributes}->{boundary};
@@ -764,7 +765,8 @@ sub parts_set {
   if (@{$parts} > 1 or $ct_header->{type} eq 'multipart') {
 
     # setup multipart
-    $ct_header->{attributes}->{boundary} ||= Email::MessageID->new->user;
+    $ct_header->{attributes}->{boundary} = Email::MessageID->new->user
+      unless defined $ct_header->{attributes}->{boundary} and length $ct_header->{attributes}->{boundary};
     my $bound = $ct_header->{attributes}->{boundary};
     foreach my $part (@{$parts}) {
       $body .= "$self->{mycrlf}--$bound$self->{mycrlf}";
