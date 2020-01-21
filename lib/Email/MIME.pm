@@ -174,7 +174,7 @@ C<header_str>.  Its values will be used verbatim.
 
 C<attributes> is a hash of MIME attributes to assign to the part, and may
 override portions of the header set in the C<header> parameter. The hash keys
-correspond directly to methods or modifying a message from
+correspond directly to methods for modifying a message from
 C<Email::MIME::Modifier>. The allowed keys are: content_type, charset, name,
 format, boundary, encoding, disposition, and filename. They will be mapped to
 C<"$attr\_set"> for message modification.
