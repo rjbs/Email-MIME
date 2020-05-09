@@ -6,6 +6,8 @@ use warnings;
 use Test::More;
 use Email::MIME;
 
+plan skip_all => "This is more of a helper than a test.";
+
 sub very_deep_email_string {
   my $depth = $_[0] || 250_000;
 

@@ -1,6 +1,8 @@
 Revision history for Perl extension Email::MIME.
 
 {{$NEXT}}
+        - add $Email::MIME::MAX_DEPTH and refuse to parse deeper than that many
+          parts; current default: 10
 
 1.946     2017-08-31 09:29:41-04:00 America/New_York
         - propagate encode_check to subparts (thanks, Michael McClimon)
