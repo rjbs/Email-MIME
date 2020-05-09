@@ -2,8 +2,6 @@ use strict;
 use warnings;
 use Test::More;
 
-use Carp; $SIG{__WARN__} = sub { Carp::cluck @_ };
-
 use_ok 'Email::MIME::Creator';
 
 my $hi    = Email::MIME->create(body => "Hi");

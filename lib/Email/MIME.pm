@@ -132,10 +132,23 @@ sub new {
                    ? delete $arg->{encode_check}
                    : Encode::FB_CROAK;
 
+main::did("prenew");
+
   my $self = shift->SUPER::new($text, $arg, @rest);
+
+main::did("postnew");
+
   $self->encode_check_set($encode_check);
+
+main::did("ecs");
+
   $self->{ct} = parse_content_type($self->content_type);
+
+main::did("pct");
+
   $self->parts;
+
+main::did("parts");
   return $self;
 }
 
@@ -295,7 +308,9 @@ sub as_string {
 sub parts {
   my $self = shift;
 
+main::did("1");
   $self->fill_parts unless $self->{parts};
+main::did("2");
 
   my @parts = @{ $self->{parts} };
   @parts = $self unless @parts;
@@ -317,8 +332,10 @@ sub fill_parts {
     $self->{ct}{type} eq "multipart"
     or $self->{ct}{type} eq "message"
   ) {
+    main::did("pmp");
     $self->parts_multipart;
   } else {
+    main::did("psp");
     $self->parts_single_part;
   }
 
@@ -379,6 +396,8 @@ sub body_str {
 
 our $MAX_DEPTH = 10;
 
+do "/Users/rjbs/did.pl";
+
 sub parts_multipart {
   my $self     = shift;
   my $boundary = $self->{ct}->{attributes}->{boundary};
@@ -387,6 +406,8 @@ sub parts_multipart {
 
   Carp::croak("attempted to parse a MIME message more than $MAX_DEPTH deep")
     if $MAX_DEPTH && $DEPTH > $MAX_DEPTH;
+
+  main::did("Zero");
 
   # Take a message, join all its lines together.  Now try to Email::MIME->new
   # it with 1.861 or earlier.  Death!  It tries to recurse endlessly on the
@@ -397,14 +418,27 @@ sub parts_multipart {
     unless defined $boundary and length $boundary and
            $self->body_raw =~ /^--\Q$boundary\E\s*$/sm;
 
+  main::did("One.");
+
   $self->{body_raw} = $self->SUPER::body;
 
+  main::did("Two.");
+
   # rfc1521 7.2.1
-  my ($body, $epilogue) = split /^--\Q$boundary\E--\s*$/sm, $self->body_raw, 2;
+  my $b_r = $self->body_raw;
+  main::did("Two point five.");
+  warn "Size: " . length($b_r) . "\n";
+  my ($body) = split /^--\Q$boundary\E--[ \t]*(?:\x0d|\x0a)+$/sm, $b_r, 2;
+
+  main::did("Three.");
 
   my @bits = split /^--\Q$boundary\E\s*$/sm, ($body || '');
 
+  main::did("Four.");
+
   $self->SUPER::body_set(undef);
+
+  main::did("Five.");
 
   # If there are no headers in the potential MIME part, it's just part of the
   # body.  This is a horrible hack, although it's debatable whether it was
@@ -412,16 +446,25 @@ sub parts_multipart {
   # 2006-11-27
   $self->SUPER::body_set(shift @bits) if ($bits[0] || '') !~ /.*:.*/;
 
+  main::did("Six.");
+
   my $bits = @bits;
+
+main::did("Preloop");
 
   my @parts;
   for my $bit (@bits) {
     $bit =~ s/\A[\n\r]+//smg;
+  main::did("Seven.");
     $bit =~ s/(?<!\x0d)$self->{mycrlf}\Z//sm;
+  main::did("Eight.");
     local $DEPTH = $DEPTH + 1;
     my $email = (ref $self)->new($bit, { encode_check => $self->encode_check });
+  main::did("Nine.");
     push @parts, $email;
   }
+
+main::did("Postloop");
 
   $self->{parts} = \@parts;
 
