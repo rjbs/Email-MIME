@@ -1057,6 +1057,12 @@ For example:
     + text/plain
     + text/html
 
+=head1 CONFIGURATION
+
+The variable C<$Email::MIME::MAX_DEPTH> is the maximum depth of parts that will
+be processed.  It defaults to 10, already higher than legitimate mail is ever
+likely to be.  This value may go up over time as the parser is improved.
+
 =head1 TODO
 
 All of the Email::MIME-specific guts should move to a single entry on the
