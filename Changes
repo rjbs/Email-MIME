@@ -1,6 +1,8 @@
 Revision history for Perl extension Email::MIME.
 
 {{$NEXT}}
+
+1.947     2020-05-09 14:30:06-04:00 America/New_York (TRIAL RELEASE)
         - add $Email::MIME::MAX_DEPTH and refuse to parse deeper than that many
           parts; current default: 10
 
