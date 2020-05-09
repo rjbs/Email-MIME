@@ -377,9 +377,16 @@ sub body_str {
   return $str;
 }
 
+our $MAX_DEPTH = 10;
+
 sub parts_multipart {
   my $self     = shift;
   my $boundary = $self->{ct}->{attributes}->{boundary};
+
+  our $DEPTH ||= 0;
+
+  Carp::croak("attempted to parse a MIME message more than $MAX_DEPTH deep")
+    if $MAX_DEPTH && $DEPTH > $MAX_DEPTH;
 
   # Take a message, join all its lines together.  Now try to Email::MIME->new
   # it with 1.861 or earlier.  Death!  It tries to recurse endlessly on the
@@ -411,6 +418,7 @@ sub parts_multipart {
   for my $bit (@bits) {
     $bit =~ s/\A[\n\r]+//smg;
     $bit =~ s/(?<!\x0d)$self->{mycrlf}\Z//sm;
+    local $DEPTH = $DEPTH + 1;
     my $email = (ref $self)->new($bit, { encode_check => $self->encode_check });
     push @parts, $email;
   }
