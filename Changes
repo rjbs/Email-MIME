@@ -1,6 +1,7 @@
 Revision history for Perl extension Email::MIME.
 
 {{$NEXT}}
+        - no changes since trial release
 
 1.948     2020-05-09 14:57:17-04:00 America/New_York (TRIAL RELEASE)
         - fixes to handling of content-type parameters (thanks, dlucredativ and
@@ -265,5 +266,5 @@ Revision history for Perl extension Email::MIME.
           Test fix from Richard Clamp
 
 0.01      Thu Apr 10 13:38:09 2003
-	        original version; created by h2xs 1.2 with options -AX -n Email::MIME
+          original version; created by h2xs 1.2 with options -AX -n Email::MIME
 
