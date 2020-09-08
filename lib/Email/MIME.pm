@@ -449,7 +449,7 @@ sub filename {
   my ($self, $force) = @_;
   return $gcache{$self} if exists $gcache{$self};
 
-  my $dis = $self->header("Content-Disposition") || '';
+  my $dis = $self->header_raw("Content-Disposition") || '';
   my $attrs = parse_content_disposition($dis)->{attributes};
   my $name = $attrs->{filename}
     || $self->{ct}{attributes}{name};
