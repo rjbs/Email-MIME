@@ -410,7 +410,7 @@ sub parts_multipart {
   # body.  This is a horrible hack, although it's debatable whether it was
   # better or worse when it was $self->{body} = shift @bits ... -- rjbs,
   # 2006-11-27
-  $self->SUPER::body_set(shift @bits) if ($bits[0] || '') !~ /.*:.*/;
+  $self->SUPER::body_set(shift @bits) if index(($bits[0] || ''), ':') == -1;
 
   my $bits = @bits;
 
