@@ -1,6 +1,8 @@
 Revision history for Perl extension Email::MIME.
 
 {{$NEXT}}
+
+1.950     2020-11-02 19:21:52-05:00 America/New_York (TRIAL RELEASE)
         - when computing filename, start from raw  Content-Disposition (thanks,
           Mishrakk)
         - avoid a potentially very slow regex in parsing (thanks, ivulfson)
