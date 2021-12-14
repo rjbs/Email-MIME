@@ -1,6 +1,8 @@
 Revision history for Perl extension Email::MIME.
 
 {{$NEXT}}
+
+1.951     2021-12-14 09:41:01-05:00 America/New_York
         - non-trial release of 1.950 changes
 
 1.950     2020-11-02 19:21:52-05:00 America/New_York (TRIAL RELEASE)
