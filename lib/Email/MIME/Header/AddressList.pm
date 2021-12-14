@@ -2,6 +2,8 @@
 
 package Email::MIME::Header::AddressList;
 
+# ABSTRACT: MIME support for list of Email::Address::XS objects
+
 use strict;
 use warnings;
 
@@ -10,10 +12,6 @@ use Email::Address::XS;
 use Email::MIME::Encode;
 
 =encoding utf8
-
-=head1 NAME
-
-Email::MIME::Header::AddressList - MIME support for list of Email::Address::XS objects
 
 =head1 SYNOPSIS
 
