@@ -13,7 +13,6 @@ use Email::MIME::ContentType 1.023; # build_content_type
 use Email::MIME::Encode;
 use Email::MIME::Encodings 1.314;
 use Email::MIME::Header;
-use Email::MIME::Modifier;
 use Encode 1.9801 ();
 use Scalar::Util qw(reftype weaken);
 
