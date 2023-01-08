@@ -646,8 +646,6 @@ This method will encode the new body you send using the encoding
 specified in the C<Content-Transfer-Encoding> header, then set
 the body to the new encoded body.
 
-This method overrides the default C<body_set()> method.
-
 =cut
 
 sub body_set {
