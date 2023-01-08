@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More qw[no_plan];
+use Test::More;
 
 use_ok 'Email::MIME::Creator';
 
@@ -33,3 +33,5 @@ sub generate_binary_data {
   my $string = join '', map { chr } 1 .. 255;
   return $string;
 }
+
+done_testing;

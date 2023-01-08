@@ -173,10 +173,9 @@ C<header_str>.  Its values will be used verbatim.
 
 C<attributes> is a hash of MIME attributes to assign to the part, and may
 override portions of the header set in the C<header> parameter. The hash keys
-correspond directly to methods for modifying a message from
-C<Email::MIME::Modifier>. The allowed keys are: content_type, charset, name,
-format, boundary, encoding, disposition, and filename. They will be mapped to
-C<"$attr\_set"> for message modification.
+correspond directly to methods for modifying a message. The allowed keys are:
+content_type, charset, name, format, boundary, encoding, disposition, and
+filename. They will be mapped to C<"$attr\_set"> for message modification.
 
 The C<parts> parameter is a list reference containing C<Email::MIME>
 objects. Elements of the C<parts> list can also be a non-reference
@@ -1053,15 +1052,9 @@ The variable C<$Email::MIME::MAX_DEPTH> is the maximum depth of parts that will
 be processed.  It defaults to 10, already higher than legitimate mail is ever
 likely to be.  This value may go up over time as the parser is improved.
 
-=head1 TODO
-
-All of the Email::MIME-specific guts should move to a single entry on the
-object's guts.  This will require changes to both Email::MIME and
-L<Email::MIME::Modifier>, sadly.
-
 =head1 SEE ALSO
 
-L<Email::Simple>, L<Email::MIME::Modifier>, L<Email::MIME::Creator>.
+L<Email::Simple>
 
 =head1 THANKS
 

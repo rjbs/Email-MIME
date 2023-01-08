@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More 'no_plan';
+use Test::More;
 use Email::MIME::Encodings;
 
 use_ok("Email::MIME");
@@ -46,3 +46,4 @@ is scalar(@headers), 3, 'got all three back in list context';
 eval { $email->as_string };
 is($@, '', "we can stringify without dying");
 
+done_testing;

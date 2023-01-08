@@ -5,7 +5,6 @@ use Encode;
 
 BEGIN {
   plan skip_all => 'Email::Address::XS is required for this test' unless eval { require Email::Address::XS };
-  plan 'no_plan';
 }
 
 BEGIN {
@@ -140,3 +139,5 @@ BEGIN {
   is($cc_grps[1]->[1]->phrase, 'Julia:; ');
   is($cc_grps[1]->[1]->address, 'julia@ficdep.minitrue');
 }
+
+done_testing;

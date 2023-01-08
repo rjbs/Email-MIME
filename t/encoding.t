@@ -1,9 +1,8 @@
 use strict;
 use warnings;
-use Test::More tests => 26;
+use Test::More;
 
 use_ok 'Email::MIME';
-use_ok 'Email::MIME::Modifier';
 
 for my $encode ('7bit', '7bit; foo') {
   my $email = Email::MIME->new(<<__MESSAGE__);
@@ -141,3 +140,5 @@ is(
     is( ($email->parts)[1]->body_str, "Hello World!" );
   }
 }
+
+done_testing;

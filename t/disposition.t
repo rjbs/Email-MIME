@@ -1,10 +1,9 @@
 use strict;
 use warnings;
 use utf8;
-use Test::More tests => 9;
+use Test::More;
 
 use_ok 'Email::MIME';
-use_ok 'Email::MIME::Modifier';
 
 my $email = Email::MIME->new(<<__MESSAGE__);
 Content-Disposition: inline
@@ -38,3 +37,5 @@ is $email->header('Content-Disposition'), q(attachment; filename="hah\\"ha\\"'ha
 
 $email->filename_set('kůň.pdf');
 is $email->header('Content-Disposition'), q(attachment; filename*=UTF-8''k%C5%AF%C5%88.pdf; filename=kun.pdf);
+
+done_testing;

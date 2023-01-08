@@ -1,9 +1,8 @@
 use strict;
 use warnings;
-use Test::More tests => 22;
+use Test::More;
 
 use_ok 'Email::MIME';
-use_ok 'Email::MIME::Modifier';
 
 my $email = Email::MIME->new(<<__MESSAGE__);
 Content-Disposition: inline
@@ -38,7 +37,7 @@ is +($email->parts)[3]->body, qq[Part two, part two!\n], 'part four decoded';
 $email->walk_parts(sub {
     my $part = shift;
     isa_ok $part, 'Email::MIME';
-    
+
     $part->encoding_set('base64') if $part->parts <= 1;
     $part->body_set( "foo\nbar" ) if $part->parts <= 1;
 });
@@ -50,3 +49,5 @@ $email->walk_parts(sub {
         is $part->body, "foo\nbar", 'walkdown body_set worked';
     }
 });
+
+done_testing;

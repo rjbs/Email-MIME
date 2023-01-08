@@ -1,10 +1,9 @@
 use strict;
 use warnings;
 use utf8;
-use Test::More tests => 16;
+use Test::More;
 
 use_ok 'Email::MIME';
-use_ok 'Email::MIME::Modifier';
 use_ok 'Email::MIME::ContentType';
 
 my $email = Email::MIME->new(<<__MESSAGE__);
@@ -126,3 +125,5 @@ is_deeply( parse_content_type($email->header('Content-Type')), {
 like $email->header('Content-Type'),
     qr'^text/plain; bananas=(?:"true"|true); boundary=(?:"marker"|marker); format=(?:"flowed"|flowed); name\*=UTF-8\'\'k%C5%AF%C5%88\.pdf; name=kun\.pdf$',
     'ct format is correct';
+
+done_testing;

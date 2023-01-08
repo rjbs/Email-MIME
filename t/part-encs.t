@@ -2,10 +2,7 @@ use strict;
 use warnings;
 use Test::More;
 
-plan tests => 11;
-
 use_ok 'Email::MIME';
-use_ok 'Email::MIME::Modifier';
 use_ok 'Email::MIME::Creator';
 
 use Symbol qw(gensym);
@@ -85,3 +82,5 @@ my $file = do {
     "binary part got base64 encoded (2/2)",
   );
 }
+
+done_testing;
