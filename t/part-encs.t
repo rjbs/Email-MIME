@@ -5,11 +5,10 @@ use Test::More;
 use_ok 'Email::MIME';
 use_ok 'Email::MIME::Creator';
 
-use Symbol qw(gensym);
-
 my $file = do {
-  my $fh = gensym;
-  open $fh, "<t/files/readme.txt.gz" or die "can't open attachment file: $!";
+  open my $fh, '<', 't/files/readme.txt.gz'
+    or die "can't open attachment file: $!";
+
   binmode $fh;
   local $/;
   <$fh>;
