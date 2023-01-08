@@ -1,5 +1,4 @@
-use 5.008001;
-use strict;
+use v5.12.0;
 use warnings;
 package Email::MIME::Creator;
 # ABSTRACT: obsolete do-nothing library

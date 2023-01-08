@@ -1,4 +1,4 @@
-use strict;
+use v5.12.0;
 use warnings;
 package Email::MIME::Header;
 # ABSTRACT: the header of a MIME message
@@ -92,7 +92,7 @@ sub header_str_pairs {
 sub header_as_obj {
   my ($self, $name, $index, $class) = @_;
 
-  $class = $self->get_class_for_header($name) unless defined $class;
+  $class //= $self->get_class_for_header($name);
 
   {
     local @CARP_NOT = qw(Email::MIME);

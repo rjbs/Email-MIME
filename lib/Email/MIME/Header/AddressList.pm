@@ -4,7 +4,7 @@ package Email::MIME::Header::AddressList;
 
 # ABSTRACT: MIME support for list of Email::Address::XS objects
 
-use strict;
+use v5.12.0;
 use warnings;
 
 use Carp ();
