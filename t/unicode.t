@@ -72,6 +72,8 @@ SKIP: {
     'Doy <test@example.com>', # not
     '"<look@like.address>," <test@example.com>', # address-like pattern in phrase
     '"Döy <look@like.address>," <test@example.com>', # unicode address-like pattern in phrase
+    'adam@äli.as',            # unicode host
+    'Ädam <adam@äli.as>',     # unicode phrase and host
   );
 
   for my $subject (@subjects) {
@@ -93,8 +95,13 @@ SKIP: {
       $email->header_str_set('To', $to);
       is(scalar($email->header_str('To')), $to,
          "To header is correct");
-      like($email->as_string, qr/test\@example\.com/,
-           "address isn't encoded");
+      if ($to =~ /adam/) {
+        like($email->header_raw('To'), qr/adam\@xn--li-uia.as/,
+           'To raw header is correct');
+      } else {
+        like($email->as_string, qr/test\@example\.com/,
+             "address isn't encoded");
+      }
       like($email->as_string, qr/\A\p{ASCII}*\z/,
            "email doesn't contain any non-ascii characters");
     }
