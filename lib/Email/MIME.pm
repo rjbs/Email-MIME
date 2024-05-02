@@ -18,6 +18,11 @@ use Scalar::Util qw(reftype weaken);
 
 our @CARP_NOT = qw(Email::MIME::ContentType);
 
+our $MAX_DEPTH = 10;
+
+our $CUR_PARTS = 0;
+our $MAX_PARTS = 100;
+
 =head1 SYNOPSIS
 
 B<Wait!>  Before you read this, maybe you just need L<Email::Stuffer>, which is
@@ -123,6 +128,12 @@ my $NO_ENCODE_RE = qr/
 /ix;
 
 sub new {
+  local $CUR_PARTS = 0;
+  my ($class, @rest) = @_;
+  $class->_new(@rest);
+}
+
+sub _new {
   my ($class, $text, $arg, @rest) = @_;
   $arg ||= {};
 
@@ -374,8 +385,6 @@ sub body_str {
   return $str;
 }
 
-our $MAX_DEPTH = 10;
-
 sub parts_multipart {
   my $self     = shift;
   my $boundary = $self->{ct}->{attributes}->{boundary};
@@ -408,14 +417,16 @@ sub parts_multipart {
   # 2006-11-27
   $self->SUPER::body_set(shift @bits) if index(($bits[0] || ''), ':') == -1;
 
-  my $bits = @bits;
+  local $CUR_PARTS = $CUR_PARTS + @bits;
+  Carp::croak("attempted to parse a MIME message with more than $MAX_PARTS parts")
+    if $MAX_PARTS && $CUR_PARTS > $MAX_PARTS;
 
   my @parts;
   for my $bit (@bits) {
     $bit =~ s/\A[\n\r]+//smg;
     $bit =~ s/(?<!\x0d)$self->{mycrlf}\Z//sm;
     local $DEPTH = $DEPTH + 1;
-    my $email = (ref $self)->new($bit, { encode_check => $self->encode_check });
+    my $email = (ref $self)->_new($bit, { encode_check => $self->encode_check });
     push @parts, $email;
   }
 
@@ -1048,6 +1059,14 @@ For example:
 The variable C<$Email::MIME::MAX_DEPTH> is the maximum depth of parts that will
 be processed.  It defaults to 10, already higher than legitimate mail is ever
 likely to be.  This value may go up over time as the parser is improved.
+
+The variable C<$Email::MIME::MAX_PARTS> is the maximum number of parts that
+will be processed.  It defaults to 100, already higher than legitimate mail is
+ever likely to be.  This value may go up over time as the parser is improved or
+as research suggests that our starting position was wrong.
+
+Increasing either of these variables risks significant consumption of memory.
+Test before changing things.
 
 =head1 SEE ALSO
 
