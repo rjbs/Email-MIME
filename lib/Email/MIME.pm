@@ -1060,6 +1060,14 @@ The variable C<$Email::MIME::MAX_DEPTH> is the maximum depth of parts that will
 be processed.  It defaults to 10, already higher than legitimate mail is ever
 likely to be.  This value may go up over time as the parser is improved.
 
+The variable C<$Email::MIME::MAX_PARTS> is the maximum number of parts that
+will be processed.  It defaults to 100, already higher than legitimate mail is
+ever likely to be.  This value may go up over time as the parser is improved or
+as research suggests that our starting position was wrong.
+
+Increasing either of these variables risks significant consumption of memory.
+Test before changing things.
+
 =head1 SEE ALSO
 
 L<Email::Simple>
