@@ -1,6 +1,11 @@
 Revision history for Perl extension Email::MIME.
 
 {{$NEXT}}
+        - Fix for CVE-2024-4140: An excessive memory use issue (CWE-770)
+          exists in Email-MIME, before version 1.954, which can cause denial of
+          service when parsing multipart MIME messages.  The fix is the new
+          $MAX_PARTS configuration limits how many parts we will consider
+          parsing.  The default $MAX_PARTS is 100.
 
 1.953     2023-01-08 19:02:24-05:00 America/New_York
         - as promised, this release no longer works on v5.8; in fact, due to
