@@ -18,21 +18,26 @@ jobs:
     steps:
       - name: Check out repo
         uses: actions/checkout@v4
-      - name: Install cpanminus
+      - name: Install cpm
         run: |
-          curl https://cpanmin.us/ > /tmp/cpanm
-          chmod u+x /tmp/cpanm
+          curl https://raw.githubusercontent.com/skaji/cpm/main/cpm > /tmp/cpm
+          chmod u+x /tmp/cpm
       - name: Install Dist::Zilla
-        run: sudo apt-get install -y libdist-zilla-perl
-      - name: Install prereqs
-        # This could probably be made more efficient by looking at what it's
-        # installing via cpanm that could, instead, be installed from apt.  I
-        # may do that later, but for now, it's fine! -- rjbs, 2023-01-07
+        run: sudo apt-get install -y libdist-zilla-perl libdist-zilla-plugin-git-perl libpod-weaver-perl
+      - name: Install authordeps
         run: |
           dzil authordeps --missing > /tmp/deps-phase-1.txt
-          /tmp/cpanm --notest -S < /tmp/deps-phase-1.txt
-          dzil listdeps --author --missing >> /tmp/deps-phase-2.txt
-          /tmp/cpanm --notest -S < /tmp/deps-phase-2.txt
+          echo "---BEGIN AUTHORDEPS---"
+          cat /tmp/deps-phase-1.txt
+          echo "---END AUTHORDEPS---"
+          sudo /tmp/cpm install -g - < /tmp/deps-phase-1.txt
+      - name: Install missing prereqs
+        run: |
+          dzil listdeps --author --missing > /tmp/deps-phase-2.txt
+          echo "---BEGIN PREREQS---"
+          cat /tmp/deps-phase-2.txt
+          echo "---END PREREQS---"
+          sudo /tmp/cpm install -g - < /tmp/deps-phase-2.txt
       - name: Build tarball
         run: |
           dzil build --in Dist-To-Test
@@ -83,7 +88,7 @@ jobs:
         run: |
           JUNIT_TEST_FILE="/tmp/test-output.xml" ALLOW_PASSING_TODOS=1 yath test --renderer=Formatter --renderer=JUnit -D
       - name: Publish test report
-        uses: mikepenz/action-junit-report@v3
+        uses: mikepenz/action-junit-report@v4
         if: always() # always run even if the previous step fails
         with:
           check_name: JUnit Report (${{ matrix.perl-version }})
