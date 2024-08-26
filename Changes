@@ -1,6 +1,8 @@
 Revision history for Perl extension Email::MIME.
 
 {{$NEXT}}
+        - In the docs, replace IO::All with Path::Tiny and use a more
+          appropriate encoding for a PDF part.  (Thanks, Andrew Davis.)
 
 1.954     2024-05-02 17:12:30-04:00 America/New_York
         - Fix for CVE-2024-4140: An excessive memory use issue (CWE-770)

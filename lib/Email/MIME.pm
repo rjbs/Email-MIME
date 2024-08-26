@@ -42,7 +42,7 @@ by all means keep reading.
 ...or...
 
   use Email::MIME;
-  use IO::All;
+  use Path::Tiny;
 
   # multipart message
   my @parts = (
@@ -50,10 +50,10 @@ by all means keep reading.
           attributes => {
               filename     => "report.pdf",
               content_type => "application/pdf",
-              encoding     => "quoted-printable",
+              encoding     => "base64",
               name         => "2004-financials.pdf",
           },
-          body => io( "2004-financials.pdf" )->binary->all,
+          body => path( "2004-financials.pdf" )->slurp_raw,
       ),
       Email::MIME->create(
           attributes => {
