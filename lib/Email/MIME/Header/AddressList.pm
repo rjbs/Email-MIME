@@ -10,10 +10,15 @@ use warnings;
 use Carp ();
 use Email::Address::XS;
 use Email::MIME::Encode;
+use Net::IDN::Encode;
 
 =encoding utf8
 
 =head1 SYNOPSIS
+
+  use utf8;
+  use Email::Address::XS;
+  use Email::MIME::Header::AddressList;
 
   my $address1 = Email::Address::XS->new('Name1' => 'address1@host.com');
   my $address2 = Email::Address::XS->new("Name2 \N{U+263A}" => 'address2@host.com');
@@ -129,14 +134,20 @@ sub new_mime_groups {
     $groups[2 * $_ + 1] = [ @{$groups[2 * $_ + 1]} ];
     foreach (@{$groups[2 * $_ + 1]}) {
       next unless Email::Address::XS->is_obj($_);
-      my $decode_phrase = (defined $_->phrase and $_->phrase =~ /=\?/);
-      my $decode_comment = (defined $_->comment and $_->comment =~ /=\?/);
-      next unless $decode_phrase or $decode_comment;
+      my $phrase = $_->phrase;
+      my $comment = $_->comment;
+      my $host = $_->host;
+      my $decode_phrase = (defined $phrase and $phrase =~ /=\?/);
+      my $decode_comment = (defined $comment and $comment =~ /=\?/);
+      my $decode_host = (defined $host and $host =~ /xn--/);
+      next unless $decode_phrase or $decode_comment or $decode_host;
       $_ = ref($_)->new(copy => $_);
-      $_->phrase(Email::MIME::Encode::mime_decode($_->phrase))
+      $_->phrase(Email::MIME::Encode::mime_decode($phrase))
         if $decode_phrase;
-      $_->comment(Email::MIME::Encode::mime_decode($_->comment))
+      $_->comment(Email::MIME::Encode::mime_decode($comment))
         if $decode_comment;
+      $_->host(Net::IDN::Encode::domain_to_unicode($host))
+        if $decode_host;
     }
   }
   return $class->new_groups(@groups);
@@ -203,14 +214,20 @@ sub as_mime_string {
       if Email::MIME::Encode::_needs_mime_encode_addr($groups[2 * $_]);
     $groups[2 * $_ + 1] = [ @{$groups[2 * $_ + 1]} ];
     foreach (@{$groups[2 * $_ + 1]}) {
-      my $encode_phrase = Email::MIME::Encode::_needs_mime_encode_addr($_->phrase);
-      my $encode_comment = Email::MIME::Encode::_needs_mime_encode_addr($_->comment);
-      next unless $encode_phrase or $encode_comment;
+      my $phrase = $_->phrase;
+      my $comment = $_->comment;
+      my $host = $_->host;
+      my $encode_phrase = Email::MIME::Encode::_needs_mime_encode_addr($phrase);
+      my $encode_comment = Email::MIME::Encode::_needs_mime_encode_addr($comment);
+      my $encode_host = (defined $host and $host =~ /\P{ASCII}/);
+      next unless $encode_phrase or $encode_comment or $encode_host;
       $_ = ref($_)->new(copy => $_);
-      $_->phrase(Email::MIME::Encode::mime_encode($_->phrase, $charset))
+      $_->phrase(Email::MIME::Encode::mime_encode($phrase, $charset))
         if $encode_phrase;
-      $_->comment(Email::MIME::Encode::mime_encode($_->comment, $charset))
+      $_->comment(Email::MIME::Encode::mime_encode($comment, $charset))
         if $encode_comment;
+      $_->host(Net::IDN::Encode::domain_to_ascii($host))
+        if $encode_host;
     }
   }
   return Email::Address::XS::format_email_groups(@groups);
